@@ -1,0 +1,977 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1201</width>
+    <height>569</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(170, 170, 255);</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QFrame" name="frame">
+    <property name="geometry">
+     <rect>
+      <x>-11</x>
+      <y>-1</y>
+      <width>201</width>
+      <height>721</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QFrame {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:1,
+        stop:0   #061a3a,   /* bleu nuit très foncé */
+        stop:0.5 #0a2f6f,   /* bleu marine sombre */
+        stop:1   #8a3ebd    /* mauve intense en bas */
+    );
+    padding: 12px;   /* espace intérieur */
+    border: none;    /* pas de bordure */
+}
+</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Shadow::Raised</enum>
+    </property>
+    <widget class="QPushButton" name="btnAjouterVehicule">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>110</y>
+       <width>171</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+    background-color: transparent;
+    color: #ffffff;
+    font-family: &quot;Segoe UI&quot;, Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 12px 18px;
+    border-radius: 10px;
+    text-align: left;
+    border: 1px solid #ffffff; /* encadrement blanc fin */
+}
+
+QPushButton:hover {
+    background-color: rgba(255,255,255,0.15);
+}
+
+QPushButton:checked {
+    background-color: #123f8f; /* bleu nuit pas trop sombre */
+    border: 1px solid #ffffff; /* conserver le contour lors de la sélection */
+}</string>
+     </property>
+     <property name="text">
+      <string>Ajouter véhicule</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btnStatistique">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>180</y>
+       <width>181</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+    background-color: transparent;
+    color: #ffffff;
+    font-family: &quot;Segoe UI&quot;, Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 12px 18px;
+    border-radius: 10px;
+    text-align: left;
+    border: 1px solid #ffffff; /* encadrement blanc fin */
+}
+
+QPushButton:hover {
+    background-color: rgba(255,255,255,0.15);
+}
+
+QPushButton:checked {
+    background-color: #123f8f; /* bleu nuit pas trop sombre */
+    border: 1px solid #ffffff; /* conserver le contour lors de la sélection */
+}</string>
+     </property>
+     <property name="text">
+      <string>Liste de véhicules</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btnListe">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>250</y>
+       <width>171</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+    background-color: transparent;
+    color: #ffffff;
+    font-family: &quot;Segoe UI&quot;, Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 12px 18px;
+    border-radius: 10px;
+    text-align: left;
+    border: 1px solid #ffffff; /* encadrement blanc fin */
+}
+
+QPushButton:hover {
+    background-color: rgba(255,255,255,0.15);
+}
+
+QPushButton:checked {
+    background-color: #123f8f; /* bleu nuit pas trop sombre */
+    border: 1px solid #ffffff; /* conserver le contour lors de la sélection */
+}</string>
+     </property>
+     <property name="text">
+      <string>Statistiques</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>40</y>
+       <width>191</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QLineEdit {
+    background-color: transparent;
+    color: #ffffff;
+    font-family: &quot;Segoe UI&quot;, Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 12px 18px;
+    border-radius: 10px;
+    margin: 4px 12px;
+    border: 1px solid rgba(255,255,255,0.3); /* contour léger pour visibilité */
+}
+
+QLineEdit:focus {
+    border: 1px solid rgba(255,255,255,0.6); /* contour plus clair au focus */
+    background-color: rgba(255,255,255,0.05); /* petit effet au focus */
+}
+</string>
+     </property>
+     <property name="text">
+      <string>Gestion transport </string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QStackedWidget" name="stackedWidget">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>20</y>
+      <width>981</width>
+      <height>531</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QWidget {
+    background-color: rgb(255, 255, 255); /* fond blanc */
+    border-radius: 15px; /* coins arrondis, ajuste la valeur selon le besoin */
+}</string>
+    </property>
+    <property name="currentIndex">
+     <number>1</number>
+    </property>
+    <widget class="QWidget" name="page_3"/>
+    <widget class="QWidget" name="page_7">
+     <widget class="QLabel" name="label_3">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>10</y>
+        <width>611</width>
+        <height>121</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+    background-color: rgb(245, 245, 245);   /* gris très clair */
+    border: 2px solid rgb(148, 98, 255);    /* contour mauve */
+    border-radius: 12px;                    /* coins arrondis */
+    color: black;                           /* texte noir */
+    padding: 6px;                           /* espace intérieur */
+    font-size: 32px;                        /* police plus grande */
+    font-weight: bold;                      /* texte en gras */
+    qproperty-alignment: 'AlignCenter';     /* centre le texte dans le QLabel */
+}
+
+</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap resource="resources.qrc">:/icons/icons/bg.png</pixmap>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_3">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>140</y>
+        <width>341</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+    background-color: rgb(245, 245, 245);   /* gris clair */
+    border: 1px rgb(200, 200, 200);   /* contour gris un peu plus foncé */
+    border-radius: 12px;                    /* coins arrondis */
+    padding: 6px;                           /* espace intérieur pour le texte */
+    font-size: 14px;                        /* taille du texte */
+    color: black;                           /* couleur du texte */
+}
+</string>
+      </property>
+      <property name="placeholderText">
+       <string>taper l'id du véhicule ici </string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBox">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>200</y>
+        <width>351</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QComboBox {
+    background-color: rgb(245, 245, 245);   /* fond gris clair */
+    border: 1px  rgb(200, 200, 200);   /* contour gris */
+    border-radius: 12px;                    /* coins arrondis */
+    padding: 6px;                           /* espace intérieur */
+    font-size: 14px;                        /* taille du texte */
+    color: black;                           /* couleur du texte */
+}
+
+/* Pour que le menu déroulant ait le même style */
+QComboBox QAbstractItemView {
+    background-color: rgb(245, 245, 245);   /* fond gris clair du menu */
+    border: 1px solid rgb(200, 200, 200);   /* contour du menu */
+    border-radius: 12px;                    /* coins arrondis du menu */
+    selection-background-color: rgb(200, 200, 255); /* surlignage d'une option */
+}
+</string>
+      </property>
+      <item>
+       <property name="text">
+        <string>choisir entre les types suivants</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Taxi</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Bus</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Voiture</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_4">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>250</y>
+        <width>341</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+    background-color: rgb(245, 245, 245);   /* gris clair */
+    border: 1px rgb(200, 200, 200);   /* contour gris un peu plus foncé */
+    border-radius: 12px;                    /* coins arrondis */
+    padding: 6px;                           /* espace intérieur pour le texte */
+    font-size: 14px;                        /* taille du texte */
+    color: black;                           /* couleur du texte */
+}
+</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="placeholderText">
+       <string>entrer la zone desservi </string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBox_4">
+      <property name="geometry">
+       <rect>
+        <x>510</x>
+        <y>140</y>
+        <width>281</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QComboBox {
+    background-color: rgb(245, 245, 245);   /* fond gris clair */
+    border: 1px  rgb(200, 200, 200);   /* contour gris */
+    border-radius: 12px;                    /* coins arrondis */
+    padding: 6px;                           /* espace intérieur */
+    font-size: 14px;                        /* taille du texte */
+    color: black;                           /* couleur du texte */
+}
+
+/* Pour que le menu déroulant ait le même style */
+QComboBox QAbstractItemView {
+    background-color: rgb(245, 245, 245);   /* fond gris clair du menu */
+    border: 1px solid rgb(200, 200, 200);   /* contour du menu */
+    border-radius: 12px;                    /* coins arrondis du menu */
+    selection-background-color: rgb(200, 200, 255); /* surlignage d'une option */
+}
+</string>
+      </property>
+      <item>
+       <property name="text">
+        <string>choisir entre les fonctions suivants </string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Livraison</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Deplacement</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QComboBox" name="comboBox_6">
+      <property name="geometry">
+       <rect>
+        <x>510</x>
+        <y>190</y>
+        <width>281</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QComboBox {
+    background-color: rgb(245, 245, 245);   /* fond gris clair */
+    border: 1px  rgb(200, 200, 200);   /* contour gris */
+    border-radius: 12px;                    /* coins arrondis */
+    padding: 6px;                           /* espace intérieur */
+    font-size: 14px;                        /* taille du texte */
+    color: black;                           /* couleur du texte */
+}
+
+/* Pour que le menu déroulant ait le même style */
+QComboBox QAbstractItemView {
+    background-color: rgb(245, 245, 245);   /* fond gris clair du menu */
+    border: 1px solid rgb(200, 200, 200);   /* contour du menu */
+    border-radius: 12px;                    /* coins arrondis du menu */
+    selection-background-color: rgb(200, 200, 255); /* surlignage d'une option */
+}
+</string>
+      </property>
+      <property name="placeholderText">
+       <string>choisir entre les etats suivants</string>
+      </property>
+      <item>
+       <property name="text">
+        <string>choisir entre les etats suivants</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Disponible</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Reservé</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_6">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>330</y>
+        <width>351</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+    background-color: rgb(245, 245, 245);   /* gris clair */
+    border: 1px rgb(200, 200, 200);   /* contour gris un peu plus foncé */
+    border-radius: 12px;                    /* coins arrondis */
+    padding: 6px;                           /* espace intérieur pour le texte */
+    font-size: 14px;                        /* taille du texte */
+    color: black;                           /* couleur du texte */
+}
+</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="placeholderText">
+       <string>taper la capacité </string>
+      </property>
+     </widget>
+     <widget class="QDateEdit" name="dateEdit">
+      <property name="geometry">
+       <rect>
+        <x>510</x>
+        <y>260</y>
+        <width>271</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QDateEdit {
+    background-color: rgb(245, 245, 245);   /* fond gris clair */
+    border: 1px solid rgb(200, 200, 200);   /* contour gris */
+    border-radius: 12px;                    /* coins arrondis */
+    padding: 6px;                           /* espace intérieur pour le texte */
+    font-size: 14px;                        /* taille du texte */
+    color: black;                           /* couleur du texte */
+}
+
+/* Pour le calendrier qui s’ouvre */
+QDateEdit::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left: 1px solid rgb(200, 200, 200);
+    border-radius: 0 12px 12px 0;
+    background-color: rgb(245, 245, 245);
+}
+
+QDateEdit QCalendarWidget {
+    background-color: rgb(245, 245, 245);   /* fond gris clair du calendrier */
+    border: 1px solid rgb(200, 200, 200);   /* contour du calendrier */
+    border-radius: 12px;
+}
+</string>
+      </property>
+     </widget>
+     <widget class="QTimeEdit" name="timeEdit">
+      <property name="geometry">
+       <rect>
+        <x>510</x>
+        <y>350</y>
+        <width>271</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QTimeEdit {
+    background-color: rgb(245, 245, 245);   /* fond gris clair */
+    border: 1px solid rgb(200, 200, 200);   /* contour gris */
+    border-radius: 12px;                    /* coins arrondis */
+    padding: 6px;                           /* espace intérieur pour le texte */
+    font-size: 14px;                        /* taille du texte */
+    color: black;                           /* couleur du texte */
+}
+
+/* Bouton pour ouvrir le sélecteur d'heure (si présent) */
+QTimeEdit::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left: 1px solid rgb(200, 200, 200);
+    border-radius: 0 12px 12px 0;
+    background-color: rgb(245, 245, 245);
+}
+
+/* Style du sélecteur de l’heure popup */
+QTimeEdit QSpinBox {
+    background-color: rgb(245, 245, 245);
+    border: none;
+    border-radius: 0;
+    padding: 2px;
+    color: black;
+}
+</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>420</y>
+        <width>75</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_2">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>420</y>
+        <width>75</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(170, 170, 255);</string>
+      </property>
+      <property name="text">
+       <string>Enregistrer</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_3">
+      <property name="geometry">
+       <rect>
+        <x>360</x>
+        <y>420</y>
+        <width>75</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(200, 200, 200);</string>
+      </property>
+      <property name="text">
+       <string>Enregistrer</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_4">
+      <property name="geometry">
+       <rect>
+        <x>560</x>
+        <y>420</y>
+        <width>75</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(200, 200, 200);</string>
+      </property>
+      <property name="text">
+       <string>Enregistrer</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="page_8">
+     <widget class="QTextEdit" name="textEdit_2">
+      <property name="geometry">
+       <rect>
+        <x>350</x>
+        <y>20</y>
+        <width>371</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="html">
+       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:22pt;&quot;&gt;📋Liste des véhicules &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_7">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>110</y>
+        <width>131</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:1,
+        stop:0   #030b1a,   /* bleu nuit très profond */
+        stop:0.5 #1e3a8a,   /* bleu marine soutenu */
+        stop:1   #6366f1    /* bleu électrique/violet bleuté */
+    );
+    color: white;              /* texte en blanc pour contraste */
+    border: none;              /* pas de bordure classique */
+    border-radius: 12px;       /* arrondi des coins */
+    padding: 8px 16px;         /* marges internes */
+    font-weight: bold;         /* texte en gras */
+}
+
+QPushButton:hover {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:1,
+        stop:0   #1e3a8a,   /* accentue le bleu marine */
+        stop:0.5 #2d4fcf,   /* bleu plus lumineux */
+        stop:1   #818cf8    /* violet plus clair */
+    );
+}
+
+QPushButton:pressed {
+    background: #030b1a;  /* foncé quand on clique */
+}
+</string>
+      </property>
+      <property name="text">
+       <string>🔍rechercher </string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBox_3">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>120</y>
+        <width>201</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QComboBox {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:1,
+        stop:0   #030b1a,   /* bleu nuit très profond */
+        stop:0.5 #1e3a8a,   /* bleu marine soutenu */
+        stop:1   #6366f1    /* bleu électrique/violet bleuté */
+    );
+    color: white;               /* texte en blanc */
+    border: none;               /* pas de bordure classique */
+    border-radius: 12px;        /* coins arrondis */
+    padding: 6px 12px;          /* marges internes */
+    font-weight: bold;          /* texte en gras */
+    combobox-popup: 0;          /* style moderne pour la liste */
+}
+
+QComboBox:hover {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:1,
+        stop:0   #1e3a8a,
+        stop:0.5 #2d4fcf,
+        stop:1   #818cf8
+    );
+}
+
+QComboBox:drop-down {
+    border: none;                  /* enlève la bordure classique */
+}
+
+QComboBox::down-arrow {
+    image: url(:/icons/arrow-down.png);  /* icône flèche personnalisée */
+    width: 12px;
+    height: 12px;
+}
+</string>
+      </property>
+      <item>
+       <property name="text">
+        <string> 🔍rechercher par </string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string> ID véhicule </string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Type</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QComboBox" name="comboBox_5">
+      <property name="geometry">
+       <rect>
+        <x>520</x>
+        <y>120</y>
+        <width>201</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QComboBox {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:1,
+        stop:0   #030b1a,   /* bleu nuit très profond */
+        stop:0.5 #1e3a8a,   /* bleu marine soutenu */
+        stop:1   #6366f1    /* bleu électrique/violet bleuté */
+    );
+    color: white;               /* texte en blanc */
+    border: none;               /* pas de bordure classique */
+    border-radius: 12px;        /* coins arrondis */
+    padding: 6px 12px;          /* marges internes */
+    font-weight: bold;          /* texte en gras */
+    combobox-popup: 0;          /* style moderne pour la liste */
+}
+
+QComboBox:hover {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:1,
+        stop:0   #1e3a8a,
+        stop:0.5 #2d4fcf,
+        stop:1   #818cf8
+    );
+}
+
+QComboBox:drop-down {
+    border: none;                  /* enlève la bordure classique */
+}
+
+QComboBox::down-arrow {
+    image: url(:/icons/arrow-down.png);  /* icône flèche personnalisée */
+    width: 12px;
+    height: 12px;
+}
+</string>
+      </property>
+      <item>
+       <property name="text">
+        <string>⬆Trier par </string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Capacité</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Horaire prévu </string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QPushButton" name="pushButton_8">
+      <property name="geometry">
+       <rect>
+        <x>370</x>
+        <y>110</y>
+        <width>131</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:1,
+        stop:0   #030b1a,   /* bleu nuit très profond */
+        stop:0.5 #1e3a8a,   /* bleu marine soutenu */
+        stop:1   #6366f1    /* bleu électrique/violet bleuté */
+    );
+    color: white;              /* texte en blanc pour contraste */
+    border: none;              /* pas de bordure classique */
+    border-radius: 12px;       /* arrondi des coins */
+    padding: 8px 16px;         /* marges internes */
+    font-weight: bold;         /* texte en gras */
+}
+
+QPushButton:hover {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:1,
+        stop:0   #1e3a8a,   /* accentue le bleu marine */
+        stop:0.5 #2d4fcf,   /* bleu plus lumineux */
+        stop:1   #818cf8    /* violet plus clair */
+    );
+}
+
+QPushButton:pressed {
+    background: #030b1a;  /* foncé quand on clique */
+}
+</string>
+      </property>
+      <property name="text">
+       <string>⬆ Trier </string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_9">
+      <property name="geometry">
+       <rect>
+        <x>770</x>
+        <y>110</y>
+        <width>171</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:1,
+        stop:0   #030b1a,   /* bleu nuit très profond */
+        stop:0.5 #1e3a8a,   /* bleu marine soutenu */
+        stop:1   #6366f1    /* bleu électrique/violet bleuté */
+    );
+    color: white;              /* texte en blanc pour contraste */
+    border: none;              /* pas de bordure classique */
+    border-radius: 12px;       /* arrondi des coins */
+    padding: 8px 16px;         /* marges internes */
+    font-weight: bold;         /* texte en gras */
+}
+
+QPushButton:hover {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:1,
+        stop:0   #1e3a8a,   /* accentue le bleu marine */
+        stop:0.5 #2d4fcf,   /* bleu plus lumineux */
+        stop:1   #818cf8    /* violet plus clair */
+    );
+}
+
+QPushButton:pressed {
+    background: #030b1a;  /* foncé quand on clique */
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Exporter en PDF 📕</string>
+      </property>
+     </widget>
+     <widget class="QTableWidget" name="tableWidget">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>171</y>
+        <width>831</width>
+        <height>371</height>
+       </rect>
+      </property>
+      <row>
+       <property name="text">
+        <string>Nouvelle ligne</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Nouvelle ligne</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Nouvelle ligne</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Nouvelle ligne</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Nouvelle ligne</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Nouvelle ligne</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Nouvelle ligne</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Nouvelle ligne</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Nouvelle ligne</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Nouvelle ligne</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Nouvelle ligne</string>
+       </property>
+      </row>
+      <column>
+       <property name="text">
+        <string>Type</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Matricule</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>réservation</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Kilométrage</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Etat</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Horaire prévu</string>
+       </property>
+      </column>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>
