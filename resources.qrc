@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>pic1.png</file>
+	<file>nexorab.png</file>
+	<file>nexora.png</file>
+    </qresource>
+</RCC>
