@@ -1,0 +1,50 @@
+QT += core gui widgets sql charts printsupport
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+CONFIG += c++17
+
+# You can make your code fail to compile if it uses deprecated APIs.
+# In order to do so, uncomment the following line.
+#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+
+SOURCES += \
+    dashboardwindow.cpp \
+    databasemanager.cpp \
+    financespage.cpp \
+    main.cpp \
+    mainwindow.cpp \
+    residentdialog.cpp \
+    residentspage.cpp \
+    settingspage.cpp \
+    transactiondialog.cpp \
+    welcomedialog.cpp
+
+HEADERS += \
+    dashboardwindow.h \
+    databasemanager.h \
+    financespage.h \
+    mainwindow.h \
+    residentdialog.h \
+    residentspage.h \
+    settingspage.h \
+    transactiondialog.h \
+    welcomedialog.h
+
+FORMS += \
+    dashboardwindow.ui \
+    financespage.ui \
+    mainwindow.ui \
+    residentdialog.ui \
+    residentspage.ui \
+    settingspage.ui \
+    transactiondialog.ui \
+    welcomedialog.ui
+
+RESOURCES += \
+    resources.qrc
+
+# Default rules for deployment.
+qnx: target.path = /tmp/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/bin
+!isEmpty(target.path): INSTALLS += target
