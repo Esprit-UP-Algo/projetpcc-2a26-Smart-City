@@ -1,0 +1,719 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FinancesPage</class>
+ <widget class="QWidget" name="FinancesPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>1206</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Finances</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: #F5F7FA;</string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="spacing">
+    <number>20</number>
+   </property>
+   <property name="leftMargin">
+    <number>20</number>
+   </property>
+   <property name="topMargin">
+    <number>20</number>
+   </property>
+   <property name="rightMargin">
+    <number>20</number>
+   </property>
+   <property name="bottomMargin">
+    <number>20</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="titleLabel">
+     <property name="styleSheet">
+      <string notr="true">font-size: 28px; font-weight: bold; color: #2C3E50;</string>
+     </property>
+     <property name="text">
+      <string>💰 Gestion Financière</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="topRowLayout">
+     <property name="spacing">
+      <number>20</number>
+     </property>
+     <item>
+      <widget class="QWidget" name="formCardWidget" native="true">
+       <property name="styleSheet">
+        <string notr="true">background-color: white; border-radius: 15px;</string>
+       </property>
+       <layout class="QVBoxLayout" name="formCardLayout">
+        <property name="spacing">
+         <number>15</number>
+        </property>
+        <property name="leftMargin">
+         <number>25</number>
+        </property>
+        <property name="topMargin">
+         <number>25</number>
+        </property>
+        <property name="rightMargin">
+         <number>25</number>
+        </property>
+        <property name="bottomMargin">
+         <number>25</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="formCardTitle">
+          <property name="styleSheet">
+           <string notr="true">font-size: 18px; font-weight: bold; color: #2C3E50;</string>
+          </property>
+          <property name="text">
+           <string>📝 Ajouter une Transaction</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="addTransactionButton">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: #4A90E2; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold;</string>
+          </property>
+          <property name="text">
+           <string>➕ Nouvelle Transaction</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="infoLabel">
+          <property name="styleSheet">
+           <string notr="true">color: #7F8C8D; font-size: 13px; padding: 15px; background-color: #ECF0F1; border-radius: 8px;</string>
+          </property>
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Types de transactions:&lt;/span&gt;&lt;br/&gt;• &lt;span style=&quot; color:#27ae60;&quot;&gt;Entrée&lt;/span&gt;: Loyer, Services&lt;br/&gt;• &lt;span style=&quot; color:#e74c3c;&quot;&gt;Sortie&lt;/span&gt;: Charges, Maintenance&lt;br/&gt;&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Modes de paiement:&lt;/span&gt;&lt;br/&gt;Espèces, Carte, Virement, Chèque&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="formCardSpacer">
+          <property name="orientation">
+           <enum>Qt::Orientation::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="tableCardWidget" native="true">
+       <property name="styleSheet">
+        <string notr="true">background-color: white; border-radius: 15px;</string>
+       </property>
+       <layout class="QVBoxLayout" name="tableCardLayout">
+        <property name="spacing">
+         <number>15</number>
+        </property>
+        <property name="leftMargin">
+         <number>25</number>
+        </property>
+        <property name="topMargin">
+         <number>25</number>
+        </property>
+        <property name="rightMargin">
+         <number>25</number>
+        </property>
+        <property name="bottomMargin">
+         <number>25</number>
+        </property>
+        <item>
+         <layout class="QHBoxLayout" name="tableHeaderLayout">
+          <item>
+           <widget class="QLabel" name="tableCardTitle">
+            <property name="styleSheet">
+             <string notr="true">font-size: 18px; font-weight: bold; color: #2C3E50;</string>
+            </property>
+            <property name="text">
+             <string>📊 Liste des Transactions</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="tableHeaderSpacer">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="exportPDFButton">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: #9B59B6; color: white; border: none; border-radius: 8px; padding: 0 20px; font-weight: bold;</string>
+            </property>
+            <property name="text">
+             <string>📄 Exporter PDF</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="searchLayout">
+          <item>
+           <widget class="QLineEdit" name="searchLineEdit">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border: 2px solid #BDC3C7; border-radius: 8px; padding-left: 15px; font-size: 14px;</string>
+            </property>
+            <property name="placeholderText">
+             <string>🔍 Rechercher par code...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="searchButton">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: #4A90E2; color: white; border: none; border-radius: 8px; padding: 0 25px; font-weight: bold;</string>
+            </property>
+            <property name="text">
+             <string>Rechercher</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="sortComboBox">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border: 2px solid #BDC3C7; border-radius: 8px; padding-left: 10px; font-size: 14px;</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>Trier par Date</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Trier par Code</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Trier par Montant</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="transactionsTable">
+          <property name="styleSheet">
+           <string notr="true">border: 1px solid #E0E0E0; border-radius: 8px; gridline-color: #E0E0E0;</string>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+          </property>
+          <column>
+           <property name="text">
+            <string>Code</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Montant</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Date</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Type</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Catégorie</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Mode Paiement</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Actions</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="tableActionsLayout">
+          <item>
+           <spacer name="tableActionsSpacer">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="modifyButton">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: #F39C12; color: white; border: none; border-radius: 8px; padding: 0 20px; font-weight: bold;</string>
+            </property>
+            <property name="text">
+             <string>✏️ Modifier</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="deleteButton">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: #E74C3C; color: white; border: none; border-radius: 8px; padding: 0 20px; font-weight: bold;</string>
+            </property>
+            <property name="text">
+             <string>🗑️ Supprimer</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="bottomRowLayout">
+     <property name="spacing">
+      <number>20</number>
+     </property>
+     <item>
+      <widget class="QWidget" name="statsCardWidget" native="true">
+       <property name="styleSheet">
+        <string notr="true">background-color: white; border-radius: 15px;</string>
+       </property>
+       <layout class="QVBoxLayout" name="statsCardLayout">
+        <property name="spacing">
+         <number>15</number>
+        </property>
+        <property name="leftMargin">
+         <number>25</number>
+        </property>
+        <property name="topMargin">
+         <number>25</number>
+        </property>
+        <property name="rightMargin">
+         <number>25</number>
+        </property>
+        <property name="bottomMargin">
+         <number>25</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="statsCardTitle">
+          <property name="styleSheet">
+           <string notr="true">font-size: 18px; font-weight: bold; color: #2C3E50; margin-bottom: 15px;</string>
+          </property>
+          <property name="text">
+           <string>Statistiques (Module Finances)</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="separator1">
+          <property name="styleSheet">
+           <string notr="true">color: #BDC3C7; margin: 5px 0;</string>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="stat1Title">
+          <property name="styleSheet">
+           <string notr="true">font-size: 15px; font-weight: bold; color: #2C3E50; margin: 15px 0 8px 0;</string>
+          </property>
+          <property name="text">
+           <string>📈 Évolution mensuelle des revenus et dépenses</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="stat1Description">
+          <property name="styleSheet">
+           <string notr="true">font-size: 12px; color: #7F8C8D; margin-bottom: 12px; padding-left: 20px;</string>
+          </property>
+          <property name="text">
+           <string>Identifier si les revenus couvrent les dépenses et repérer les déficits/excédents</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="indicatorsLayout">
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="revenueLabel">
+            <property name="styleSheet">
+             <string notr="true">font-size: 13px; color: #27AE60; font-weight: bold; padding: 8px 12px; background-color: #E8F8F5; border-radius: 6px;</string>
+            </property>
+            <property name="text">
+             <string>📈 Revenus: 0 DT</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="expensesLabel">
+            <property name="styleSheet">
+             <string notr="true">font-size: 13px; color: #E74C3C; font-weight: bold; padding: 8px 12px; background-color: #FADBD8; border-radius: 6px;</string>
+            </property>
+            <property name="text">
+             <string>📉 Dépenses: 0 DT</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="balanceLabel">
+            <property name="styleSheet">
+             <string notr="true">font-size: 13px; color: #2C3E50; font-weight: bold; padding: 8px 12px; background-color: #EBF5FB; border-radius: 6px;</string>
+            </property>
+            <property name="text">
+             <string>💰 Solde: 0 DT</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="Line" name="separator2">
+          <property name="styleSheet">
+           <string notr="true">color: #BDC3C7; margin: 15px 0 10px 0;</string>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="stat2Title">
+          <property name="styleSheet">
+           <string notr="true">font-size: 15px; font-weight: bold; color: #2C3E50; margin: 10px 0 8px 0;</string>
+          </property>
+          <property name="text">
+           <string>⏱️ Délai moyen de traitement des transactions</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="stat2Description">
+          <property name="styleSheet">
+           <string notr="true">font-size: 12px; color: #7F8C8D; margin-bottom: 12px; padding-left: 20px;</string>
+          </property>
+          <property name="text">
+           <string>Évaluer la rapidité du service financier et optimiser le flux de validation</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="processingDelayLabel">
+          <property name="styleSheet">
+           <string notr="true">font-size: 15px; font-weight: bold; color: #3498DB; background-color: #EBF3FD; padding: 12px 20px; border-radius: 8px; border: 2px solid #3498DB; margin: 5px 0;</string>
+          </property>
+          <property name="text">
+           <string>⏱️ Délai moyen : 2,4 jours</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="separator3">
+          <property name="styleSheet">
+           <string notr="true">color: #BDC3C7; margin: 15px 0 10px 0;</string>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="statusBadge">
+          <property name="styleSheet">
+           <string notr="true">font-size: 16px; font-weight: bold; color: white; background-color: #27AE60; padding: 10px; border-radius: 8px;</string>
+          </property>
+          <property name="text">
+           <string>Excédent</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="chartContainer" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>250</height>
+           </size>
+          </property>
+          <layout class="QVBoxLayout" name="chartContainerLayout">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="assistantCardWidget" native="true">
+       <property name="styleSheet">
+        <string notr="true">background-color: white; border-radius: 15px;</string>
+       </property>
+       <layout class="QVBoxLayout" name="assistantCardLayout">
+        <property name="spacing">
+         <number>15</number>
+        </property>
+        <property name="leftMargin">
+         <number>25</number>
+        </property>
+        <property name="topMargin">
+         <number>25</number>
+        </property>
+        <property name="rightMargin">
+         <number>25</number>
+        </property>
+        <property name="bottomMargin">
+         <number>25</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="assistantCardTitle">
+          <property name="styleSheet">
+           <string notr="true">font-size: 18px; font-weight: bold; color: #2C3E50;</string>
+          </property>
+          <property name="text">
+           <string>🤖 Assistant Financier</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextEdit" name="chatTextEdit">
+          <property name="styleSheet">
+           <string notr="true">border: 2px solid #E0E0E0; border-radius: 8px; padding: 10px; font-size: 13px; background-color: #FAFAFA;</string>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+          <property name="html">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:13px; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:9pt; font-style:italic; color:#7f8c8d;&quot;&gt;Bonjour! Je suis votre assistant financier. Posez-moi vos questions!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="inputLayout">
+          <item>
+           <widget class="QLineEdit" name="questionLineEdit">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border: 2px solid #BDC3C7; border-radius: 8px; padding-left: 15px; font-size: 14px;</string>
+            </property>
+            <property name="placeholderText">
+             <string>💬 Posez votre question...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="sendButton">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: #9B59B6; color: white; border: none; border-radius: 8px; padding: 0 25px; font-weight: bold;</string>
+            </property>
+            <property name="text">
+             <string>Envoyer</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QLabel" name="actionsLabel">
+          <property name="styleSheet">
+           <string notr="true">font-size: 12px; color: #7F8C8D;</string>
+          </property>
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Actions rapides:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="quickActionsLayout">
+          <item>
+           <widget class="QPushButton" name="budgetButton">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: #ECF0F1; color: #2C3E50; border: none; border-radius: 6px; font-size: 11px; padding: 0 10px;</string>
+            </property>
+            <property name="text">
+             <string>💼 Créer Budget</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="simulateButton">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: #ECF0F1; color: #2C3E50; border: none; border-radius: 6px; font-size: 11px; padding: 0 10px;</string>
+            </property>
+            <property name="text">
+             <string>📊 Simuler Scénario</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="reportButton">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: #ECF0F1; color: #2C3E50; border: none; border-radius: 6px; font-size: 11px; padding: 0 10px;</string>
+            </property>
+            <property name="text">
+             <string>📝 Rapport</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
