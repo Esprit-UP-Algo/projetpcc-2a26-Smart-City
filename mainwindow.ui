@@ -6,13 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
+<<<<<<< HEAD
     <width>1314</width>
     <height>669</height>
+=======
+    <width>800</width>
+    <height>600</height>
+>>>>>>> b9d5983 (Ajout du module Gestion des Résidents (Qt))
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+<<<<<<< HEAD
   <property name="styleSheet">
    <string notr="true">background-color: rgb(255, 255, 255);
 background-color: rgb(144, 216, 216);</string>
@@ -813,13 +819,21 @@ QLineEdit:placeholder {
     </property>
    </widget>
   </widget>
+=======
+  <widget class="QWidget" name="centralwidget"/>
+>>>>>>> b9d5983 (Ajout du module Gestion des Résidents (Qt))
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
+<<<<<<< HEAD
      <width>1314</width>
      <height>22</height>
+=======
+     <width>800</width>
+     <height>26</height>
+>>>>>>> b9d5983 (Ajout du module Gestion des Résidents (Qt))
     </rect>
    </property>
   </widget>
