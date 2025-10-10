@@ -1,0 +1,1009 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LocauxPage</class>
+ <widget class="QWidget" name="LocauxPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Locaux</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: #F5F7FA;</string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="spacing">
+    <number>20</number>
+   </property>
+   <property name="leftMargin">
+    <number>20</number>
+   </property>
+   <property name="topMargin">
+    <number>20</number>
+   </property>
+   <property name="rightMargin">
+    <number>20</number>
+   </property>
+   <property name="bottomMargin">
+    <number>20</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="titleLabel">
+     <property name="text">
+      <string>🏠 Gestion des Locaux</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font-size: 28px; font-weight: bold; color: #2C3E50;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="topRowLayout">
+     <property name="spacing">
+      <number>20</number>
+     </property>
+     <item>
+      <widget class="QFrame" name="formCard">
+       <property name="styleSheet">
+        <string notr="true">QFrame {
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px;
+}</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Shape::StyledPanel</enum>
+       </property>
+       <layout class="QVBoxLayout" name="formLayout">
+        <property name="spacing">
+         <number>15</number>
+        </property>
+        <property name="leftMargin">
+         <number>25</number>
+        </property>
+        <property name="topMargin">
+         <number>25</number>
+        </property>
+        <property name="rightMargin">
+         <number>25</number>
+        </property>
+        <property name="bottomMargin">
+         <number>25</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="formTitleLabel">
+          <property name="text">
+           <string>🏢 Ajouter un Local</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">font-size: 18px; font-weight: bold; color: #2C3E50; margin-bottom: 10px;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QFormLayout" name="fieldsLayout">
+          <property name="horizontalSpacing">
+           <number>15</number>
+          </property>
+          <property name="verticalSpacing">
+           <number>10</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="idLabel">
+            <property name="text">
+             <string>ID Local:</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font-weight: bold; color: #34495E;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="idLineEdit">
+            <property name="styleSheet">
+             <string notr="true">QLineEdit {
+    border: 2px solid #BDC3C7;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+}
+QLineEdit:focus {
+    border-color: #3498DB;
+}</string>
+            </property>
+            <property name="placeholderText">
+             <string>Saisir l'ID du local</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="nomLabel">
+            <property name="text">
+             <string>Nom:</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font-weight: bold; color: #34495E;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="nomLineEdit">
+            <property name="styleSheet">
+             <string notr="true">QLineEdit {
+    border: 2px solid #BDC3C7;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+}
+QLineEdit:focus {
+    border-color: #3498DB;
+}</string>
+            </property>
+            <property name="placeholderText">
+             <string>Nom du local</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="capaciteLabel">
+            <property name="text">
+             <string>Capacité:</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font-weight: bold; color: #34495E;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSpinBox" name="capaciteSpinBox">
+            <property name="styleSheet">
+             <string notr="true">QSpinBox {
+    border: 2px solid #BDC3C7;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+}
+QSpinBox:focus {
+    border-color: #3498DB;
+}</string>
+            </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="suffix">
+             <string> personnes</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="adresseLabel">
+            <property name="text">
+             <string>Adresse:</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font-weight: bold; color: #34495E;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="adresseLineEdit">
+            <property name="styleSheet">
+             <string notr="true">QLineEdit {
+    border: 2px solid #BDC3C7;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+}
+QLineEdit:focus {
+    border-color: #3498DB;
+}</string>
+            </property>
+            <property name="placeholderText">
+             <string>Adresse complète</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="occupantLabel">
+            <property name="text">
+             <string>Nom de l'occupant:</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font-weight: bold; color: #34495E;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLineEdit" name="occupantLineEdit">
+            <property name="styleSheet">
+             <string notr="true">QLineEdit {
+    border: 2px solid #BDC3C7;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+}
+QLineEdit:focus {
+    border-color: #3498DB;
+}</string>
+            </property>
+            <property name="placeholderText">
+             <string>Nom de l'occupant actuel</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="superficieLabel">
+            <property name="text">
+             <string>Superficie (m²):</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font-weight: bold; color: #34495E;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QSpinBox" name="superficieSpinBox">
+            <property name="styleSheet">
+             <string notr="true">QSpinBox {
+    border: 2px solid #BDC3C7;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+}
+QSpinBox:focus {
+    border-color: #3498DB;
+}</string>
+            </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>10000</number>
+            </property>
+            <property name="suffix">
+             <string> m²</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="typeLabel">
+            <property name="text">
+             <string>Type:</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font-weight: bold; color: #34495E;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QComboBox" name="typeComboBox">
+            <property name="styleSheet">
+             <string notr="true">QComboBox {
+    border: 2px solid #BDC3C7;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+}
+QComboBox:focus {
+    border-color: #3498DB;
+}</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>Jardin</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Salle de sport</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Salle de spectacle</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Restaurant/Café</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Hôpital</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Magasin</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Parking</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Bureau</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Appartement</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="statutLabel">
+            <property name="text">
+             <string>Statut:</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font-weight: bold; color: #34495E;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <widget class="QComboBox" name="statutComboBox">
+            <property name="styleSheet">
+             <string notr="true">QComboBox {
+    border: 2px solid #BDC3C7;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+}
+QComboBox:focus {
+    border-color: #3498DB;
+}</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>Disponible</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Occupé</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>En maintenance</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="ouvertLabel">
+            <property name="text">
+             <string>Ouvert:</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font-weight: bold; color: #34495E;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1">
+           <widget class="QComboBox" name="ouvertComboBox">
+            <property name="styleSheet">
+             <string notr="true">QComboBox {
+    border: 2px solid #BDC3C7;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+}
+QComboBox:focus {
+    border-color: #3498DB;
+}</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>Oui</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Non</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="buttonsLayout">
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="ajouterButton">
+            <property name="text">
+             <string>➕ Ajouter</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background-color: #27AE60;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #229954;
+}
+QPushButton:pressed {
+    background-color: #1E8449;
+}</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="modifierButton">
+            <property name="text">
+             <string>✏️ Modifier</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background-color: #F39C12;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #E67E22;
+}
+QPushButton:pressed {
+    background-color: #D68910;
+}</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="supprimerButton">
+            <property name="text">
+             <string>🗑️ Supprimer</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background-color: #E74C3C;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #C0392B;
+}
+QPushButton:pressed {
+    background-color: #A93226;
+}</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="consulterButton">
+            <property name="text">
+             <string>👁️ Consulter</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background-color: #3498DB;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #2980B9;
+}
+QPushButton:pressed {
+    background-color: #21618C;
+}</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="formVerticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Orientation::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="tableCard">
+       <property name="styleSheet">
+        <string notr="true">QFrame {
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px;
+}</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Shape::StyledPanel</enum>
+       </property>
+       <layout class="QVBoxLayout" name="tableLayout">
+        <property name="spacing">
+         <number>15</number>
+        </property>
+        <property name="leftMargin">
+         <number>25</number>
+        </property>
+        <property name="topMargin">
+         <number>25</number>
+        </property>
+        <property name="rightMargin">
+         <number>25</number>
+        </property>
+        <property name="bottomMargin">
+         <number>25</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="tableTitleLabel">
+          <property name="text">
+           <string>📋 Liste des Locaux</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">font-size: 18px; font-weight: bold; color: #2C3E50; margin-bottom: 10px;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="searchLayout">
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <item>
+           <widget class="QLineEdit" name="searchLineEdit">
+            <property name="styleSheet">
+             <string notr="true">QLineEdit {
+    border: 2px solid #BDC3C7;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+}
+QLineEdit:focus {
+    border-color: #3498DB;
+}</string>
+            </property>
+            <property name="placeholderText">
+             <string>🔍 Rechercher par ID, type, adresse...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="sortComboBox">
+            <property name="styleSheet">
+             <string notr="true">QComboBox {
+    border: 2px solid #BDC3C7;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+    min-width: 150px;
+}
+QComboBox:focus {
+    border-color: #3498DB;
+}</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>Trier par ID</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Trier par Statut</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="exportButton">
+            <property name="text">
+             <string>📊 Export Excel</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background-color: #9B59B6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #8E44AD;
+}
+QPushButton:pressed {
+    background-color: #7D3C98;
+}</string>
+            </property>
+            <property name="toolTip">
+             <string>Exporter un rapport comparatif sur les coûts des types de locaux.</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="locauxTableWidget">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>450</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QTableWidget {
+    border: 2px solid #E0E0E0;
+    border-radius: 10px;
+    gridline-color: #E0E0E0;
+    background-color: white;
+    alternate-background-color: #F8F9FA;
+    selection-background-color: #E3F2FD;
+    font-size: 14px;
+}
+QHeaderView::section {
+    background-color: #3498DB;
+    color: white;
+    padding: 15px;
+    border: none;
+    font-weight: bold;
+    font-size: 15px;
+}
+QTableWidget::item {
+    padding: 12px;
+    border-bottom: 1px solid #E0E0E0;
+    font-size: 14px;
+}
+QTableWidget::item:selected {
+    background-color: #E3F2FD;
+    color: #1976D2;
+}</string>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+          </property>
+          <property name="sortingEnabled">
+           <bool>true</bool>
+          </property>
+          <column>
+           <property name="text">
+            <string>🆔 ID</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>🏢 Nom</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>🏷️ Type</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>👥 Capacité</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>📐 Superficie</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>📍 Adresse</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>📊 Statut</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>🕐 Ouvert</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="bottomRowLayout">
+     <property name="spacing">
+      <number>20</number>
+     </property>
+     <item>
+      <widget class="QFrame" name="statsCard">
+       <property name="styleSheet">
+        <string notr="true">QFrame {
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px;
+}</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Shape::StyledPanel</enum>
+       </property>
+       <layout class="QVBoxLayout" name="statsLayout">
+        <property name="spacing">
+         <number>15</number>
+        </property>
+        <property name="leftMargin">
+         <number>25</number>
+        </property>
+        <property name="topMargin">
+         <number>25</number>
+        </property>
+        <property name="rightMargin">
+         <number>25</number>
+        </property>
+        <property name="bottomMargin">
+         <number>25</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="statsTitleLabel">
+          <property name="text">
+           <string>📊 Statistiques des Locaux</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">font-size: 18px; font-weight: bold; color: #2C3E50; margin-bottom: 10px;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="statsDescriptionLabel">
+          <property name="text">
+           <string>Visualiser l'état actuel des locaux (disponibles, occupés, en maintenance).</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">font-size: 14px; color: #7F8C8D; margin-bottom: 15px;</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="statsContainer" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>300</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: #F8F9FA; border-radius: 10px; border: 1px solid #E0E0E0;</string>
+          </property>
+          <layout class="QGridLayout" name="statsGridLayout">
+           <property name="spacing">
+            <number>15</number>
+           </property>
+           <property name="leftMargin">
+            <number>20</number>
+           </property>
+           <property name="topMargin">
+            <number>20</number>
+           </property>
+           <property name="rightMargin">
+            <number>20</number>
+           </property>
+           <property name="bottomMargin">
+            <number>20</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QLabel" name="statDisponible">
+             <property name="text">
+              <string>✅ Disponibles
+3 locaux</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: #D5F4E6; color: #27AE60; padding: 20px; border-radius: 10px; font-size: 16px; font-weight: bold; text-align: center;</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLabel" name="statOccupe">
+             <property name="text">
+              <string>🔶 Occupés
+2 locaux</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: #FCF3CF; color: #F39C12; padding: 20px; border-radius: 10px; font-size: 16px; font-weight: bold; text-align: center;</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="statMaintenance">
+             <property name="text">
+              <string>🔧 En maintenance
+1 local</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: #FADBD8; color: #E74C3C; padding: 20px; border-radius: 10px; font-size: 16px; font-weight: bold; text-align: center;</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLabel" name="statTotal">
+             <property name="text">
+              <string>🏢 Total
+6 locaux</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: #EBF3FD; color: #3498DB; padding: 20px; border-radius: 10px; font-size: 16px; font-weight: bold; text-align: center;</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="innovationCard">
+       <property name="styleSheet">
+        <string notr="true">QFrame {
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px;
+}</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Shape::StyledPanel</enum>
+       </property>
+       <layout class="QVBoxLayout" name="innovationLayout">
+        <property name="spacing">
+         <number>15</number>
+        </property>
+        <property name="leftMargin">
+         <number>25</number>
+        </property>
+        <property name="topMargin">
+         <number>25</number>
+        </property>
+        <property name="rightMargin">
+         <number>25</number>
+        </property>
+        <property name="bottomMargin">
+         <number>25</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="innovationTitleLabel">
+          <property name="text">
+           <string>💡 Notifications automatiques</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">font-size: 18px; font-weight: bold; color: #2C3E50; margin-bottom: 10px;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="innovationDescriptionLabel">
+          <property name="text">
+           <string>Alertes en cas de maintenance ou réservation.</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">font-size: 14px; color: #7F8C8D; margin-bottom: 15px;</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextEdit" name="notificationsTextEdit">
+          <property name="styleSheet">
+           <string notr="true">QTextEdit {
+    border: 2px solid #E8E8E8;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #FAFAFA;
+    font-size: 14px;
+}
+QTextEdit:focus {
+    border-color: #3498DB;
+}</string>
+          </property>
+          <property name="html">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:14px; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#2c3e50;&quot;&gt;🔔 Notifications récentes&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#e74c3c; font-weight:600;&quot;&gt;🔧 Maintenance programmée&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#7f8c8d;&quot;&gt;Théâtre Municipal - Maintenance du système de climatisation prévue demain&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#27ae60; font-weight:600;&quot;&gt;✅ Local disponible&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#7f8c8d;&quot;&gt;Jardin Central - Désormais disponible pour réservations&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#f39c12; font-weight:600;&quot;&gt;📋 Nouvelle réservation&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#7f8c8d;&quot;&gt;Salle Sport Alpha - Réservée pour événement sportif le 15 octobre&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#3498db; font-weight:600;&quot;&gt;📊 Rapport mensuel&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#7f8c8d;&quot;&gt;Taux d'occupation des locaux: 85% ce mois-ci&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="innovationVerticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Orientation::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
