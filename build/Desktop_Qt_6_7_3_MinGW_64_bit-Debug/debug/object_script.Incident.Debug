@@ -1,0 +1,10 @@
+debug/main.o
+debug/incidentspage.o
+debug/incidentdialog.o
+debug/databasemanager.o
+debug/connection.o
+debug/mainwindow.o
+debug/moc_incidentspage.o
+debug/moc_incidentdialog.o
+debug/moc_databasemanager.o
+debug/moc_mainwindow.o

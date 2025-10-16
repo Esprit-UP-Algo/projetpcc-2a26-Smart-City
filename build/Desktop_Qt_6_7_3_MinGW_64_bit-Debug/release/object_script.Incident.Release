@@ -1,0 +1,10 @@
+release/main.o
+release/incidentspage.o
+release/incidentdialog.o
+release/databasemanager.o
+release/connection.o
+release/mainwindow.o
+release/moc_incidentspage.o
+release/moc_incidentdialog.o
+release/moc_databasemanager.o
+release/moc_mainwindow.o
