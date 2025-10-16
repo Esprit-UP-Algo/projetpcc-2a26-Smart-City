@@ -2,12 +2,11 @@
 #define RESIDENTDIALOG_H
 
 #include <QDialog>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QSpinBox>
-#include <QDateEdit>
-#include <QPushButton>
 #include <QVariantMap>
+
+QT_BEGIN_NAMESPACE
+namespace Ui { class ResidentDialog; }
+QT_END_NAMESPACE
 
 class ResidentDialog : public QDialog
 {
@@ -16,34 +15,20 @@ class ResidentDialog : public QDialog
 public:
     explicit ResidentDialog(QWidget *parent = nullptr, const QVariantMap &residentData = QVariantMap());
     ~ResidentDialog();
-    
+
     QVariantMap getResidentData() const;
     bool isEditMode() const { return editMode; }
 
 private slots:
     void onSaveClicked();
-    void onCancelClicked();
+    void validateInput();
 
 private:
-    void setupUI();
+    Ui::ResidentDialog *ui;
+    void setupValidation();
+    void setupConnections();
     void loadResidentData(const QVariantMap &data);
-    bool validateForm();
-    
-    // Form fields
-    QLineEdit *cinEdit;
-    QLineEdit *nomEdit;
-    QLineEdit *prenomEdit;
-    QComboBox *sexeCombo;
-    QLineEdit *telephoneEdit;
-    QLineEdit *emailEdit;
-    QLineEdit *appartementEdit;
-    QSpinBox *etageSpinBox;
-    QComboBox *statutCombo;
-    QDateEdit *dateEntreeEdit;
-    
-    QPushButton *saveButton;
-    QPushButton *cancelButton;
-    
+
     bool editMode;
     QVariantMap residentData;
 };

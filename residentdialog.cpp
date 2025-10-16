@@ -1,307 +1,209 @@
 #include "residentdialog.h"
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QFormLayout>
-#include <QLabel>
+#include "ui_residentdialog.h"
 #include <QMessageBox>
+#include <QDate>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
-#include <QDate>
 
-ResidentDialog::ResidentDialog(QWidget *parent, const QVariantMap &data)
-    : QDialog(parent), editMode(!data.isEmpty())
+ResidentDialog::ResidentDialog(QWidget *parent, const QVariantMap &residentData)
+    : QDialog(parent), ui(new Ui::ResidentDialog), editMode(!residentData.isEmpty()), residentData(residentData)
 {
-    setupUI();
-    
+    ui->setupUi(this);
+    setupValidation();
+    setupConnections();
     if (editMode) {
-        loadResidentData(data);
-        cinEdit->setReadOnly(true); // CIN cannot be changed in edit mode
-        setWindowTitle("Modifier Résident");
+        loadResidentData(residentData);
+        ui->titleLabel->setText("✏️ Modifier un Résident");
     } else {
-        setWindowTitle("Ajouter Résident");
+        ui->titleLabel->setText("👤 Ajouter un Résident");
+        ui->dateEntreeEdit->setDate(QDate::currentDate());
     }
-    
-    setModal(true);
-    resize(600, 500);
 }
 
-ResidentDialog::~ResidentDialog()
+ResidentDialog::~ResidentDialog() 
 {
+    delete ui;
 }
 
-void ResidentDialog::setupUI()
+void ResidentDialog::setupValidation()
 {
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    mainLayout->setSpacing(20);
-    mainLayout->setContentsMargins(30, 30, 30, 30);
+    // Setup validators for input fields
+    QRegularExpression cinRegex("[0-9]{8}");
+    QRegularExpressionValidator *cinValidator = new QRegularExpressionValidator(cinRegex, this);
+    ui->cinEdit->setValidator(cinValidator);
     
-    // Title
-    QLabel *titleLabel = new QLabel(editMode ? "Modifier Résident" : "Ajouter Résident");
-    titleLabel->setStyleSheet(R"(
-        QLabel {
-            font-size: 24px;
-            font-weight: bold;
-            color: #4A90E2;
-            padding-bottom: 10px;
-        }
-    )");
-    mainLayout->addWidget(titleLabel);
+    QRegularExpression nameRegex("[A-Za-zÀ-ÿ\\s]{2,30}");
+    QRegularExpressionValidator *nameValidator = new QRegularExpressionValidator(nameRegex, this);
+    ui->nomEdit->setValidator(nameValidator);
+    ui->prenomEdit->setValidator(nameValidator);
     
-    // Form layout
-    QFormLayout *formLayout = new QFormLayout();
-    formLayout->setSpacing(15);
-    formLayout->setLabelAlignment(Qt::AlignRight);
+    QRegularExpression phoneRegex("[+]?[0-9\\s-]{8,15}");
+    QRegularExpressionValidator *phoneValidator = new QRegularExpressionValidator(phoneRegex, this);
+    ui->telephoneEdit->setValidator(phoneValidator);
     
-    // CIN
-    cinEdit = new QLineEdit();
-    cinEdit->setPlaceholderText("Ex: 12345678");
-    cinEdit->setStyleSheet(R"(
-        QLineEdit {
-            padding: 10px;
-            border: 2px solid #E0E0E0;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-        QLineEdit:focus {
-            border: 2px solid #4A90E2;
-        }
-    )");
-    formLayout->addRow("CIN *:", cinEdit);
+    QRegularExpression emailRegex("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}");
+    QRegularExpressionValidator *emailValidator = new QRegularExpressionValidator(emailRegex, this);
+    ui->emailEdit->setValidator(emailValidator);
     
-    // Nom
-    nomEdit = new QLineEdit();
-    nomEdit->setPlaceholderText("Nom de famille");
-    nomEdit->setStyleSheet(cinEdit->styleSheet());
-    formLayout->addRow("Nom *:", nomEdit);
+    QRegularExpression appartementRegex("[A-Za-z0-9]{1,10}");
+    QRegularExpressionValidator *appartementValidator = new QRegularExpressionValidator(appartementRegex, this);
+    ui->appartementEdit->setValidator(appartementValidator);
     
-    // Prénom
-    prenomEdit = new QLineEdit();
-    prenomEdit->setPlaceholderText("Prénom");
-    prenomEdit->setStyleSheet(cinEdit->styleSheet());
-    formLayout->addRow("Prénom *:", prenomEdit);
-    
-    // Sexe
-    sexeCombo = new QComboBox();
-    sexeCombo->addItems({"Homme", "Femme"});
-    sexeCombo->setStyleSheet(R"(
-        QComboBox {
-            padding: 10px;
-            border: 2px solid #E0E0E0;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-        QComboBox:focus {
-            border: 2px solid #4A90E2;
-        }
-        QComboBox::drop-down {
-            border: none;
-        }
-    )");
-    formLayout->addRow("Sexe *:", sexeCombo);
-    
-    // Téléphone
-    telephoneEdit = new QLineEdit();
-    telephoneEdit->setPlaceholderText("+216 XX XXX XXX");
-    telephoneEdit->setStyleSheet(cinEdit->styleSheet());
-    formLayout->addRow("Téléphone *:", telephoneEdit);
-    
-    // Email
-    emailEdit = new QLineEdit();
-    emailEdit->setPlaceholderText("exemple@email.com");
-    emailEdit->setStyleSheet(cinEdit->styleSheet());
-    formLayout->addRow("Email *:", emailEdit);
-    
-    // Appartement
-    appartementEdit = new QLineEdit();
-    appartementEdit->setPlaceholderText("Ex: A101");
-    appartementEdit->setStyleSheet(cinEdit->styleSheet());
-    formLayout->addRow("Appartement *:", appartementEdit);
-    
-    // Étage
-    etageSpinBox = new QSpinBox();
-    etageSpinBox->setRange(-1, 20); // -1 for basement
-    etageSpinBox->setValue(0);
-    etageSpinBox->setPrefix("Étage ");
-    etageSpinBox->setStyleSheet(R"(
-        QSpinBox {
-            padding: 10px;
-            border: 2px solid #E0E0E0;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-        QSpinBox:focus {
-            border: 2px solid #4A90E2;
-        }
-    )");
-    formLayout->addRow("Étage *:", etageSpinBox);
-    
-    // Statut
-    statutCombo = new QComboBox();
-    statutCombo->addItems({"Locataire", "Proprietaire"});
-    statutCombo->setStyleSheet(sexeCombo->styleSheet());
-    formLayout->addRow("Statut *:", statutCombo);
-    
-    // Date d'entrée
-    dateEntreeEdit = new QDateEdit();
-    dateEntreeEdit->setDate(QDate::currentDate());
-    dateEntreeEdit->setCalendarPopup(true);
-    dateEntreeEdit->setDisplayFormat("dd/MM/yyyy");
-    dateEntreeEdit->setStyleSheet(R"(
-        QDateEdit {
-            padding: 10px;
-            border: 2px solid #E0E0E0;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-        QDateEdit:focus {
-            border: 2px solid #4A90E2;
-        }
-    )");
-    formLayout->addRow("Date d'entrée *:", dateEntreeEdit);
-    
-    mainLayout->addLayout(formLayout);
-    
-    // Required fields note
-    QLabel *noteLabel = new QLabel("* Champs obligatoires");
-    noteLabel->setStyleSheet("QLabel { color: #E74C3C; font-size: 12px; font-style: italic; }");
-    mainLayout->addWidget(noteLabel);
-    
-    // Buttons
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
-    buttonLayout->addStretch();
-    
-    cancelButton = new QPushButton("Annuler");
-    cancelButton->setStyleSheet(R"(
-        QPushButton {
-            background-color: #E0E0E0;
-            color: #333;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 30px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        QPushButton:hover {
-            background-color: #C0C0C0;
-        }
-    )");
-    connect(cancelButton, &QPushButton::clicked, this, &ResidentDialog::onCancelClicked);
-    buttonLayout->addWidget(cancelButton);
-    
-    saveButton = new QPushButton(editMode ? "Enregistrer" : "Ajouter");
-    saveButton->setStyleSheet(R"(
-        QPushButton {
-            background-color: #4A90E2;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 30px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        QPushButton:hover {
-            background-color: #3A80D2;
-        }
-    )");
-    connect(saveButton, &QPushButton::clicked, this, &ResidentDialog::onSaveClicked);
-    buttonLayout->addWidget(saveButton);
-    
-    mainLayout->addLayout(buttonLayout);
-    
-    setStyleSheet("QDialog { background-color: white; }");
+    // Set date range
+    ui->dateEntreeEdit->setDateRange(QDate(2020, 1, 1), QDate::currentDate().addYears(1));
 }
 
-void ResidentDialog::loadResidentData(const QVariantMap &data)
+void ResidentDialog::setupConnections()
 {
-    cinEdit->setText(data["cin"].toString());
-    nomEdit->setText(data["nom"].toString());
-    prenomEdit->setText(data["prenom"].toString());
-    sexeCombo->setCurrentText(data["sexe"].toString());
-    telephoneEdit->setText(data["telephone"].toString());
-    emailEdit->setText(data["email"].toString());
-    appartementEdit->setText(data["appartement"].toString());
-    etageSpinBox->setValue(data["etage"].toInt());
-    statutCombo->setCurrentText(data["statut"].toString());
-    dateEntreeEdit->setDate(QDate::fromString(data["date_entree"].toString(), "yyyy-MM-dd"));
+    // Connect validation events
+    connect(ui->cinEdit, &QLineEdit::textChanged, this, &ResidentDialog::validateInput);
+    connect(ui->nomEdit, &QLineEdit::textChanged, this, &ResidentDialog::validateInput);
+    connect(ui->prenomEdit, &QLineEdit::textChanged, this, &ResidentDialog::validateInput);
+    connect(ui->sexeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ResidentDialog::validateInput);
+    connect(ui->appartementEdit, &QLineEdit::textChanged, this, &ResidentDialog::validateInput);
+    
+    // Connect save button to validation check
+    connect(ui->saveButton, &QPushButton::clicked, this, &ResidentDialog::onSaveClicked);
 }
 
-bool ResidentDialog::validateForm()
+void ResidentDialog::validateInput()
 {
-    // Check required fields
-    if (cinEdit->text().trimmed().isEmpty()) {
-        QMessageBox::warning(this, "Validation", "Le CIN est obligatoire.");
-        cinEdit->setFocus();
-        return false;
+    bool isValid = true;
+    
+    // Validate required fields
+    if (ui->cinEdit->text().length() != 8) {
+        ui->cinEdit->setStyleSheet("border: 2px solid #EF4444; border-radius: 8px; padding: 12px; font-size: 14px; background-color: #FEF2F2;");
+        isValid = false;
+    } else {
+        ui->cinEdit->setStyleSheet("border: 2px solid #10B981; border-radius: 8px; padding: 12px; font-size: 14px; background-color: #F0FDF4;");
     }
     
-    if (nomEdit->text().trimmed().isEmpty()) {
-        QMessageBox::warning(this, "Validation", "Le nom est obligatoire.");
-        nomEdit->setFocus();
-        return false;
+    if (ui->nomEdit->text().trimmed().isEmpty()) {
+        ui->nomEdit->setStyleSheet("border: 2px solid #EF4444; border-radius: 8px; padding: 12px; font-size: 14px; background-color: #FEF2F2;");
+        isValid = false;
+    } else {
+        ui->nomEdit->setStyleSheet("border: 2px solid #10B981; border-radius: 8px; padding: 12px; font-size: 14px; background-color: #F0FDF4;");
     }
     
-    if (prenomEdit->text().trimmed().isEmpty()) {
-        QMessageBox::warning(this, "Validation", "Le prénom est obligatoire.");
-        prenomEdit->setFocus();
-        return false;
+    if (ui->prenomEdit->text().trimmed().isEmpty()) {
+        ui->prenomEdit->setStyleSheet("border: 2px solid #EF4444; border-radius: 8px; padding: 12px; font-size: 14px; background-color: #FEF2F2;");
+        isValid = false;
+    } else {
+        ui->prenomEdit->setStyleSheet("border: 2px solid #10B981; border-radius: 8px; padding: 12px; font-size: 14px; background-color: #F0FDF4;");
     }
     
-    if (telephoneEdit->text().trimmed().isEmpty()) {
-        QMessageBox::warning(this, "Validation", "Le téléphone est obligatoire.");
-        telephoneEdit->setFocus();
-        return false;
+    if (ui->sexeCombo->currentIndex() == 0) {
+        ui->sexeCombo->setStyleSheet("border: 2px solid #EF4444; border-radius: 8px; padding: 12px; font-size: 14px; background-color: #FEF2F2;");
+        isValid = false;
+    } else {
+        ui->sexeCombo->setStyleSheet("border: 2px solid #10B981; border-radius: 8px; padding: 12px; font-size: 14px; background-color: #F0FDF4;");
     }
     
-    if (emailEdit->text().trimmed().isEmpty()) {
-        QMessageBox::warning(this, "Validation", "L'email est obligatoire.");
-        emailEdit->setFocus();
-        return false;
+    if (ui->appartementEdit->text().trimmed().isEmpty()) {
+        ui->appartementEdit->setStyleSheet("border: 2px solid #EF4444; border-radius: 8px; padding: 12px; font-size: 14px; background-color: #FEF2F2;");
+        isValid = false;
+    } else {
+        ui->appartementEdit->setStyleSheet("border: 2px solid #10B981; border-radius: 8px; padding: 12px; font-size: 14px; background-color: #F0FDF4;");
     }
     
-    // Validate email format
-    QRegularExpression emailRegex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
-    if (!emailRegex.match(emailEdit->text().trimmed()).hasMatch()) {
-        QMessageBox::warning(this, "Validation", "Format d'email invalide.");
-        emailEdit->setFocus();
-        return false;
+    // Enable/disable save button
+    ui->saveButton->setEnabled(isValid);
+    if (isValid) {
+        ui->saveButton->setStyleSheet("background-color: #3168E0; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 14px; padding: 12px 25px;");
+    } else {
+        ui->saveButton->setStyleSheet("background-color: #9CA3AF; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 14px; padding: 12px 25px;");
     }
-    
-    if (appartementEdit->text().trimmed().isEmpty()) {
-        QMessageBox::warning(this, "Validation", "L'appartement est obligatoire.");
-        appartementEdit->setFocus();
-        return false;
-    }
-    
-    return true;
 }
 
 void ResidentDialog::onSaveClicked()
 {
-    if (!validateForm()) {
+    // Final validation before save
+    if (ui->cinEdit->text().length() != 8) {
+        QMessageBox::warning(this, "Validation", "Le CIN doit contenir exactement 8 chiffres.");
+        ui->cinEdit->setFocus();
         return;
     }
     
-    residentData.clear();
-    residentData["cin"] = cinEdit->text().trimmed();
-    residentData["nom"] = nomEdit->text().trimmed();
-    residentData["prenom"] = prenomEdit->text().trimmed();
-    residentData["sexe"] = sexeCombo->currentText();
-    residentData["telephone"] = telephoneEdit->text().trimmed();
-    residentData["email"] = emailEdit->text().trimmed();
-    residentData["appartement"] = appartementEdit->text().trimmed();
-    residentData["etage"] = etageSpinBox->value();
-    residentData["statut"] = statutCombo->currentText();
-    residentData["date_entree"] = dateEntreeEdit->date().toString("yyyy-MM-dd");
+    if (ui->nomEdit->text().trimmed().isEmpty()) {
+        QMessageBox::warning(this, "Validation", "Le nom est obligatoire.");
+        ui->nomEdit->setFocus();
+        return;
+    }
     
-    accept();
+    if (ui->prenomEdit->text().trimmed().isEmpty()) {
+        QMessageBox::warning(this, "Validation", "Le prénom est obligatoire.");
+        ui->prenomEdit->setFocus();
+        return;
+    }
+    
+    if (ui->sexeCombo->currentIndex() == 0) {
+        QMessageBox::warning(this, "Validation", "Veuillez sélectionner le sexe.");
+        ui->sexeCombo->setFocus();
+        return;
+    }
+    
+    if (ui->appartementEdit->text().trimmed().isEmpty()) {
+        QMessageBox::warning(this, "Validation", "L'appartement est obligatoire.");
+        ui->appartementEdit->setFocus();
+        return;
+    }
+    
+    // Validate email if provided
+    if (!ui->emailEdit->text().trimmed().isEmpty()) {
+        QRegularExpression emailRegex("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}");
+        if (!emailRegex.match(ui->emailEdit->text()).hasMatch()) {
+            QMessageBox::warning(this, "Validation", "Format d'email invalide.");
+            ui->emailEdit->setFocus();
+            return;
+        }
+    }
+    
+    accept(); // Close dialog with accept
 }
 
-void ResidentDialog::onCancelClicked()
+void ResidentDialog::loadResidentData(const QVariantMap &data)
 {
-    reject();
+    ui->cinEdit->setText(data.value("cin").toString());
+    ui->nomEdit->setText(data.value("nom").toString());
+    ui->prenomEdit->setText(data.value("prenom").toString());
+    
+    // Set sexe
+    if (data.value("sexe").toString() == "M") {
+        ui->sexeCombo->setCurrentIndex(1);
+    } else if (data.value("sexe").toString() == "F") {
+        ui->sexeCombo->setCurrentIndex(2);
+    }
+    
+    ui->telephoneEdit->setText(data.value("telephone").toString());
+    ui->emailEdit->setText(data.value("email").toString());
+    ui->appartementEdit->setText(data.value("appartement").toString());
+    ui->etageSpinBox->setValue(data.value("etage").toInt());
+    ui->dateEntreeEdit->setDate(QDate::fromString(data.value("date_entree").toString(), "yyyy-MM-dd"));
+    
+    // Trigger validation
+    validateInput();
 }
 
 QVariantMap ResidentDialog::getResidentData() const
 {
-    return residentData;
+    QVariantMap data;
+    data["cin"] = ui->cinEdit->text();
+    data["nom"] = ui->nomEdit->text().trimmed();
+    data["prenom"] = ui->prenomEdit->text().trimmed();
+    
+    // Get sexe value
+    if (ui->sexeCombo->currentIndex() == 1) {
+        data["sexe"] = "M";
+    } else if (ui->sexeCombo->currentIndex() == 2) {
+        data["sexe"] = "F";
+    }
+    
+    data["telephone"] = ui->telephoneEdit->text();
+    data["email"] = ui->emailEdit->text();
+    data["appartement"] = ui->appartementEdit->text();
+    data["etage"] = ui->etageSpinBox->value();
+    data["statut"] = "Actif"; // Default status
+    data["date_entree"] = ui->dateEntreeEdit->date().toString("yyyy-MM-dd");
+    
+    return data;
 }

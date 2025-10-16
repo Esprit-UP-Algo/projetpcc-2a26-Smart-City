@@ -31,7 +31,17 @@ private:
     void setupConnections();
     void setupTable();
     void setupInitialData();
+    void loadResidents();
+    void updateStatistics();
+    void updateMetiersAvances();
     void updateSatisfactionScore();
+    void setupMetiersTooltips();
+    int calculateNewResidentsThisMonth();
+    double calculateSatisfactionScore();
+    int calculateLongTermResidents();
+    int calculateBehavioralScore();
+    int calculateContractsExpiring();
+    int calculateActiveIncidents();
     void addResidentToTable(const QVariantMap &residentData);
     QVariantMap getResidentDataFromRow(int row);
     void updateTableRow(int row, const QVariantMap &residentData);
