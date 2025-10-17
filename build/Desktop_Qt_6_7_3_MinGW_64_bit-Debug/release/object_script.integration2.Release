@@ -1,3 +1,4 @@
+release/connection.o
 release/dashboardwindow.o
 release/databasemanager.o
 release/financespage.o

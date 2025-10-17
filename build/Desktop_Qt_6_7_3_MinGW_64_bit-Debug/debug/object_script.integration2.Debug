@@ -1,3 +1,4 @@
+debug/connection.o
 debug/dashboardwindow.o
 debug/databasemanager.o
 debug/financespage.o
