@@ -1,0 +1,13 @@
+build/
+debug/
+release/
+*.pro.user
+*.user
+*.qrc.dep
+*.exe
+*.dll
+*.obj
+*.o
+*.log
+*.cache
+*.zip
