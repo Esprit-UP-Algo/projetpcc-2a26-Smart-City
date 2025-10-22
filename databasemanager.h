@@ -3,24 +3,19 @@
 
 #include <QObject>
 #include <QSqlDatabase>
-#include <QList>
 #include <QVariantMap>
+#include <QList>
 
 class DatabaseManager : public QObject
 {
     Q_OBJECT
 public:
-    // Singleton access
-    static DatabaseManager& instance()
-    {
-        static DatabaseManager instance;
-        return instance;
-    }
+    explicit DatabaseManager(QObject *parent = nullptr);
+    static DatabaseManager& instance(); // singleton
 
-    // Connection getter
     QSqlDatabase database() const;
 
-    // ----------- Residents ----------
+    // -------------------- Residents --------------------
     bool addResident(const QVariantMap &data);
     bool updateResident(const QString &cin, const QVariantMap &data);
     bool deleteResident(const QString &cin);
@@ -29,30 +24,31 @@ public:
     QList<QVariantMap> searchResidents(const QString &term);
     QVariantMap getStatistics();
 
-    // ----------- Transactions ----------
+    // -------------------- Transactions --------------------
     bool addTransaction(const QVariantMap &data);
     bool updateTransaction(const QString &code, const QVariantMap &data);
     bool deleteTransaction(const QString &code);
     QList<QVariantMap> getAllTransactions();
     QVariantMap getTransaction(const QString &code);
     QList<QVariantMap> searchTransactions(const QString &term);
-    QVariantMap getFinancialStatistics(int year, int month);
-    QVariantMap getMonthlyEvolution(int year);
-    double getTotalRevenue(int year, int month);
-    double getTotalExpenses(int year, int month);
+    QVariantMap getFinancialStatistics(int month, int year);
+    QVariantMap getMonthlyEvolution(int month);
+    double getTotalRevenue(int month, int year);
+    double getTotalExpenses(int month, int year);
 
-    // ----------- Incidents ----------
+    // -------------------- Incidents --------------------
     bool addIncident(const QVariantMap &data);
+    bool updateIncident(int id, const QVariantMap &data);
+    bool deleteIncident(int id);
+    QList<QVariantMap> getAllIncidents();
+    QVariantMap getIncident(int id);
 
-    // ----------- Vehicles ----------
+    // -------------------- Vehicles --------------------
     bool addVehicule(const QVariantMap &data);
 
 private:
-    explicit DatabaseManager(QObject *parent = nullptr);
-    DatabaseManager(const DatabaseManager&) = delete;
-    DatabaseManager& operator=(const DatabaseManager&) = delete;
-
     void ensureSchema();
+    QSqlDatabase m_db;
 };
 
 #endif // DATABASEMANAGER_H

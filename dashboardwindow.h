@@ -39,6 +39,7 @@ private slots:
     void on_exitButton_clicked();
     void on_searchLineEdit_returnPressed();
 
+
 private:
     Ui::DashboardWindow *ui;
     QGraphicsOpacityEffect *contentOpacity;
@@ -49,7 +50,7 @@ private:
     TransportsPage *transportsPage;
     LocauxPage *locauxPage;
     SettingsPage *settingsPage;
-    
+
     void animatePageTransition(const QString &newTitle);
     void setupPages();
 };

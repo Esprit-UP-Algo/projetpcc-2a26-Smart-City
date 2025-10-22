@@ -25,11 +25,11 @@ private slots:
 
 private:
     Ui::IncidentsPage *ui;
-    
-    void loadIncidents();
+
+    void setupTable();
+    void loadIncidents(const QString &term = QString());
     void refreshStatistics();
     void refreshDashboard();
-    void setupTable();
     void setupChart();
 };
 

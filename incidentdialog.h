@@ -17,20 +17,27 @@ public:
     explicit IncidentDialog(const QVariantMap &incidentData, QWidget *parent = nullptr);
     ~IncidentDialog();
 
-    QVariantMap getIncidentData() const;
+    QVariantMap getIncidentData();
+
+    // Méthodes CRUD Oracle
+    bool connecterOracle();
+    void creerTableIncident();
+    bool insererIncidentOracle();
+    bool modifierIncidentOracle(int id);
+    bool supprimerIncidentOracle(int id);
+    QList<QVariantMap> listerIncidentsOracle();
+    
+    // Méthodes Fallback SQLite
+    bool connecterSQLite();
+    bool insererIncidentSQLite();
+    QList<QVariantMap> listerIncidentsSQLite();
 
 private slots:
     void on_saveButton_clicked();
-    void on_cancelButton_clicked();
 
 private:
     Ui::IncidentDialog *ui;
-    bool editMode;
-    int incidentId;
-
-    void setupDialog();
-    void loadIncidentData(const QVariantMap &data);
-    bool validateInput();
+    bool validateForm();
 };
 
 #endif // INCIDENTDIALOG_H

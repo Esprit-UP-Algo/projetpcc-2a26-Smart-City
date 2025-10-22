@@ -1,4 +1,6 @@
 QT += core gui widgets sql charts printsupport
+QT += core gui sql
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -9,6 +11,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    connection.cpp \
     dashboardwindow.cpp \
     databasemanager.cpp \
     financespage.cpp \
@@ -24,8 +27,10 @@ SOURCES += \
     transactiondialog.cpp \
     transportspage.cpp \
     welcomedialog.cpp
+    connection.cpp
 
 HEADERS += \
+    connection.h \
     dashboardwindow.h \
     databasemanager.h \
     financespage.h \
@@ -40,6 +45,7 @@ HEADERS += \
     transactiondialog.h \
     transportspage.h \
     welcomedialog.h
+    connection.h
 
 FORMS += \
     dashboardwindow.ui \

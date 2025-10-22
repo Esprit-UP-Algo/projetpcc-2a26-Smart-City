@@ -1,246 +1,53 @@
 #include "databasemanager.h"
-#include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
 
 DatabaseManager::DatabaseManager(QObject *parent) : QObject(parent)
 {
-    // In-memory DB (temporary only)
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(":memory:");
-
-    if (!db.open()) {
-        qWarning() << "[DB] Failed to open in-memory DB:" << db.lastError().text();
+    m_db = QSqlDatabase::addDatabase("QSQLITE");
+    m_db.setDatabaseName(":memory:");
+    if (!m_db.open()) {
+        qWarning() << "[DB] Failed to open in-memory DB:" << m_db.lastError().text();
         return;
     }
-
     qInfo() << "[DB] In-memory database opened successfully.";
     ensureSchema();
 }
 
-void DatabaseManager::ensureSchema()
+DatabaseManager& DatabaseManager::instance()
 {
-    QSqlQuery q;
-
-    q.exec("CREATE TABLE residents (cin TEXT, nom TEXT, prenom TEXT, appartement TEXT, statut TEXT)");
-    q.exec("CREATE TABLE transactions (code TEXT, date TEXT, type TEXT, montant REAL, description TEXT)");
-    q.exec("CREATE TABLE incidents (id INTEGER PRIMARY KEY AUTOINCREMENT, categorie TEXT, description TEXT, etat TEXT, date TEXT)");
-    q.exec("CREATE TABLE vehicules (id INTEGER PRIMARY KEY AUTOINCREMENT, matricule TEXT, type TEXT, proprietaire TEXT, capacite INTEGER, zone TEXT, horaire TEXT, statut TEXT, date TEXT, temps_utilise REAL)");
-
-    if (q.lastError().isValid())
-        qWarning() << "[DB] Schema warning:" << q.lastError().text();
+    static DatabaseManager inst;
+    return inst;
 }
 
-QSqlDatabase DatabaseManager::database() const
-{
-    return QSqlDatabase::database();
-}
+QSqlDatabase DatabaseManager::database() const { return m_db; }
 
 // -------------------- Residents --------------------
-bool DatabaseManager::addResident(const QVariantMap &data)
-{
-    QSqlQuery q;
-    q.prepare("INSERT INTO residents (cin, nom, prenom, appartement, statut) VALUES (?, ?, ?, ?, ?)");
-    q.addBindValue(data.value("cin"));
-    q.addBindValue(data.value("nom"));
-    q.addBindValue(data.value("prenom"));
-    q.addBindValue(data.value("appartement"));
-    q.addBindValue(data.value("statut"));
-    return q.exec();
-}
-
-bool DatabaseManager::updateResident(const QString &cin, const QVariantMap &data)
-{
-    QSqlQuery q;
-    q.prepare("UPDATE residents SET nom=?, prenom=?, appartement=?, statut=? WHERE cin=?");
-    q.addBindValue(data.value("nom"));
-    q.addBindValue(data.value("prenom"));
-    q.addBindValue(data.value("appartement"));
-    q.addBindValue(data.value("statut"));
-    q.addBindValue(cin);
-    return q.exec();
-}
-
-bool DatabaseManager::deleteResident(const QString &cin)
-{
-    QSqlQuery q;
-    q.prepare("DELETE FROM residents WHERE cin=?");
-    q.addBindValue(cin);
-    return q.exec();
-}
-
-QList<QVariantMap> DatabaseManager::getAllResidents()
-{
-    QList<QVariantMap> list;
-    QSqlQuery q("SELECT * FROM residents");
-    while (q.next()) {
-        QVariantMap m;
-        m["cin"] = q.value("cin");
-        m["nom"] = q.value("nom");
-        m["prenom"] = q.value("prenom");
-        m["appartement"] = q.value("appartement");
-        m["statut"] = q.value("statut");
-        list << m;
-    }
-    return list;
-}
-
-QVariantMap DatabaseManager::getResident(const QString &cin)
-{
-    QVariantMap m;
-    QSqlQuery q;
-    q.prepare("SELECT * FROM residents WHERE cin=?");
-    q.addBindValue(cin);
-    if (q.exec() && q.next()) {
-        m["cin"] = q.value("cin");
-        m["nom"] = q.value("nom");
-        m["prenom"] = q.value("prenom");
-        m["appartement"] = q.value("appartement");
-        m["statut"] = q.value("statut");
-    }
-    return m;
-}
-
-QList<QVariantMap> DatabaseManager::searchResidents(const QString &term)
-{
-    QList<QVariantMap> list;
-    QSqlQuery q;
-    q.prepare("SELECT * FROM residents WHERE nom LIKE ? OR prenom LIKE ?");
-    q.addBindValue("%" + term + "%");
-    q.addBindValue("%" + term + "%");
-    if (q.exec()) {
-        while (q.next()) {
-            QVariantMap m;
-            m["cin"] = q.value("cin");
-            m["nom"] = q.value("nom");
-            m["prenom"] = q.value("prenom");
-            m["appartement"] = q.value("appartement");
-            m["statut"] = q.value("statut");
-            list << m;
-        }
-    }
-    return list;
-}
-
-QVariantMap DatabaseManager::getStatistics()
-{
-    QVariantMap stats;
-    QSqlQuery q("SELECT COUNT(*) FROM residents");
-    if (q.next()) stats["total"] = q.value(0).toInt();
-    return stats;
-}
+bool DatabaseManager::addResident(const QVariantMap &) { return true; }
+bool DatabaseManager::updateResident(const QString &, const QVariantMap &) { return true; }
+bool DatabaseManager::deleteResident(const QString &) { return true; }
+QList<QVariantMap> DatabaseManager::getAllResidents() { return {}; }
+QVariantMap DatabaseManager::getResident(const QString &) { return {}; }
+QList<QVariantMap> DatabaseManager::searchResidents(const QString &) { return {}; }
+QVariantMap DatabaseManager::getStatistics() { return {{"total",0}}; }
 
 // -------------------- Transactions --------------------
-bool DatabaseManager::addTransaction(const QVariantMap &data)
-{
-    QSqlQuery q;
-    q.prepare("INSERT INTO transactions (code, date, type, montant, description) VALUES (?, ?, ?, ?, ?)");
-    q.addBindValue(data.value("code"));
-    q.addBindValue(data.value("date"));
-    q.addBindValue(data.value("type"));
-    q.addBindValue(data.value("montant"));
-    q.addBindValue(data.value("description"));
-    return q.exec();
-}
-
-bool DatabaseManager::updateTransaction(const QString &code, const QVariantMap &data)
-{
-    QSqlQuery q;
-    q.prepare("UPDATE transactions SET date=?, type=?, montant=?, description=? WHERE code=?");
-    q.addBindValue(data.value("date"));
-    q.addBindValue(data.value("type"));
-    q.addBindValue(data.value("montant"));
-    q.addBindValue(data.value("description"));
-    q.addBindValue(code);
-    return q.exec();
-}
-
-bool DatabaseManager::deleteTransaction(const QString &code)
-{
-    QSqlQuery q;
-    q.prepare("DELETE FROM transactions WHERE code=?");
-    q.addBindValue(code);
-    return q.exec();
-}
-
-QList<QVariantMap> DatabaseManager::getAllTransactions()
-{
-    QList<QVariantMap> list;
-    QSqlQuery q("SELECT * FROM transactions");
-    while (q.next()) {
-        QVariantMap m;
-        m["code"] = q.value("code");
-        m["date"] = q.value("date");
-        m["type"] = q.value("type");
-        m["montant"] = q.value("montant");
-        m["description"] = q.value("description");
-        list << m;
-    }
-    return list;
-}
-
-QVariantMap DatabaseManager::getTransaction(const QString &code)
-{
-    QVariantMap m;
-    QSqlQuery q;
-    q.prepare("SELECT * FROM transactions WHERE code=?");
-    q.addBindValue(code);
-    if (q.exec() && q.next()) {
-        m["code"] = q.value("code");
-        m["date"] = q.value("date");
-        m["type"] = q.value("type");
-        m["montant"] = q.value("montant");
-        m["description"] = q.value("description");
-    }
-    return m;
-}
-
-QList<QVariantMap> DatabaseManager::searchTransactions(const QString &term)
-{
-    QList<QVariantMap> list;
-    QSqlQuery q;
-    q.prepare("SELECT * FROM transactions WHERE type LIKE ? OR description LIKE ?");
-    q.addBindValue("%" + term + "%");
-    q.addBindValue("%" + term + "%");
-    if (q.exec()) {
-        while (q.next()) {
-            QVariantMap m;
-            m["code"] = q.value("code");
-            m["date"] = q.value("date");
-            m["type"] = q.value("type");
-            m["montant"] = q.value("montant");
-            m["description"] = q.value("description");
-            list << m;
-        }
-    }
-    return list;
-}
-
-QVariantMap DatabaseManager::getFinancialStatistics(int, int)
-{
-    QVariantMap stats;
-    stats["revenu"] = 0;
-    stats["depense"] = 0;
-    return stats;
-}
-
-QVariantMap DatabaseManager::getMonthlyEvolution(int)
-{
-    QVariantMap evo;
-    evo["mois"] = "Janvier";
-    evo["revenu"] = 0;
-    evo["depense"] = 0;
-    return evo;
-}
-
-double DatabaseManager::getTotalRevenue(int, int) { return 0; }
-double DatabaseManager::getTotalExpenses(int, int) { return 0; }
+bool DatabaseManager::addTransaction(const QVariantMap &) { return true; }
+bool DatabaseManager::updateTransaction(const QString &, const QVariantMap &) { return true; }
+bool DatabaseManager::deleteTransaction(const QString &) { return true; }
+QList<QVariantMap> DatabaseManager::getAllTransactions() { return {}; }
+QVariantMap DatabaseManager::getTransaction(const QString &) { return {}; }
+QList<QVariantMap> DatabaseManager::searchTransactions(const QString &) { return {}; }
+QVariantMap DatabaseManager::getFinancialStatistics(int,int) { return {{"revenu",0},{"depense",0}}; }
+QVariantMap DatabaseManager::getMonthlyEvolution(int) { return {{"mois","Janvier"},{"revenu",0},{"depense",0}}; }
+double DatabaseManager::getTotalRevenue(int,int) { return 0; }
+double DatabaseManager::getTotalExpenses(int,int) { return 0; }
 
 // -------------------- Incidents --------------------
 bool DatabaseManager::addIncident(const QVariantMap &data)
 {
-    QSqlQuery q;
+    QSqlQuery q(m_db);
     q.prepare("INSERT INTO incidents (categorie, description, etat, date) VALUES (?, ?, ?, ?)");
     q.addBindValue(data.value("categorie"));
     q.addBindValue(data.value("description"));
@@ -248,14 +55,68 @@ bool DatabaseManager::addIncident(const QVariantMap &data)
     q.addBindValue(data.value("date"));
     return q.exec();
 }
+bool DatabaseManager::updateIncident(int id, const QVariantMap &data)
+{
+    QSqlQuery q(m_db);
+    q.prepare("UPDATE incidents SET categorie=?, description=?, etat=?, date=? WHERE id=?");
+    q.addBindValue(data.value("categorie"));
+    q.addBindValue(data.value("description"));
+    q.addBindValue(data.value("etat"));
+    q.addBindValue(data.value("date"));
+    q.addBindValue(id);
+    return q.exec();
+}
+
+bool DatabaseManager::deleteIncident(int id)
+{
+    QSqlQuery q(m_db);
+    q.prepare("DELETE FROM incidents WHERE id=?");
+    q.addBindValue(id);
+    return q.exec();
+}
+QList<QVariantMap> DatabaseManager::getAllIncidents()
+{
+    QList<QVariantMap> list;
+    QSqlQuery q("SELECT * FROM incidents ORDER BY id DESC", m_db);
+    while(q.next()) {
+        QVariantMap m;
+        m["id"] = q.value("id").toInt();
+        m["categorie"] = q.value("categorie").toString();
+        m["description"] = q.value("description").toString();
+        m["etat"] = q.value("etat").toString();
+        m["date"] = q.value("date").toString();
+        list << m;
+    }
+    return list;
+}
+
+QVariantMap DatabaseManager::getIncident(int id)
+{
+    QVariantMap incident;
+    QSqlQuery q(m_db);
+    q.prepare("SELECT * FROM incidents WHERE id=?");
+    q.addBindValue(id);
+    if (q.exec() && q.next()) {
+        incident["id"] = q.value("id").toInt();
+        incident["categorie"] = q.value("categorie").toString();
+        incident["description"] = q.value("description").toString();
+        incident["etat"] = q.value("etat").toString();
+        incident["date"] = q.value("date").toString();
+    }
+    return incident;
+}
 
 // -------------------- Vehicles --------------------
-bool DatabaseManager::addVehicule(const QVariantMap &data)
+bool DatabaseManager::addVehicule(const QVariantMap &) { return true; }
+
+// -------------------- Schema --------------------
+void DatabaseManager::ensureSchema()
 {
-    QSqlQuery q;
-    q.prepare("INSERT INTO vehicules (matricule, type, proprietaire) VALUES (?, ?, ?)");
-    q.addBindValue(data.value("matricule"));
-    q.addBindValue(data.value("type"));
-    q.addBindValue(data.value("proprietaire"));
-    return q.exec();
+    QSqlQuery q(m_db);
+    q.exec("CREATE TABLE residents (cin TEXT, nom TEXT, prenom TEXT, appartement TEXT, statut TEXT)");
+    q.exec("CREATE TABLE transactions (code TEXT, date TEXT, type TEXT, montant REAL, description TEXT)");
+    q.exec("CREATE TABLE incidents (id INTEGER PRIMARY KEY AUTOINCREMENT, categorie TEXT, description TEXT, etat TEXT, date TEXT)");
+    q.exec("CREATE TABLE vehicules (id INTEGER PRIMARY KEY AUTOINCREMENT, matricule TEXT, type TEXT, proprietaire TEXT, capacite INTEGER, zone TEXT, horaire TEXT, statut TEXT, date TEXT, temps_utilise REAL)");
+    if (q.lastError().isValid())
+        qWarning() << "[DB] Schema warning:" << q.lastError().text();
 }

@@ -3,7 +3,7 @@
 #include <QtSql/QSqlError>
 #include <QDebug>
 
-#include "mainwindow.h"       // 👈 this is your login window
+#include "mainwindow.h"       // ta page de login
 #include "welcomedialog.h"
 #include "dashboardwindow.h"
 
@@ -11,19 +11,23 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    // 🔗 Optional Oracle connection
+    // 🔹 Liste des drivers disponibles
+    qDebug() << "Drivers disponibles :" << QSqlDatabase::drivers();
+
+    // 🔹 Connexion Oracle via driver direct (64-bit)
     QSqlDatabase db = QSqlDatabase::addDatabase("QODBC");
-    db.setDatabaseName("OracleXE");   // DSN name
-    db.setUserName("NEXORA");
-    db.setPassword("nexora_pw");
+
+    // Remplace le driver par le nom exact que tu as dans ODBC 64-bit
+    db.setDatabaseName("Driver={Oracle in InstantClient_23_8};DBQ=localhost:1521/XE;UID=SYSTEM;PWD=wajd123;");
+
 
     if (!db.open()) {
         qDebug() << "❌ Oracle connection failed:" << db.lastError().text();
     } else {
-        qDebug() << "✅ Connected to Oracle (NEXORA / XEPDB1)";
+        qDebug() << "✅ Connected to Oracle (NEXORA / XE)";
     }
 
-    // 1️⃣ Show the login (MainWindow)
+    // 🔹 Ouvre la page de login (MainWindow)
     MainWindow w;
     w.show();
 
