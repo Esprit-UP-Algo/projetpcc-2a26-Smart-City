@@ -46,6 +46,11 @@ public:
 
     // ----------- Vehicles ----------
     bool addVehicule(const QVariantMap &data);
+    bool updateVehicule(const QString &id, const QVariantMap &data);
+    bool deleteVehicule(const QString &id);
+    QList<QVariantMap> getAllVehicules();
+    QVariantMap getVehicule(const QString &id);
+    QList<QVariantMap> searchVehicules(const QString &term);
 
 private:
     explicit DatabaseManager(QObject *parent = nullptr);

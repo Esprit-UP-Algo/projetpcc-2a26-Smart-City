@@ -26,7 +26,7 @@ private slots:
 
 private:
     Ui::TransportsPage *ui;
-    
+
     void loadVehicules();
     void refreshStatistics();
     void refreshFleetInfo();
