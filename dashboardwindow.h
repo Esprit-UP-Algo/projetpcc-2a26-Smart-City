@@ -49,7 +49,7 @@ private:
     TransportsPage *transportsPage;
     LocauxPage *locauxPage;
     SettingsPage *settingsPage;
-    
+
     void animatePageTransition(const QString &newTitle);
     void setupPages();
 };

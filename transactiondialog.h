@@ -16,24 +16,24 @@ class TransactionDialog : public QDialog
 public:
     explicit TransactionDialog(QWidget *parent = nullptr);
     explicit TransactionDialog(const QVariantMap &transactionData, QWidget *parent = nullptr);
-    
+
     QVariantMap getTransactionData() const;
 
 private:
     void setupUi();
     void populateFields(const QVariantMap &data);
     bool validateInput();
-    
+
     QLineEdit *codeEdit;
     QDoubleSpinBox *montantSpinBox;
     QDateEdit *dateEdit;
     QComboBox *typeCombo;
     QComboBox *categorieCombo;
     QLineEdit *descriptionEdit;
-    
+
     QPushButton *saveButton;
     QPushButton *cancelButton;
-    
+
     bool isEditMode;
 };
 

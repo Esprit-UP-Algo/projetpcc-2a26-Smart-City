@@ -10,6 +10,7 @@
 #include <QtCharts/QChart>
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
+#include <QCloseEvent>   // ✅ nécessaire pour la sauvegarde à la fermeture
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class FinancesPage; }
@@ -22,8 +23,12 @@ class FinancesPage : public QWidget
 public:
     explicit FinancesPage(QWidget *parent = nullptr);
     ~FinancesPage();
+
     void loadTransactions();
     void refreshStatistics();
+
+protected:
+    void closeEvent(QCloseEvent *event) override;   // ✅ sauvegarde automatique avant fermeture
 
 private slots:
     void on_addTransactionButton_clicked();
@@ -43,19 +48,19 @@ private:
     void updateChart();
     void updateFinancialIndicators();
     QString getAssistantResponse(const QString &question);
-    
+
+    // ✅ Ajout : méthode interne pour sauvegarder toutes les transactions dans Oracle
+    void saveAllToDatabase();
+
     Ui::FinancesPage *ui;
-    
-    // Card 1: Form widgets
+
+    // Widgets
     QWidget *formCardWidget;
-    
-    // Card 2: Table widgets
     QWidget *tableCardWidget;
     QTableWidget *transactionsTable;
     QLineEdit *searchLineEdit;
     QComboBox *sortComboBox;
-    
-    // Card 3: Statistics widgets
+
     QWidget *statsCardWidget;
     QChart *chart;
     QChartView *chartView;
@@ -64,8 +69,7 @@ private:
     QLabel *balanceLabel;
     QLabel *statusBadge;
     QLabel *processingDelayLabel;
-    
-    // Card 4: Assistant widgets
+
     QWidget *assistantCardWidget;
     QTextEdit *chatTextEdit;
     QLineEdit *questionLineEdit;

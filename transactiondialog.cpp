@@ -27,21 +27,21 @@ void TransactionDialog::setupUi()
     // Allow the layout to determine a comfortable size.
     // Previously fixed to a small value which caused fields to be compressed.
     setMinimumSize(600, 520);
-    
+
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setSpacing(22);
     mainLayout->setContentsMargins(40, 40, 40, 40);
-    
+
     // Title
     QLabel *titleLabel = new QLabel(isEditMode ? "Modifier la Transaction" : "Nouvelle Transaction");
     titleLabel->setStyleSheet("font-size: 22px; font-weight: bold; color: #2C3E50;");
     mainLayout->addWidget(titleLabel);
-    
+
     // Form layout
     QFormLayout *formLayout = new QFormLayout();
     formLayout->setSpacing(15);
     formLayout->setLabelAlignment(Qt::AlignRight);
-    
+
     // Code
     codeEdit = new QLineEdit();
     codeEdit->setMinimumHeight(48);
@@ -58,7 +58,7 @@ void TransactionDialog::setupUi()
         }
     )");
     formLayout->addRow("Code *:", codeEdit);
-    
+
     // Montant
     montantSpinBox = new QDoubleSpinBox();
     montantSpinBox->setMinimumHeight(48);
@@ -77,7 +77,7 @@ void TransactionDialog::setupUi()
         }
     )");
     formLayout->addRow("Montant *:", montantSpinBox);
-    
+
     // Date
     dateEdit = new QDateEdit();
     dateEdit->setMinimumHeight(48);
@@ -96,7 +96,7 @@ void TransactionDialog::setupUi()
         }
     )");
     formLayout->addRow("Date *:", dateEdit);
-    
+
     // Type
     typeCombo = new QComboBox();
     typeCombo->setMinimumHeight(48);
@@ -113,7 +113,7 @@ void TransactionDialog::setupUi()
         }
     )");
     formLayout->addRow("Type *:", typeCombo);
-    
+
     // Catégorie
     categorieCombo = new QComboBox();
     categorieCombo->setMinimumHeight(48);
@@ -130,7 +130,7 @@ void TransactionDialog::setupUi()
         }
     )");
     formLayout->addRow("Catégorie *:", categorieCombo);
-    
+
     // Description
     descriptionEdit = new QLineEdit();
     descriptionEdit->setMinimumHeight(48);
@@ -147,13 +147,13 @@ void TransactionDialog::setupUi()
         }
     )");
     formLayout->addRow("Description :", descriptionEdit);
-    
+
     mainLayout->addLayout(formLayout);
-    
+
     // Buttons
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     buttonLayout->setSpacing(15);
-    
+
     cancelButton = new QPushButton("Annuler");
     cancelButton->setFixedHeight(48);
     cancelButton->setStyleSheet(R"(
@@ -171,7 +171,7 @@ void TransactionDialog::setupUi()
         }
     )");
     connect(cancelButton, &QPushButton::clicked, this, &QDialog::reject);
-    
+
     saveButton = new QPushButton("Enregistrer");
     saveButton->setFixedHeight(48);
     saveButton->setStyleSheet(R"(
@@ -193,13 +193,13 @@ void TransactionDialog::setupUi()
             accept();
         }
     });
-    
+
     buttonLayout->addStretch();
     buttonLayout->addWidget(cancelButton);
     buttonLayout->addWidget(saveButton);
-    
+
     mainLayout->addLayout(buttonLayout);
-    
+
     // Set main style
     setStyleSheet("background-color: white;");
 }
@@ -209,13 +209,13 @@ void TransactionDialog::populateFields(const QVariantMap &data)
     codeEdit->setText(data["code"].toString());
     montantSpinBox->setValue(data["montant"].toDouble());
     dateEdit->setDate(QDate::fromString(data["date"].toString(), "yyyy-MM-dd"));
-    
+
     int typeIndex = typeCombo->findText(data["type"].toString());
     if (typeIndex >= 0) typeCombo->setCurrentIndex(typeIndex);
-    
+
     int catIndex = categorieCombo->findText(data["categorie"].toString());
     if (catIndex >= 0) categorieCombo->setCurrentIndex(catIndex);
-    
+
     descriptionEdit->setText(data["description"].toString());
 }
 
@@ -226,13 +226,13 @@ bool TransactionDialog::validateInput()
         codeEdit->setFocus();
         return false;
     }
-    
+
     if (montantSpinBox->value() <= 0) {
         QMessageBox::warning(this, "Validation", "Le montant doit être supérieur à 0.");
         montantSpinBox->setFocus();
         return false;
     }
-    
+
     return true;
 }
 

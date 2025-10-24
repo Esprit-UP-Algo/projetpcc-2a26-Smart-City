@@ -106,7 +106,7 @@ void DashboardWindow::setupPages()
     transportsCard->setStyleSheet("background-color: white; padding: 30px; border-radius: 15px; font-size: 18px; font-weight: bold; color: #3498DB; min-height: 150px;");
     transportsCard->setAlignment(Qt::AlignCenter);
     statsLayout->addWidget(transportsCard);
-    
+
     // Locaux stat card
     QLabel *locauxCard = new QLabel("🏢 Locaux\n\n5\n\nenregistrés");
     locauxCard->setStyleSheet("background-color: white; padding: 30px; border-radius: 15px; font-size: 18px; font-weight: bold; color: #1ABC9C; min-height: 150px;");
@@ -140,7 +140,7 @@ void DashboardWindow::setupPages()
     QPushButton *addVehicleBtn = new QPushButton("🚙 Ajouter Véhicule");
     addVehicleBtn->setStyleSheet("background-color: #3498DB; color: white; padding: 20px; border-radius: 10px; font-size: 16px; font-weight: bold;");
     addVehicleBtn->setMinimumHeight(80);
-    
+
     QPushButton *addLocalBtn = new QPushButton("🏢 Nouveau Local");
     addLocalBtn->setStyleSheet("background-color: #1ABC9C; color: white; padding: 20px; border-radius: 10px; font-size: 16px; font-weight: bold;");
     addLocalBtn->setMinimumHeight(80);

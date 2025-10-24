@@ -12,10 +12,10 @@ TransportsPage::TransportsPage(QWidget *parent) :
     ui(new Ui::TransportsPage)
 {
     ui->setupUi(this);
-    
+
     // Update statistics card title for mileage tracking
     ui->statsCardTitle->setText("📊 Répartition du kilométrage (%)");
-    
+
     setupTable();
     loadVehicules();
     refreshStatistics();
@@ -33,12 +33,12 @@ void TransportsPage::setupTable()
     ui->vehiculesTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->vehiculesTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->vehiculesTable->setAlternatingRowColors(true);
-    
+
     // Set table headers programmatically
     QStringList headers;
     headers << "ID" << "Type" << "Capacité" << "Zone" << "Statut" << "Date";
     ui->vehiculesTable->setHorizontalHeaderLabels(headers);
-    
+
     // Set column widths
     ui->vehiculesTable->setColumnWidth(0, 100);  // ID
     ui->vehiculesTable->setColumnWidth(1, 120);  // Type
@@ -120,14 +120,14 @@ void TransportsPage::on_deleteButton_clicked()
         QMessageBox::warning(this, "Transports", "Veuillez sélectionner un véhicule à supprimer");
         return;
     }
-    
+
     QMessageBox::StandardButton reply = QMessageBox::question(
         this,
         "Confirmation",
         "Êtes-vous sûr de vouloir supprimer ce véhicule?",
         QMessageBox::Yes | QMessageBox::No
-    );
-    
+        );
+
     if (reply == QMessageBox::Yes) {
         // TODO: Delete from database
         QMessageBox::information(this, "Transports", "Véhicule supprimé");
@@ -141,12 +141,12 @@ void TransportsPage::on_exportPDFButton_clicked()
 
 void TransportsPage::on_historiqueButton_clicked()
 {
-    QMessageBox::information(this, "Historique des Véhicules", 
-                           "Affichage de l'historique détaillé des véhicules et de leurs trajets.\n\n"
-                           "Cette fonctionnalité permet de consulter :\n"
-                           "• Historique complet des véhicules\n"
-                           "• Analyse des trajets par date\n"
-                           "• Statistiques d'utilisation\n"
-                           "• Rapports de maintenance\n\n"
-                           "Fonctionnalité à implémenter complètement.");
+    QMessageBox::information(this, "Historique des Véhicules",
+                             "Affichage de l'historique détaillé des véhicules et de leurs trajets.\n\n"
+                             "Cette fonctionnalité permet de consulter :\n"
+                             "• Historique complet des véhicules\n"
+                             "• Analyse des trajets par date\n"
+                             "• Statistiques d'utilisation\n"
+                             "• Rapports de maintenance\n\n"
+                             "Fonctionnalité à implémenter complètement.");
 }
