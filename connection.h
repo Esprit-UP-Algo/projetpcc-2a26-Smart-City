@@ -1,17 +1,29 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
+
 #include <QSqlDatabase>
 #include <QSqlError>
-#include <QSqlQuery>
 #include <QDebug>
 #include <QMessageBox>
-class Connection
-{
-private:
-    QSqlDatabase db;  // Objet de type QSqlDatabase (membre de la classe)
+
+class Connection {
 public:
+    static Connection& getInstance() {
+        static Connection instance;
+        return instance;
+    }
+
+    bool createConnection();
+    void closeConnection();
+    QSqlDatabase getDatabase() const;
+
+private:
+    QSqlDatabase db;
+
     Connection();
-    bool createconnect();
-    void closeConnection();  // Méthode pour fermer la connexion
+    ~Connection();
+    Connection(const Connection&) = delete;
+    Connection& operator=(const Connection&) = delete;
 };
+
 #endif // CONNECTION_H

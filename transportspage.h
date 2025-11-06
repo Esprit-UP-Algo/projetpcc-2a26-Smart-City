@@ -26,12 +26,13 @@ private slots:
 
 private:
     Ui::TransportsPage *ui;
-
+    void setupTable();
     void loadVehicules();
     void refreshStatistics();
     void refreshFleetInfo();
-    void setupTable();
     void setupChart();
+    void sortVehiculesByType();
+    void sortVehiculesByStatus();
 };
 
 #endif // TRANSPORTSPAGE_H

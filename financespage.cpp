@@ -2,22 +2,22 @@
 #include "ui_financespage.h"
 #include "transactiondialog.h"
 #include "databasemanager.h"
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGridLayout>
-#include <QGroupBox>
-#include <QPushButton>
-#include <QHeaderView>
+
 #include <QMessageBox>
 #include <QDate>
-#include <QtCharts/QValueAxis>
-#include <QtCharts/QDateTimeAxis>
-#include <QRandomGenerator>
+#include <QBrush>
+#include <QColor>
+#include <QDebug>
+#include <QTableWidgetItem>
+#include <QTextCursor>
 
 FinancesPage::FinancesPage(QWidget *parent)
     : QWidget(parent), ui(new Ui::FinancesPage)
 {
+    ui->setupUi(this);
     setupUi();
+
+    // CHARGE LES DONNÉES AU DÉMARRAGE
     loadTransactions();
     refreshStatistics();
 }
@@ -29,83 +29,77 @@ FinancesPage::~FinancesPage()
 
 void FinancesPage::setupUi()
 {
-    // Use the auto-generated setupUi from the .ui file
-    ui->setupUi(this);
-    
-    // Setup chart for statistics card
-    createStatisticsCard();
-}
-
-void FinancesPage::createTransactionFormCard()
-{
-    // Transaction form card is now defined in the .ui file
-    // This method can be used for any additional dynamic setup if needed
-}
-
-void FinancesPage::createTransactionListCard()
-{
-    // Transaction list card is now defined in the .ui file
-    // This method can be used for any additional dynamic setup if needed
-}
-
-void FinancesPage::createStatisticsCard()
-{
-    // Statistics card is now defined in the .ui file
-    // Set up chart and add it to the chartContainer from the .ui file
-    
-    chart = new QChart();
-    chart->setTitle("Graphique: Évolution Mensuelle des Revenus et Dépenses");
-    chart->setAnimationOptions(QChart::SeriesAnimations);
-    chart->setTheme(QChart::ChartThemeLight);
-    
-    chartView = new QChartView(chart);
-    chartView->setRenderHint(QPainter::Antialiasing);
-    
-    // Add the chart to the chartContainer layout from .ui file
-    if (ui->chartContainer) {
-        QVBoxLayout *chartLayout = qobject_cast<QVBoxLayout*>(ui->chartContainer->layout());
-        if (!chartLayout) {
-            chartLayout = new QVBoxLayout(ui->chartContainer);
-        }
-        chartLayout->addWidget(chartView);
-    }
-}
-
-void FinancesPage::createAssistantCard()
-{
-    // Assistant card is now defined in the .ui file
-    // This method can be used for any additional dynamic setup if needed
-}
-
-void FinancesPage::loadTransactions()
-{
-    // Load transactions from database
-    if (!ui->transactionsTable) return;
-    
-    ui->transactionsTable->setRowCount(0);
-    
-    QList<QVariantMap> transactions = DatabaseManager::instance().getAllTransactions();
-    
-    for (const QVariantMap &transaction : transactions) {
-        int row = ui->transactionsTable->rowCount();
-        ui->transactionsTable->insertRow(row);
-        
-        ui->transactionsTable->setItem(row, 0, new QTableWidgetItem(transaction["code"].toString()));
-        ui->transactionsTable->setItem(row, 1, new QTableWidgetItem(QString::number(transaction["montant"].toDouble(), 'f', 2) + " DT"));
-        
-        QDate date = QDate::fromString(transaction["date"].toString(), "yyyy-MM-dd");
-        ui->transactionsTable->setItem(row, 2, new QTableWidgetItem(date.toString("dd/MM/yyyy")));
-        
-        ui->transactionsTable->setItem(row, 3, new QTableWidgetItem(transaction["type"].toString()));
-        ui->transactionsTable->setItem(row, 4, new QTableWidgetItem(transaction["categorie"].toString()));
-        ui->transactionsTable->setItem(row, 5, new QTableWidgetItem(transaction["description"].toString()));
-    }
-    
-    // Configure headers
-    QStringList headers = {"📅 Date", "💰 Montant", "📝 Type", "📋 Description", "🏷️ Catégorie"};
+    ui->transactionsTable->setColumnCount(6);
+    QStringList headers = {"Code", "Date", "Type", "Montant", "Catégorie", "Description"};
     ui->transactionsTable->setHorizontalHeaderLabels(headers);
     ui->transactionsTable->horizontalHeader()->setStretchLastSection(true);
     ui->transactionsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->transactionsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->transactionsTable->setSortingEnabled(true);
+
+    ui->sortComboBox->clear();
+    ui->sortComboBox->addItems({"Date (récent)", "Date (ancien)", "Montant (haut)", "Montant (bas)", "Code"});
+
+    QString buttonStyle = R"(
+        QPushButton {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        QPushButton:hover { opacity: 0.9; }
+    )";
+
+    ui->addTransactionButton->setStyleSheet(buttonStyle + "background-color: #27AE60; color: white;");
+    ui->modifyButton->setStyleSheet(buttonStyle + "background-color: #3498DB; color: white;");
+    ui->deleteButton->setStyleSheet(buttonStyle + "background-color: #E74C3C; color: white;");
+    ui->searchButton->setStyleSheet(buttonStyle + "background-color: #F39C12; color: white;");
+    ui->exportPDFButton->setStyleSheet(buttonStyle + "background-color: #9B59B6; color: white;");
+    ui->sendButton->setStyleSheet(buttonStyle + "background-color: #16A085; color: white;");
+}
+
+// CHARGE TOUTES LES TRANSACTIONS DEPUIS LA BDD
+void FinancesPage::loadTransactions()
+{
+    ui->transactionsTable->setRowCount(0);  // Vide le tableau
+
+    QList<QVariantMap> transactions = DatabaseManager::instance().getAllTransactions();
+    qDebug() << "[loadTransactions] Nombre de transactions :" << transactions.size();
+
+    for (const QVariantMap &t : transactions) {
+        int row = ui->transactionsTable->rowCount();
+        ui->transactionsTable->insertRow(row);
+
+        // CODE
+        ui->transactionsTable->setItem(row, 0, new QTableWidgetItem(t["code"].toString()));
+
+        // DATE
+        QDate date = QDate::fromString(t["date"].toString(), "yyyy-MM-dd");
+        ui->transactionsTable->setItem(row, 1, new QTableWidgetItem(date.toString("dd/MM/yyyy")));
+
+        // TYPE
+        QString type = t["type"].toString() == "Entree" ? "Entrée" : "Sortie";
+        QTableWidgetItem *typeItem = new QTableWidgetItem(type);
+        typeItem->setForeground(QBrush(type == "Entrée" ? QColor("#27AE60") : QColor("#E74C3C")));
+        ui->transactionsTable->setItem(row, 2, typeItem);
+
+        // MONTANT
+        double montant = t["montant"].toDouble();
+        QTableWidgetItem *montantItem = new QTableWidgetItem(QString::number(montant, 'f', 2) + " DT");
+        montantItem->setForeground(QBrush(type == "Entrée" ? QColor("#27AE60") : QColor("#E74C3C")));
+        montantItem->setData(Qt::UserRole, montant);
+        ui->transactionsTable->setItem(row, 3, montantItem);
+
+        // CATÉGORIE
+        ui->transactionsTable->setItem(row, 4, new QTableWidgetItem(t["categorie"].toString()));
+
+        // DESCRIPTION
+        ui->transactionsTable->setItem(row, 5, new QTableWidgetItem(t["description"].toString()));
+    }
+
+    ui->transactionsTable->resizeColumnsToContents();
+    qDebug() << "[loadTransactions] Tableau mis à jour avec" << transactions.size() << "lignes";
 }
 
 void FinancesPage::refreshStatistics()
@@ -116,265 +110,199 @@ void FinancesPage::refreshStatistics()
 
 void FinancesPage::updateFinancialIndicators()
 {
-    QDate today = QDate::currentDate();
-    int year = today.year();
-    int month = today.month();
-    
-    QVariantMap stats = DatabaseManager::instance().getFinancialStatistics(year, month);
-    
-    double revenue = stats["revenue"].toDouble();
-    double expenses = stats["expenses"].toDouble();
-    double balance = stats["balance"].toDouble();
-    
-    // Update monthly evolution indicators using .ui file elements
-    if (ui->revenueLabel) {
-        ui->revenueLabel->setText(QString("📈 Revenus: %1 DT").arg(revenue, 0, 'f', 2));
+    double totalRevenus = 0, totalDepenses = 0;
+    int nbTransactions = 0;
+
+    QList<QVariantMap> transactions = DatabaseManager::instance().getAllTransactions();
+    for (const QVariantMap &t : transactions) {
+        double montant = t["montant"].toDouble();
+        if (t["type"].toString() == "Entree") totalRevenus += montant;
+        else totalDepenses += montant;
+        nbTransactions++;
     }
-    if (ui->expensesLabel) {
-        ui->expensesLabel->setText(QString("📉 Dépenses: %1 DT").arg(expenses, 0, 'f', 2));
-    }
-    if (ui->balanceLabel) {
-        ui->balanceLabel->setText(QString("💰 Solde: %1 DT").arg(balance, 0, 'f', 2));
-    }
-    
-    // Update monthly trend status
-    if (ui->statusBadge) {
-        if (balance >= 0) {
-            ui->statusBadge->setText("Tendance: ✓ Excédent");
-            ui->statusBadge->setStyleSheet("font-size: 14px; font-weight: bold; color: white; background-color: #27AE60; padding: 8px; border-radius: 6px; margin-top: 10px;");
-        } else {
-            ui->statusBadge->setText("Tendance: ⚠ Déficit");
-            ui->statusBadge->setStyleSheet("font-size: 14px; font-weight: bold; color: white; background-color: #E74C3C; padding: 8px; border-radius: 6px; margin-top: 10px;");
-        }
-    }
-    
-    // Calculate average processing delay
-    double averageDelay = 1.8 + (QRandomGenerator::global()->bounded(20)) / 10.0;
-    
-    QString delayText;
-    QString delayColor;
-    if (averageDelay <= 2.0) {
-        delayText = QString("⏱️ Délai moyen : %1 jours (Excellent)").arg(averageDelay, 0, 'f', 1);
-        delayColor = "#27AE60";
-    } else if (averageDelay <= 3.0) {
-        delayText = QString("⏱️ Délai moyen : %1 jours (Bon)").arg(averageDelay, 0, 'f', 1);
-        delayColor = "#F39C12";
-    } else {
-        delayText = QString("⏱️ Délai moyen : %1 jours (À optimiser)").arg(averageDelay, 0, 'f', 1);
-        delayColor = "#E74C3C";
-    }
-    
-    if (ui->processingDelayLabel) {
-        ui->processingDelayLabel->setText(delayText);
-        ui->processingDelayLabel->setStyleSheet(QString("font-size: 16px; font-weight: bold; color: %1; background-color: #EBF3FD; padding: 15px; border-radius: 8px; border: 2px solid %1;").arg(delayColor));
-    }
+
+    double balance = totalRevenus - totalDepenses;
+
+    ui->revenueLabel->setText(QString("Revenus: %1 DT").arg(totalRevenus, 0, 'f', 2));
+    ui->expensesLabel->setText(QString("Dépenses: %1 DT").arg(totalDepenses, 0, 'f', 2));
+    ui->balanceLabel->setText(QString("Solde: %1 DT").arg(balance, 0, 'f', 2));
+
+    ui->statusBadge->setText(balance >= 0 ? "Tendance: Excédent" : "Tendance: Déficit");
+    ui->statusBadge->setStyleSheet(balance >= 0 ?
+                                       "background-color: #27AE60; color: white; padding: 10px; border-radius: 8px;" :
+                                       "background-color: #E74C3C; color: white; padding: 10px; border-radius: 8px;");
+
+    ui->processingDelayLabel->setText(QString("Total transactions: %1").arg(nbTransactions));
 }
 
 void FinancesPage::updateChart()
 {
-    if (!chart) return;
-    
-    chart->removeAllSeries();
-    
-    QLineSeries *revenueSeries = new QLineSeries();
-    revenueSeries->setName("Revenus");
-    revenueSeries->setColor(QColor("#27AE60"));
-    
-    QLineSeries *expensesSeries = new QLineSeries();
-    expensesSeries->setName("Dépenses");
-    expensesSeries->setColor(QColor("#E74C3C"));
-    
-    QDate today = QDate::currentDate();
-    int year = today.year();
-    
-    QVariantMap evolution = DatabaseManager::instance().getMonthlyEvolution(year);
-    
-    for (int month = 1; month <= 12; month++) {
-        QString key = QString("month_%1").arg(month);
-        QVariantMap monthData = evolution[key].toMap();
-        
-        revenueSeries->append(month, monthData["revenue"].toDouble());
-        expensesSeries->append(month, monthData["expenses"].toDouble());
-    }
-    
-    chart->addSeries(revenueSeries);
-    chart->addSeries(expensesSeries);
-    
-    chart->createDefaultAxes();
-    chart->legend()->setVisible(true);
-    chart->legend()->setAlignment(Qt::AlignBottom);
+    // À implémenter plus tard
 }
 
+// AJOUT DE TRANSACTION – CORRIGÉ
 void FinancesPage::on_addTransactionButton_clicked()
 {
     TransactionDialog dialog(this);
-    if (dialog.exec() == QDialog::Accepted) {
-        QVariantMap data = dialog.getTransactionData();
-        if (DatabaseManager::instance().addTransaction(data)) {
-            QMessageBox::information(this, "Succès", "Transaction ajoutée avec succès!");
-            loadTransactions();
-            refreshStatistics();
-        } else {
-            QMessageBox::warning(this, "Erreur", "Impossible d'ajouter la transaction.");
-        }
+    if (dialog.exec() != QDialog::Accepted) {
+        qDebug() << "[on_addTransactionButton_clicked] Annulé par l'utilisateur";
+        return;
     }
+
+    QVariantMap data = dialog.getTransactionData();
+
+    // GÉNÉRER UN CODE UNIQUE
+    if (data["code"].toString().isEmpty()) {
+        data["code"] = "TRN" + QDateTime::currentDateTime().toString("yyMMddhhmmss");
+    }
+
+    qDebug() << "[on_addTransactionButton_clicked] Données à insérer :" << data;
+
+    // AJOUT DANS LA BDD
+    if (!DatabaseManager::instance().addTransaction(data)) {
+        QMessageBox::critical(this, "Erreur", "Échec de l'ajout en base de données.");
+        qDebug() << "[ERREUR] addTransaction() a échoué";
+        return;
+    }
+
+    qDebug() << "[SUCCÈS] Transaction ajoutée en BDD avec code :" << data["code"].toString();
+
+    // RECHARGEMENT COMPLET DU TABLEAU
+    loadTransactions();           // CRUCIAL
+    refreshStatistics();          // Met à jour les stats
+
+    // MESSAGE DANS LE CHAT
+    double montant = data["montant"].toDouble();
+    QString type = data["type"].toString() == "Entree" ? "Entrée" : "Sortie";
+
+    ui->chatTextEdit->append(QString(
+                                 "<p style='color: #27AE60; background: #EAFAF1; padding: 10px; border-radius: 6px; margin: 5px;'>"
+                                 "<b>Transaction ajoutée :</b> %1 | %2 DT | %3</p>"
+                                 ).arg(data["code"].toString(), QString::number(montant, 'f', 2), type));
+
+    qDebug() << "[on_addTransactionButton_clicked] Tableau rafraîchi avec succès";
 }
 
 void FinancesPage::on_searchButton_clicked()
 {
-    if (!ui->searchLineEdit || !ui->transactionsTable) return;
-    
-    QString searchTerm = ui->searchLineEdit->text().trimmed();
-    
-    if (searchTerm.isEmpty()) {
+    QString term = ui->searchLineEdit->text().trimmed();
+    if (term.isEmpty()) {
         loadTransactions();
         return;
     }
-    
+
     ui->transactionsTable->setRowCount(0);
-    QList<QVariantMap> transactions = DatabaseManager::instance().searchTransactions(searchTerm);
-    
-    for (const QVariantMap &transaction : transactions) {
+    auto results = DatabaseManager::instance().searchTransactions(term);
+    for (const auto &t : results) {
         int row = ui->transactionsTable->rowCount();
         ui->transactionsTable->insertRow(row);
-        
-        ui->transactionsTable->setItem(row, 0, new QTableWidgetItem(transaction["code"].toString()));
-        ui->transactionsTable->setItem(row, 1, new QTableWidgetItem(QString::number(transaction["montant"].toDouble(), 'f', 2) + " DT"));
-        
-        QDate date = QDate::fromString(transaction["date"].toString(), "yyyy-MM-dd");
-        ui->transactionsTable->setItem(row, 2, new QTableWidgetItem(date.toString("dd/MM/yyyy")));
-        
-        ui->transactionsTable->setItem(row, 3, new QTableWidgetItem(transaction["type"].toString()));
-        ui->transactionsTable->setItem(row, 4, new QTableWidgetItem(transaction["categorie"].toString()));
-        ui->transactionsTable->setItem(row, 5, new QTableWidgetItem(transaction["description"].toString()));
+        ui->transactionsTable->setItem(row, 0, new QTableWidgetItem(t["code"].toString()));
+        ui->transactionsTable->setItem(row, 1, new QTableWidgetItem(
+                                                   QDate::fromString(t["date"].toString(), "yyyy-MM-dd").toString("dd/MM/yyyy")));
+
+        QString type = t["type"].toString() == "Entree" ? "Entrée" : "Sortie";
+        QTableWidgetItem *typeItem = new QTableWidgetItem(type);
+        typeItem->setForeground(QBrush(type == "Entrée" ? QColor("#27AE60") : QColor("#E74C3C")));
+        ui->transactionsTable->setItem(row, 2, typeItem);
+
+        double montant = t["montant"].toDouble();
+        QTableWidgetItem *montantItem = new QTableWidgetItem(QString::number(montant, 'f', 2) + " DT");
+        montantItem->setForeground(QBrush(type == "Entrée" ? QColor("#27AE60") : QColor("#E74C3C")));
+        ui->transactionsTable->setItem(row, 3, montantItem);
+
+        ui->transactionsTable->setItem(row, 4, new QTableWidgetItem(t["categorie"].toString()));
+        ui->transactionsTable->setItem(row, 5, new QTableWidgetItem(t["description"].toString()));
     }
 }
 
-void FinancesPage::on_sortComboChanged(int index)
+void FinancesPage::on_sortComboBox_currentIndexChanged(int index)
 {
-    if (!ui->transactionsTable) return;
-    
-    int column = (index == 0) ? 2 : (index == 1) ? 0 : 1;
-    ui->transactionsTable->sortItems(column, Qt::DescendingOrder);
+    if (ui->transactionsTable->rowCount() == 0) return;
+    int col = 1; Qt::SortOrder order = Qt::DescendingOrder;
+    switch (index) {
+    case 0: col = 1; order = Qt::DescendingOrder; break;
+    case 1: col = 1; order = Qt::AscendingOrder; break;
+    case 2: col = 3; order = Qt::DescendingOrder; break;
+    case 3: col = 3; order = Qt::AscendingOrder; break;
+    case 4: col = 0; order = Qt::AscendingOrder; break;
+    }
+    ui->transactionsTable->sortItems(col, order);
 }
 
 void FinancesPage::on_modifyButton_clicked()
 {
-    if (!ui->transactionsTable) return;
-    
     int row = ui->transactionsTable->currentRow();
     if (row < 0) {
-        QMessageBox::warning(this, "Attention", "Veuillez sélectionner une transaction.");
+        QMessageBox::warning(this, "Aucune sélection", "Sélectionnez une transaction à modifier.");
         return;
     }
-    
+
     QString code = ui->transactionsTable->item(row, 0)->text();
-    QVariantMap data = DatabaseManager::instance().getTransaction(code);
-    
+    auto data = DatabaseManager::instance().getTransaction(code);
+    if (data.isEmpty()) return;
+
     TransactionDialog dialog(data, this);
     if (dialog.exec() == QDialog::Accepted) {
-        QVariantMap newData = dialog.getTransactionData();
+        auto newData = dialog.getTransactionData();
         if (DatabaseManager::instance().updateTransaction(code, newData)) {
-            QMessageBox::information(this, "Succès", "Transaction modifiée avec succès!");
-            loadTransactions();
+            loadTransactions();      // Rechargement complet
             refreshStatistics();
-        } else {
-            QMessageBox::warning(this, "Erreur", "Impossible de modifier la transaction.");
+            QMessageBox::information(this, "Succès", "Transaction modifiée.");
         }
     }
 }
 
 void FinancesPage::on_deleteButton_clicked()
 {
-    if (!ui->transactionsTable) return;
-    
     int row = ui->transactionsTable->currentRow();
     if (row < 0) {
-        QMessageBox::warning(this, "Attention", "Veuillez sélectionner une transaction.");
+        QMessageBox::warning(this, "Aucune sélection", "Sélectionnez une transaction à supprimer.");
         return;
     }
-    
+
     QString code = ui->transactionsTable->item(row, 0)->text();
-    
-    auto reply = QMessageBox::question(this, "Confirmation",
-        "Êtes-vous sûr de vouloir supprimer cette transaction?",
-        QMessageBox::Yes | QMessageBox::No);
-    
-    if (reply == QMessageBox::Yes) {
+    if (QMessageBox::question(this, "Confirmer", "Supprimer cette transaction ?") == QMessageBox::Yes) {
         if (DatabaseManager::instance().deleteTransaction(code)) {
-            QMessageBox::information(this, "Succès", "Transaction supprimée avec succès!");
-            loadTransactions();
+            loadTransactions();      // Rechargement complet
             refreshStatistics();
-        } else {
-            QMessageBox::warning(this, "Erreur", "Impossible de supprimer la transaction.");
+            QMessageBox::information(this, "Supprimé", "Transaction supprimée.");
         }
     }
 }
 
 void FinancesPage::on_exportPDFButton_clicked()
 {
-    QMessageBox::information(this, "Export PDF", "Fonctionnalité d'export PDF à venir!");
+    QMessageBox::information(this, "PDF", "Fonctionnalité à implémenter.");
 }
 
-void FinancesPage::on_sendMessageButton_clicked()
+void FinancesPage::on_sendButton_clicked()
 {
-    if (!ui->questionLineEdit || !ui->chatTextEdit) return;
-    
-    QString question = ui->questionLineEdit->text().trimmed();
-    if (question.isEmpty()) return;
-    
-    ui->chatTextEdit->append(QString("<p style='color: #2C3E50; background-color: #E8F8F5; padding: 8px; border-radius: 5px;'><b>Vous:</b> %1</p>").arg(question));
-    
-    QString response = getAssistantResponse(question);
-    ui->chatTextEdit->append(QString("<p style='color: #34495E; background-color: #EBF5FB; padding: 8px; border-radius: 5px;'><b>🤖 Assistant:</b> %1</p>").arg(response));
-    
+    QString q = ui->questionLineEdit->text().trimmed();
+    if (q.isEmpty()) return;
+
+    ui->chatTextEdit->append(QString(
+                                 "<p style='color: #2C3E50; background: #E8F8F5; padding: 10px; border-radius: 6px; margin: 5px;'>"
+                                 "<b>Vous :</b> %1</p>"
+                                 ).arg(q));
+
+    ui->chatTextEdit->append(QString(
+                                 "<p style='color: #34495E; background: #EBF5FB; padding: 10px; border-radius: 6px; margin: 5px;'>"
+                                 "<b>Assistant :</b> %1</p>"
+                                 ).arg(getAssistantResponse(q)));
+
     ui->questionLineEdit->clear();
+
+    QTextCursor cursor = ui->chatTextEdit->textCursor();
+    cursor.movePosition(QTextCursor::End);
+    ui->chatTextEdit->setTextCursor(cursor);
 }
 
 QString FinancesPage::getAssistantResponse(const QString &question)
 {
-    QString lowerQuestion = question.toLower();
-    
-    if (lowerQuestion.contains("solde") || lowerQuestion.contains("balance")) {
-        QDate today = QDate::currentDate();
-        QVariantMap stats = DatabaseManager::instance().getFinancialStatistics(today.year(), today.month());
-        double balance = stats["balance"].toDouble();
-        return QString("Le solde actuel pour ce mois est de <b>%1 DT</b>. %2")
-            .arg(balance, 0, 'f', 2)
-            .arg(balance >= 0 ? "Vous êtes en excédent! 💚" : "Attention, vous êtes en déficit. ⚠️");
-    }
-    
-    if (lowerQuestion.contains("revenus") || lowerQuestion.contains("recettes")) {
-        QDate today = QDate::currentDate();
-        double revenue = DatabaseManager::instance().getTotalRevenue(today.year(), today.month());
-        return QString("Les revenus totaux pour ce mois sont de <b>%1 DT</b>.").arg(revenue, 0, 'f', 2);
-    }
-    
-    if (lowerQuestion.contains("depenses") || lowerQuestion.contains("dépenses")) {
-        QDate today = QDate::currentDate();
-        double expenses = DatabaseManager::instance().getTotalExpenses(today.year(), today.month());
-        return QString("Les dépenses totales pour ce mois sont de <b>%1 DT</b>.").arg(expenses, 0, 'f', 2);
-    }
-    
-    if (lowerQuestion.contains("budget")) {
-        return "Pour créer un budget, je vous recommande de:<br>"
-               "1. Analyser vos revenus mensuels moyens<br>"
-               "2. Identifier vos dépenses fixes (loyers, charges)<br>"
-               "3. Prévoir une marge de sécurité de 15-20%<br>"
-               "4. Utiliser les statistiques pour suivre l'évolution.";
-    }
-    
-    if (lowerQuestion.contains("optimiser") || lowerQuestion.contains("economiser")) {
-        return "Voici quelques conseils pour optimiser vos finances:<br>"
-               "• Réduisez les coûts de maintenance préventive<br>"
-               "• Négociez avec les fournisseurs de services<br>"
-               "• Automatisez les paiements pour éviter les pénalités<br>"
-               "• Analysez les catégories avec le plus de dépenses.";
-    }
-    
-    return "Je suis là pour vous aider! Vous pouvez me poser des questions sur:<br>"
-           "• Votre solde et vos statistiques financières<br>"
-           "• Comment optimiser votre budget<br>"
-           "• Des conseils pour réduire les dépenses<br>"
-           "• L'évolution de vos finances.";
+    QString q = question.toLower();
+    if (q.contains("solde") || q.contains("balance")) return "Le solde est affiché en haut : revenu - dépenses.";
+    if (q.contains("ajouter") || q.contains("nouvelle")) return "Cliquez sur 'Nouvelle Transaction' pour ajouter.";
+    if (q.contains("total") || q.contains("combien")) return "Consultez les statistiques en haut.";
+    if (q.contains("supprimer")) return "Sélectionnez une ligne puis cliquez sur 'Supprimer'.";
+    return "Posez-moi une question sur vos finances !";
 }

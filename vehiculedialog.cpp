@@ -56,6 +56,12 @@ void VehiculeDialog::setupDialog()
     ui->kilometrageSpinBox->setSuffix("");
     ui->kilometrageSpinBox->setToolTip("Entrez la date au format AAAAMMJJ (ex: 20251022 pour 22/10/2025)");
 
+    // Configure le spinbox pour le temps utilisé
+    ui->tempsUtiliseSpinBox->setRange(0.0, 1000.0);
+    ui->tempsUtiliseSpinBox->setDecimals(1);
+    ui->tempsUtiliseSpinBox->setSuffix(" heures");
+    ui->tempsUtiliseSpinBox->setToolTip("Temps d'utilisation total du véhicule en heures");
+
     // Set default values
     if (!editMode) {
         ui->capaciteSpinBox->setValue(4);
@@ -68,10 +74,8 @@ void VehiculeDialog::setupDialog()
 void VehiculeDialog::loadVehiculeData(const QVariantMap &data)
 {
     vehiculeId = data["id"].toString();
-
     ui->idEdit->setText(data["id"].toString());
     ui->idEdit->setReadOnly(true); // ID cannot be changed in edit mode
-
     ui->typeCombo->setCurrentText(data["type"].toString());
     ui->capaciteSpinBox->setValue(data["capacite"].toInt());
     ui->zoneEdit->setText(data["zone"].toString());
@@ -91,13 +95,13 @@ void VehiculeDialog::loadVehiculeData(const QVariantMap &data)
         ui->kilometrageSpinBox->setValue(QDate::currentDate().toString("yyyyMMdd").toDouble());
     }
 
+    // Charger le temps utilisé
     ui->tempsUtiliseSpinBox->setValue(data["temps_utilise"].toDouble());
 }
 
 QVariantMap VehiculeDialog::getVehiculeData() const
 {
     QVariantMap data;
-
     data["id"] = ui->idEdit->text().trimmed();
     data["type"] = ui->typeCombo->currentText();
     data["capacite"] = ui->capaciteSpinBox->value();
@@ -120,7 +124,6 @@ QVariantMap VehiculeDialog::getVehiculeData() const
     }
 
     data["temps_utilise"] = ui->tempsUtiliseSpinBox->value();
-
     return data;
 }
 
@@ -160,6 +163,14 @@ bool VehiculeDialog::validateInput()
         return false;
     }
 
+    // Validation du temps utilisé
+    double tempsUtilise = ui->tempsUtiliseSpinBox->value();
+    if (tempsUtilise < 0) {
+        QMessageBox::warning(this, "Erreur", "Le temps utilisé ne peut pas être négatif");
+        ui->tempsUtiliseSpinBox->setFocus();
+        return false;
+    }
+
     return true;
 }
 
@@ -168,7 +179,6 @@ void VehiculeDialog::on_saveButton_clicked()
     if (!validateInput()) {
         return;
     }
-
     accept();
 }
 
