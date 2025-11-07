@@ -7,8 +7,9 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    Connection c;
-    if (!c.createconnect()) {
+    // Récupère l'instance unique du singleton
+    Connection &c = Connection::createInstance();
+    if (!c.createConnection()) {
         qDebug() << "❌ Oracle connection failed";
     } else {
         qDebug() << "✅ Connected to Oracle (NEXORA / XEPDB1)";
