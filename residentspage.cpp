@@ -1,9 +1,11 @@
 #include "residentspage.h"
 #include "ui_residentspage.h"
 #include "residentdialog.h"
+#include "databasemanager.h"
 #include <QMessageBox>
 #include <QTableWidgetItem>
 #include <QHeaderView>
+#include <QDebug>
 
 ResidentsPage::ResidentsPage(QWidget *parent)
     : QWidget(parent)
@@ -13,6 +15,7 @@ ResidentsPage::ResidentsPage(QWidget *parent)
     setupConnections();
     setupTable();
     setupInitialData();
+    loadResidents();
 }
 
 ResidentsPage::~ResidentsPage()
@@ -24,18 +27,18 @@ void ResidentsPage::setupConnections()
 {
     // Connect the main add resident button
     connect(ui->addResidentButton, &QPushButton::clicked, this, &ResidentsPage::onAddResidentClicked);
-    
+
     // Connect table action buttons
     connect(ui->editResidentButton, &QPushButton::clicked, this, &ResidentsPage::onEditResidentClicked);
     connect(ui->deleteResidentButton, &QPushButton::clicked, this, &ResidentsPage::onDeleteResidentClicked);
-    
+
     // Connect search and sort
     connect(ui->searchLineEdit, &QLineEdit::textChanged, this, &ResidentsPage::onSearchTextChanged);
     connect(ui->sortComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ResidentsPage::onSortChanged);
-    
+
     // Connect export button
     connect(ui->exportPdfButton, &QPushButton::clicked, this, &ResidentsPage::onExportPdfClicked);
-    
+
     // Connect table selection
     connect(ui->residentsTable, &QTableWidget::itemSelectionChanged, this, &ResidentsPage::onTableSelectionChanged);
 }
@@ -47,7 +50,8 @@ void ResidentsPage::setupTable()
     ui->residentsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->residentsTable->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->residentsTable->setAlternatingRowColors(true);
-    
+    ui->residentsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
     // Set column widths for better display
     ui->residentsTable->setColumnWidth(0, 100); // CIN
     ui->residentsTable->setColumnWidth(1, 120); // Nom
@@ -63,10 +67,27 @@ void ResidentsPage::setupInitialData()
 {
     // Update the satisfaction score with dynamic content
     updateSatisfactionScore();
-    
+
     // Enable/disable buttons based on selection
     ui->editResidentButton->setEnabled(false);
     ui->deleteResidentButton->setEnabled(false);
+}
+
+void ResidentsPage::loadResidents()
+{
+    ui->residentsTable->setRowCount(0);
+
+    QList<QVariantMap> residents = DatabaseManager::instance().getAllResidents();
+
+    qDebug() << "[ResidentsPage] Loading" << residents.size() << "residents";
+
+    for (const QVariantMap &resident : residents) {
+        addResidentToTable(resident);
+    }
+
+    updateSatisfactionScore();
+
+    qDebug() << "[ResidentsPage] Table loaded with" << ui->residentsTable->rowCount() << "rows";
 }
 
 void ResidentsPage::updateSatisfactionScore()
@@ -75,7 +96,7 @@ void ResidentsPage::updateSatisfactionScore()
     int baseScore = 70;
     int score = baseScore + (totalResidents > 0 ? totalResidents * 2 : 0);
     score = qMin(100, score); // Cap at 100
-    
+
     QString scoreText = QString("Score global de satisfaction : %1 / 100 — ").arg(score);
     if (score >= 85) {
         scoreText += "Excellente stabilité, résidents très satisfaits.";
@@ -84,28 +105,39 @@ void ResidentsPage::updateSatisfactionScore()
     } else {
         scoreText += "Stabilité acceptable, surveillance recommandée.";
     }
-    
+
     ui->globalScoreLabel->setText(scoreText);
 }
 
 void ResidentsPage::onAddResidentClicked()
 {
+    qDebug() << "[ResidentsPage] Add resident button clicked";
+
     // Open the ResidentDialog
     ResidentDialog dialog(this);
     if (dialog.exec() == QDialog::Accepted) {
         // Get the data from the dialog
         QVariantMap residentData = dialog.getResidentData();
-        
-        // Add the resident to the table (without database)
-        addResidentToTable(residentData);
-        
-        // Update satisfaction score
-        updateSatisfactionScore();
-        
-        QMessageBox::information(this, "Succès", 
-            QString("Résident %1 %2 ajouté avec succès!")
-            .arg(residentData["prenom"].toString())
-            .arg(residentData["nom"].toString()));
+
+        qDebug() << "[ResidentsPage] Saving resident data:" << residentData;
+
+        // Add the resident to the database
+        if (!DatabaseManager::instance().addResident(residentData)) {
+            QMessageBox::critical(this, "Erreur", "Erreur lors de l'ajout du résident.\n\nVérifiez que le CIN n'existe pas déjà.");
+            qWarning() << "[ResidentsPage] Failed to add resident";
+        } else {
+            QMessageBox::information(this, "Succès",
+                                     QString("Résident %1 %2 ajouté avec succès!")
+                                         .arg(residentData["prenom"].toString())
+                                         .arg(residentData["nom"].toString()));
+
+            qDebug() << "[ResidentsPage] Resident added successfully";
+
+            // Reload the table from database
+            loadResidents();
+        }
+    } else {
+        qDebug() << "[ResidentsPage] Dialog cancelled";
     }
 }
 
@@ -116,19 +148,25 @@ void ResidentsPage::onEditResidentClicked()
         QMessageBox::warning(this, "Attention", "Veuillez sélectionner un résident à modifier.");
         return;
     }
-    
+
     // Get current resident data from table
     QVariantMap currentData = getResidentDataFromRow(currentRow);
-    
+    QString cin = currentData["cin"].toString();
+
+    qDebug() << "[ResidentsPage] Editing resident CIN:" << cin;
+
     // Open dialog with current data
     ResidentDialog dialog(this, currentData);
     if (dialog.exec() == QDialog::Accepted) {
         QVariantMap updatedData = dialog.getResidentData();
-        
-        // Update the table row
-        updateTableRow(currentRow, updatedData);
-        
-        QMessageBox::information(this, "Succès", "Résident modifié avec succès!");
+
+        // Update in database
+        if (DatabaseManager::instance().updateResident(cin, updatedData)) {
+            QMessageBox::information(this, "Succès", "Résident modifié avec succès!");
+            loadResidents();
+        } else {
+            QMessageBox::critical(this, "Erreur", "Erreur lors de la modification du résident.");
+        }
     }
 }
 
@@ -139,57 +177,63 @@ void ResidentsPage::onDeleteResidentClicked()
         QMessageBox::warning(this, "Attention", "Veuillez sélectionner un résident à supprimer.");
         return;
     }
-    
+
+    QString cin = ui->residentsTable->item(currentRow, 0)->text();
     QString nom = ui->residentsTable->item(currentRow, 1)->text();
     QString prenom = ui->residentsTable->item(currentRow, 2)->text();
-    
+
     auto reply = QMessageBox::question(this, "Confirmation",
-        QString("Êtes-vous sûr de vouloir supprimer le résident %1 %2?")
-        .arg(prenom).arg(nom),
-        QMessageBox::Yes | QMessageBox::No);
-    
+                                       QString("Êtes-vous sûr de vouloir supprimer le résident %1 %2?")
+                                           .arg(prenom).arg(nom),
+                                       QMessageBox::Yes | QMessageBox::No);
+
     if (reply == QMessageBox::Yes) {
-        ui->residentsTable->removeRow(currentRow);
-        updateSatisfactionScore();
-        QMessageBox::information(this, "Succès", "Résident supprimé avec succès!");
+        qDebug() << "[ResidentsPage] Deleting resident CIN:" << cin;
+
+        if (DatabaseManager::instance().deleteResident(cin)) {
+            QMessageBox::information(this, "Succès", "Résident supprimé avec succès!");
+            loadResidents();
+        } else {
+            QMessageBox::critical(this, "Erreur", "Erreur lors de la suppression du résident.");
+        }
     }
 }
 
 void ResidentsPage::onSearchTextChanged(const QString &text)
 {
-    QString searchText = text.toLower();
-    
-    for (int row = 0; row < ui->residentsTable->rowCount(); ++row) {
-        bool shouldShow = false;
-        
-        // Search in CIN, Nom, Prénom columns (0, 1, 2)
-        for (int col = 0; col < 3; ++col) {
-            QTableWidgetItem *item = ui->residentsTable->item(row, col);
-            if (item && item->text().toLower().contains(searchText)) {
-                shouldShow = true;
-                break;
-            }
-        }
-        
-        ui->residentsTable->setRowHidden(row, !shouldShow);
+    QString searchText = text.toLower().trimmed();
+
+    if (searchText.isEmpty()) {
+        loadResidents();
+        return;
+    }
+
+    qDebug() << "[ResidentsPage] Searching for:" << searchText;
+
+    ui->residentsTable->setRowCount(0);
+
+    QList<QVariantMap> residents = DatabaseManager::instance().searchResidents(searchText);
+
+    for (const QVariantMap &resident : residents) {
+        addResidentToTable(resident);
     }
 }
 
 void ResidentsPage::onSortChanged(int index)
 {
     switch (index) {
-        case 0: // Trier par CIN
-            ui->residentsTable->sortItems(0, Qt::AscendingOrder);
-            break;
-        case 1: // Trier par Nom
-            ui->residentsTable->sortItems(1, Qt::AscendingOrder);
-            break;
-        case 2: // Trier par Appartement
-            ui->residentsTable->sortItems(7, Qt::AscendingOrder);
-            break;
-        case 3: // Trier par Date d'entrée
-            ui->residentsTable->sortItems(6, Qt::AscendingOrder);
-            break;
+    case 0: // Trier par CIN
+        ui->residentsTable->sortItems(0, Qt::AscendingOrder);
+        break;
+    case 1: // Trier par Nom
+        ui->residentsTable->sortItems(1, Qt::AscendingOrder);
+        break;
+    case 2: // Trier par Appartement
+        ui->residentsTable->sortItems(7, Qt::AscendingOrder);
+        break;
+    case 3: // Trier par Date d'entrée
+        ui->residentsTable->sortItems(6, Qt::AscendingOrder);
+        break;
     }
 }
 
@@ -197,27 +241,27 @@ void ResidentsPage::onExportPdfClicked()
 {
     int currentRow = ui->residentsTable->currentRow();
     if (currentRow < 0) {
-        QMessageBox::information(this, "Export PDF", 
-            "Veuillez sélectionner un résident pour générer sa fiche PDF.\n\n"
-            "La fiche contiendra :\n"
-            "• Logo NEXORA\n"
-            "• Informations complètes du résident\n"
-            "• Détails du contrat de location\n"
-            "• Signature de l'administrateur");
+        QMessageBox::information(this, "Export PDF",
+                                 "Veuillez sélectionner un résident pour générer sa fiche PDF.\n\n"
+                                 "La fiche contiendra :\n"
+                                 "• Logo NEXORA\n"
+                                 "• Informations complètes du résident\n"
+                                 "• Détails du contrat de location\n"
+                                 "• Signature de l'administrateur");
         return;
     }
-    
+
     QString nom = ui->residentsTable->item(currentRow, 1)->text();
     QString prenom = ui->residentsTable->item(currentRow, 2)->text();
-    
-    QMessageBox::information(this, "Export PDF", 
-        QString("Génération de la fiche PDF pour %1 %2...\n\n"
-        "Fonctionnalité en développement :\n"
-        "• Logo NEXORA en en-tête\n"
-        "• Informations complètes du résident\n"
-        "• Détails du contrat et échéances\n"
-        "• Signature officielle de l'administrateur")
-        .arg(prenom).arg(nom));
+
+    QMessageBox::information(this, "Export PDF",
+                             QString("Génération de la fiche PDF pour %1 %2...\n\n"
+                                     "Fonctionnalité en développement :\n"
+                                     "• Logo NEXORA en en-tête\n"
+                                     "• Informations complètes du résident\n"
+                                     "• Détails du contrat et échéances\n"
+                                     "• Signature officielle de l'administrateur")
+                                 .arg(prenom).arg(nom));
 }
 
 void ResidentsPage::onTableSelectionChanged()
@@ -231,7 +275,7 @@ void ResidentsPage::addResidentToTable(const QVariantMap &residentData)
 {
     int rowCount = ui->residentsTable->rowCount();
     ui->residentsTable->insertRow(rowCount);
-    
+
     // Fill the table row with resident data
     ui->residentsTable->setItem(rowCount, 0, new QTableWidgetItem(residentData["cin"].toString()));
     ui->residentsTable->setItem(rowCount, 1, new QTableWidgetItem(residentData["nom"].toString()));
@@ -255,6 +299,7 @@ QVariantMap ResidentsPage::getResidentDataFromRow(int row)
         data["email"] = ui->residentsTable->item(row, 5)->text();
         data["date_entree"] = ui->residentsTable->item(row, 6)->text();
         data["appartement"] = ui->residentsTable->item(row, 7)->text();
+        // Note: etage and statut are not shown in table, so we'll need to get them from DB if needed
     }
     return data;
 }

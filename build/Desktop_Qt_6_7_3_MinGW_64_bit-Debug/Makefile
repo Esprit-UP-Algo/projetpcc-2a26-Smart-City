@@ -124,6 +124,8 @@ Makefile: ../../projet.pro C:/Qt/6.7.3/mingw_64/mkspecs/win32-g++/qmake.conf C:/
 		C:/Qt/6.7.3/mingw_64/mkspecs/modules/qt_lib_concurrent.pri \
 		C:/Qt/6.7.3/mingw_64/mkspecs/modules/qt_lib_concurrent_private.pri \
 		C:/Qt/6.7.3/mingw_64/mkspecs/modules/qt_lib_core.pri \
+		C:/Qt/6.7.3/mingw_64/mkspecs/modules/qt_lib_core5compat.pri \
+		C:/Qt/6.7.3/mingw_64/mkspecs/modules/qt_lib_core5compat_private.pri \
 		C:/Qt/6.7.3/mingw_64/mkspecs/modules/qt_lib_core_private.pri \
 		C:/Qt/6.7.3/mingw_64/mkspecs/modules/qt_lib_datavisualization.pri \
 		C:/Qt/6.7.3/mingw_64/mkspecs/modules/qt_lib_datavisualization_private.pri \
@@ -473,6 +475,8 @@ C:/Qt/6.7.3/mingw_64/mkspecs/modules/qt_lib_chartsqml_private.pri:
 C:/Qt/6.7.3/mingw_64/mkspecs/modules/qt_lib_concurrent.pri:
 C:/Qt/6.7.3/mingw_64/mkspecs/modules/qt_lib_concurrent_private.pri:
 C:/Qt/6.7.3/mingw_64/mkspecs/modules/qt_lib_core.pri:
+C:/Qt/6.7.3/mingw_64/mkspecs/modules/qt_lib_core5compat.pri:
+C:/Qt/6.7.3/mingw_64/mkspecs/modules/qt_lib_core5compat_private.pri:
 C:/Qt/6.7.3/mingw_64/mkspecs/modules/qt_lib_core_private.pri:
 C:/Qt/6.7.3/mingw_64/mkspecs/modules/qt_lib_datavisualization.pri:
 C:/Qt/6.7.3/mingw_64/mkspecs/modules/qt_lib_datavisualization_private.pri:

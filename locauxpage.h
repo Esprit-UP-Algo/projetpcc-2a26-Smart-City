@@ -26,7 +26,7 @@ private slots:
 
 private:
     Ui::LocauxPage *ui;
-    
+
     void setupTable();
     void loadLocaux();
     void clearForm();

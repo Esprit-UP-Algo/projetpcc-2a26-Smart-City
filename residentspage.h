@@ -27,7 +27,7 @@ private slots:
 
 private:
     Ui::ResidentsPage *ui;
-    
+
     void setupConnections();
     void setupTable();
     void setupInitialData();
@@ -35,6 +35,7 @@ private:
     void addResidentToTable(const QVariantMap &residentData);
     QVariantMap getResidentDataFromRow(int row);
     void updateTableRow(int row, const QVariantMap &residentData);
+    void loadResidents();
 };
 
 #endif // RESIDENTSPAGE_H

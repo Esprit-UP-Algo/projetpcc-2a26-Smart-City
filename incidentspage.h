@@ -25,7 +25,7 @@ private slots:
 
 private:
     Ui::IncidentsPage *ui;
-    
+
     void loadIncidents();
     void refreshStatistics();
     void refreshDashboard();

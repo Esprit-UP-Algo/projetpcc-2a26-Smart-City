@@ -16,7 +16,7 @@ class ResidentDialog : public QDialog
 public:
     explicit ResidentDialog(QWidget *parent = nullptr, const QVariantMap &residentData = QVariantMap());
     ~ResidentDialog();
-    
+
     QVariantMap getResidentData() const;
     bool isEditMode() const { return editMode; }
 
@@ -28,7 +28,7 @@ private:
     void setupUI();
     void loadResidentData(const QVariantMap &data);
     bool validateForm();
-    
+
     // Form fields
     QLineEdit *cinEdit;
     QLineEdit *nomEdit;
@@ -40,10 +40,10 @@ private:
     QSpinBox *etageSpinBox;
     QComboBox *statutCombo;
     QDateEdit *dateEntreeEdit;
-    
+
     QPushButton *saveButton;
     QPushButton *cancelButton;
-    
+
     bool editMode;
     QVariantMap residentData;
 };

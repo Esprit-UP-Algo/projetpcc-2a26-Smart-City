@@ -7,7 +7,6 @@
 *****************************************************************************/
 
 #include "../../../financespage.h"
-#include <QtGui/qtextcursor.h>
 #include <QtCore/qmetatype.h>
 
 #include <QtCore/qtmochelpers.h>
@@ -40,12 +39,12 @@ constexpr auto qt_meta_stringdata_CLASSFinancesPageENDCLASS = QtMocHelpers::stri
     "on_addTransactionButton_clicked",
     "",
     "on_searchButton_clicked",
-    "on_sortComboChanged",
+    "on_sortComboBox_currentIndexChanged",
     "index",
     "on_modifyButton_clicked",
     "on_deleteButton_clicked",
     "on_exportPDFButton_clicked",
-    "on_sendMessageButton_clicked"
+    "on_sendButton_clicked"
 );
 #else  // !QT_MOC_HAS_STRINGDATA
 #error "qtmochelpers.h not found or too old."
@@ -99,7 +98,7 @@ Q_CONSTINIT const QMetaObject FinancesPage::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_searchButton_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'on_sortComboChanged'
+        // method 'on_sortComboBox_currentIndexChanged'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
         // method 'on_modifyButton_clicked'
@@ -108,7 +107,7 @@ Q_CONSTINIT const QMetaObject FinancesPage::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_exportPDFButton_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'on_sendMessageButton_clicked'
+        // method 'on_sendButton_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
     nullptr
@@ -122,11 +121,11 @@ void FinancesPage::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         switch (_id) {
         case 0: _t->on_addTransactionButton_clicked(); break;
         case 1: _t->on_searchButton_clicked(); break;
-        case 2: _t->on_sortComboChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 2: _t->on_sortComboBox_currentIndexChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
         case 3: _t->on_modifyButton_clicked(); break;
         case 4: _t->on_deleteButton_clicked(); break;
         case 5: _t->on_exportPDFButton_clicked(); break;
-        case 6: _t->on_sendMessageButton_clicked(); break;
+        case 6: _t->on_sendButton_clicked(); break;
         default: ;
         }
     }
