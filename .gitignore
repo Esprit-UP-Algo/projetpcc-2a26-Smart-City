@@ -80,3 +80,14 @@ CMakeLists.txt.user*
 .rcc/
 .uic/
 /build*/
+
+# ----------------------------------------------------------------------------
+# YOUR SECURITY / CUSTOM IGNORES
+# ----------------------------------------------------------------------------
+
+# Do NOT push your config file (API keys, credentials, private secrets)
+config.h
+
+# Ignore local settings
+*.local
+*.tmp
