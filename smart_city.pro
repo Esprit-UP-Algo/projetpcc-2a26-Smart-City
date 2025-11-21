@@ -1,0 +1,49 @@
+QT += core gui widgets sql charts printsupport network
+
+CONFIG += c++17
+
+SOURCES += \
+    financialassistant.cpp \
+    main.cpp \
+    mainwindow.cpp \
+    openaichat.cpp \
+    welcomedialog.cpp \
+    nexoradashboard.cpp \
+    residentspage.cpp \
+    incidentspage.cpp \
+    locauxpage.cpp \
+    settingspage.cpp \
+    transportpage.cpp \
+    databasemanager.cpp \
+    connection.cpp \
+    financespage.cpp
+
+HEADERS += \
+    config.h \
+    financialassistant.h \
+    mainwindow.h \
+    openaichat.h \
+    transportpage.h \
+    welcomedialog.h \
+    nexoradashboard.h \
+    residentspage.h \
+    incidentspage.h \
+    locauxpage.h \
+    settingspage.h \
+    databasemanager.h \
+    connection.h \
+    financespage.h
+
+FORMS += \
+    mainwindow.ui \
+    transportpage.ui \
+    welcomedialog.ui \
+    nexoradashboard.ui \
+    residentspage.ui \
+    incidentspage.ui \
+    locauxpage.ui \
+    settingspage.ui \
+    financespage.ui
+
+RESOURCES += \
+    resources.qrc

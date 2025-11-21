@@ -1,0 +1,724 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FinancesPage</class>
+ <widget class="QWidget" name="FinancesPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1280</width>
+    <height>956</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Gestion des Finances</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget#FinancesPage { background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #F8FAFB, stop:1 #EDF2F7); font-family: &quot;Segoe UI&quot;; }</string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="leftMargin">
+    <number>40</number>
+   </property>
+   <property name="topMargin">
+    <number>30</number>
+   </property>
+   <property name="rightMargin">
+    <number>40</number>
+   </property>
+   <property name="bottomMargin">
+    <number>30</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="titleLabel">
+     <property name="styleSheet">
+      <string notr="true">QLabel { font-size:28px; font-weight:700; color:#2D3748; letter-spacing:0.5px; padding:8px 0px; }</string>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/resources/finance.png&quot; width=&quot;32&quot; height=&quot;32&quot;/&gt; Gestion des Finances&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="tabFrame">
+     <property name="styleSheet">
+      <string notr="true">QFrame#tabFrame { background:transparent; } QPushButton { background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255,255,255,0.9), stop:1 rgba(248,250,251,0.8)); color:#4A5568; border:1px solid rgba(135,206,235,0.3); padding:12px 20px; border-top-left-radius:12px; border-top-right-radius:12px; font-weight:600; font-size:14px; margin-right:2px; } QPushButton:checked { background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #87CEEB, stop:1 #87CEFA); color:white; border:1px solid #87CEEB; } QPushButton:hover:!checked { background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255,255,255,1), stop:1 rgba(135,206,235,0.1)); border:1px solid rgba(135,206,235,0.5); }</string>
+     </property>
+     <layout class="QHBoxLayout" name="tabLayout">
+      <item>
+       <widget class="QPushButton" name="tabAddButton">
+        <property name="text">
+         <string>Ajouter</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="tabListButton">
+        <property name="text">
+         <string>Liste</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="tabStatsButton">
+        <property name="text">
+         <string>Statistiques</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="contentCard">
+     <property name="styleSheet">
+      <string notr="true">QFrame#contentCard { background:white; border-radius:0 0 20px 20px; border:1px solid #E2E8F0; border-top:none; box-shadow:0 4px 18px rgba(31,45,92,0.08); }</string>
+     </property>
+     <layout class="QVBoxLayout" name="contentLayout">
+      <property name="leftMargin">
+       <number>30</number>
+      </property>
+      <property name="topMargin">
+       <number>30</number>
+      </property>
+      <property name="rightMargin">
+       <number>30</number>
+      </property>
+      <property name="bottomMargin">
+       <number>30</number>
+      </property>
+      <item>
+       <widget class="QStackedWidget" name="stackedWidget">
+        <property name="currentIndex">
+         <number>2</number>
+        </property>
+        <widget class="QWidget" name="addPage">
+         <layout class="QVBoxLayout" name="addPageLayout">
+          <item>
+           <widget class="QLabel" name="addTitle">
+            <property name="styleSheet">
+             <string notr="true">QLabel { font-size:16px; font-weight:600; color:#4A5568; margin-bottom:8px; }</string>
+            </property>
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/resources/ajouter.png&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt; Ajouter une transaction&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="formFrame">
+            <property name="styleSheet">
+             <string notr="true">QFrame#formFrame { background: qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 rgba(255,255,255,0.95), stop:1 rgba(248,250,251,0.9)); border:1px solid rgba(135,206,235,0.2); border-radius:12px; padding:24px; box-shadow:0 2px 12px rgba(135,206,235,0.1); } QLabel { font-size:14px; font-weight:600; color:#4A5568; } QLineEdit, QComboBox, QDateEdit { border:1px solid rgba(135,206,235,0.3); border-radius:8px; padding:10px; background:rgba(255,255,255,0.8); font-size:13px; color:#2D3748; } QLineEdit:focus, QComboBox:focus { border:2px solid #87CEEB; background:white; }</string>
+            </property>
+            <layout class="QGridLayout" name="formLayout">
+             <property name="horizontalSpacing">
+              <number>30</number>
+             </property>
+             <property name="verticalSpacing">
+              <number>20</number>
+             </property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="codeLabel">
+               <property name="text">
+                <string>Code unique</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="codeEdit">
+               <property name="placeholderText">
+                <string>TRN001</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLabel" name="montantLabel">
+               <property name="text">
+                <string>Montant</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QLineEdit" name="montantEdit">
+               <property name="placeholderText">
+                <string>Entrer le montant</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="typeLabel">
+               <property name="text">
+                <string>Type</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLineEdit" name="typeEdit">
+               <property name="placeholderText">
+                <string>Entrer le type</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QLabel" name="categorieLabel">
+               <property name="text">
+                <string>Catégorie</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3">
+              <widget class="QComboBox" name="categorieCombo">
+               <item>
+                <property name="text">
+                 <string>Loyer</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Charges</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Services</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Maintenance</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="descriptionLabel">
+               <property name="text">
+                <string>Description</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QLineEdit" name="descriptionEdit">
+               <property name="placeholderText">
+                <string>Ex: 50900111</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="2">
+              <widget class="QLabel" name="dateLabel">
+               <property name="text">
+                <string>Date transaction</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="3">
+              <widget class="QDateEdit" name="dateEdit">
+               <property name="calendarPopup">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <widget class="QLabel" name="residentCinLabel">
+               <property name="text">
+                <string>CIN résident</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="1">
+              <widget class="QComboBox" name="residentCinCombo"/>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="errorLabel">
+            <property name="styleSheet">
+             <string notr="true">QLabel { color:#D32F2F; font-size:14px; font-weight:600; background:#FFEBEE; border:1px solid #FFCDD2; border-radius:6px; padding:8px 12px; margin:5px 0px; }</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="formButtonsLayout">
+            <item>
+             <spacer name="formSpacer">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="cancelFormButton">
+              <property name="styleSheet">
+               <string notr="true">QPushButton { background:#6C757D; color:white; border-radius:8px; padding:10px 20px; font-weight:600; } QPushButton:hover { background:#5A6268; }</string>
+              </property>
+              <property name="text">
+               <string>Annuler</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="saveFormButton">
+              <property name="styleSheet">
+               <string notr="true">QPushButton { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #87CEEB, stop:1 #4682B4); color:white; border-radius:8px; padding:10px 20px; font-weight:600; } QPushButton:hover { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #4682B4, stop:1 #2E5984); }</string>
+              </property>
+              <property name="text">
+               <string>Enregistrer</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="listPage">
+         <layout class="QVBoxLayout" name="listLayout">
+          <item>
+           <widget class="QFrame" name="toolbarFrame">
+            <property name="styleSheet">
+             <string notr="true">QFrame#toolbarFrame { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 rgba(255,255,255,0.95), stop:1 rgba(248,250,251,0.9)); border:1px solid rgba(135,206,235,0.2); border-radius:12px; padding:15px; } QLineEdit { border:1px solid rgba(135,206,235,0.4); border-radius:10px; padding:10px 15px; background:rgba(255,255,255,0.9); font-size:14px; color:#2D3748; } QLineEdit:focus { border:2px solid #87CEEB; background:rgba(255,255,255,1); } QComboBox { border:1px solid rgba(135,206,235,0.4); border-radius:10px; padding:10px 15px; background:rgba(255,255,255,0.9); font-size:14px; color:#2D3748; min-width:160px; } QComboBox:focus { border:2px solid #87CEEB; background:rgba(255,255,255,1); }</string>
+            </property>
+            <layout class="QHBoxLayout" name="toolbarLayout">
+             <item>
+              <widget class="QLineEdit" name="searchEdit">
+               <property name="minimumSize">
+                <size>
+                 <width>280</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="placeholderText">
+                <string>Rechercher par date code montant</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="searchButton">
+               <property name="minimumSize">
+                <size>
+                 <width>40</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>40</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">QPushButton { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #87CEEB, stop:1 #4682B4); border-radius:8px; border:none; } QPushButton:hover { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #4682B4, stop:1 #2E5984); }</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="sortCombo">
+               <item>
+                <property name="text">
+                 <string>Trier par date</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Trier par code</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Trier par montant</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Trier par CIN résident</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item>
+              <spacer name="toolbarSpacer">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="exportPdfButton">
+               <property name="styleSheet">
+                <string notr="true">QPushButton { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #87CEEB, stop:1 #4682B4); color:white; border-radius:8px; padding:8px 16px; font-weight:600; } QPushButton:hover { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #4682B4, stop:1 #2E5984); }</string>
+               </property>
+               <property name="text">
+                <string>Export PDF</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTableWidget" name="financeTable">
+            <property name="styleSheet">
+             <string notr="true">QTableWidget { border:1px solid rgba(135,206,235,0.3); border-radius:12px; background:rgba(255,255,255,0.95); gridline-color:rgba(135,206,235,0.2); } QHeaderView::section { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #87CEEB, stop:1 #87CEFA); color:white; font-weight:600; padding:12px; border:none; } QTableWidget::item { padding:10px; border-bottom:1px solid rgba(135,206,235,0.1); color:#2D3748; } QTableWidget::item:selected { background:rgba(135,206,235,0.2); color:#2D3748; }</string>
+            </property>
+            <column>
+             <property name="text">
+              <string>Code</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Montant (DT)</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Type</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Catégorie</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Description</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Date</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>CIN résident</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="actionsLayout">
+            <item>
+             <spacer name="actionSpacer">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="editfinanceButton">
+              <property name="styleSheet">
+               <string notr="true">QPushButton { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #F59E0B, stop:1 #D97706); color:white; border-radius:10px; padding:10px 18px; font-weight:600; } QPushButton:hover { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #D97706, stop:1 #B45309); }</string>
+              </property>
+              <property name="text">
+               <string>Modifier</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="deletfinanceButton">
+              <property name="styleSheet">
+               <string notr="true">QPushButton { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #DC2626, stop:1 #B91C1C); color:white; border-radius:10px; padding:10px 18px; font-weight:600; } QPushButton:hover { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #B91C1C, stop:1 #991B1B); }</string>
+              </property>
+              <property name="text">
+               <string>Supprimer</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="statsPage">
+         <property name="styleSheet">
+          <string notr="true">QWidget#statsPage { background:transparent; }</string>
+         </property>
+         <layout class="QVBoxLayout" name="statsLayout">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QFrame" name="statsSubTabFrame">
+            <property name="styleSheet">
+             <string notr="true">QFrame#statsSubTabFrame { background:transparent; } QPushButton { background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255,255,255,0.9), stop:1 rgba(248,250,251,0.8)); color:#4A5568; border:1px solid rgba(135,206,235,0.3); padding:10px 20px; border-radius:8px; font-weight:600; font-size:14px; margin-right:5px; } QPushButton:checked { background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #87CEEB, stop:1 #87CEFA); color:white; border:1px solid #87CEEB; } QPushButton:hover:!checked { background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255,255,255,1), stop:1 rgba(135,206,235,0.1)); border:1px solid rgba(135,206,235,0.5); }</string>
+            </property>
+            <layout class="QHBoxLayout" name="statsSubTabLayout">
+             <item>
+              <widget class="QPushButton" name="subTabStatButton">
+               <property name="text">
+                <string>📊 Statistiques</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="subTabChatButton">
+               <property name="text">
+                <string>🤖 Chatbot</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="statsSubTabSpacer">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QStackedWidget" name="statsStackedWidget">
+            <property name="currentIndex">
+             <number>1</number>
+            </property>
+            <widget class="QWidget" name="statSubPage">
+             <layout class="QVBoxLayout" name="statSubLayout">
+              <property name="leftMargin">
+               <number>20</number>
+              </property>
+              <property name="topMargin">
+               <number>20</number>
+              </property>
+              <property name="rightMargin">
+               <number>20</number>
+              </property>
+              <property name="bottomMargin">
+               <number>20</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="statsTitle">
+                <property name="styleSheet">
+                 <string notr="true">QLabel { font-size:24px; font-weight:700; color:#1F2D5C; padding:15px 0px; background:qlineargradient(x1:0,y1:0,x2:1,y2:0, stop:0 rgba(135,206,235,0.15), stop:1 transparent); border-left:4px solid #87CEEB; padding-left:20px; }</string>
+                </property>
+                <property name="text">
+                 <string>📊 Statistiques Financières</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="kpiLayout">
+                <item>
+                 <widget class="QFrame" name="revenuCard">
+                  <property name="styleSheet">
+                   <string notr="true">QFrame { background:white; border-radius:12px; border:1px solid rgba(135,206,235,0.4); padding:20px; } QLabel { font-weight:600; color:#2D3748; }</string>
+                  </property>
+                  <layout class="QVBoxLayout">
+                   <item>
+                    <widget class="QLabel" name="revenuLabel">
+                     <property name="styleSheet">
+                      <string notr="true">QLabel { font-size:18px; }</string>
+                     </property>
+                     <property name="text">
+                      <string>💰 Revenus du mois : 0 DT</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QFrame" name="depenseCard">
+                  <property name="styleSheet">
+                   <string notr="true">QFrame { background:white; border-radius:12px; border:1px solid rgba(135,206,235,0.4); padding:20px; } QLabel { font-weight:600; color:#2D3748; }</string>
+                  </property>
+                  <layout class="QVBoxLayout">
+                   <item>
+                    <widget class="QLabel" name="depenseLabel">
+                     <property name="styleSheet">
+                      <string notr="true">QLabel { font-size:18px; }</string>
+                     </property>
+                     <property name="text">
+                      <string>💸 Dépenses du mois : 0 DT</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QFrame" name="delaiCard">
+                  <property name="styleSheet">
+                   <string notr="true">QFrame { background:white; border-radius:12px; border:1px solid rgba(135,206,235,0.4); padding:20px; } QLabel { font-weight:600; color:#2D3748; }</string>
+                  </property>
+                  <layout class="QVBoxLayout">
+                   <item>
+                    <widget class="QLabel" name="delaiLabel">
+                     <property name="styleSheet">
+                      <string notr="true">QLabel { font-size:18px; }</string>
+                     </property>
+                     <property name="text">
+                      <string>⏱️ Suivi mensuel : 0 transactions</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QChartView" name="chart" native="true">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>300</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="chatSubPage">
+             <layout class="QVBoxLayout" name="chatSubLayout">
+              <property name="leftMargin">
+               <number>20</number>
+              </property>
+              <property name="topMargin">
+               <number>20</number>
+              </property>
+              <property name="rightMargin">
+               <number>20</number>
+              </property>
+              <property name="bottomMargin">
+               <number>20</number>
+              </property>
+              <item>
+               <widget class="QFrame" name="assistantCard">
+                <property name="styleSheet">
+                 <string notr="true">QFrame { background:white; border:1px solid rgba(135,206,235,0.3); border-radius:14px; padding:20px; } QTextEdit, QLineEdit { border:1px solid rgba(135,206,235,0.3); border-radius:8px; padding:8px; background:#F8FAFC; }</string>
+                </property>
+                <layout class="QVBoxLayout" name="assistantLayout">
+                 <item>
+                  <widget class="QLabel" name="assistantLabel">
+                   <property name="styleSheet">
+                    <string notr="true">QLabel { font-size:20px; font-weight:700; color:#1F2D5C; }</string>
+                   </property>
+                   <property name="text">
+                    <string>🤖 Assistant Financier</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QTextEdit" name="chatTextEdit">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>400</height>
+                    </size>
+                   </property>
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="questionLayout">
+                   <item>
+                    <widget class="QLineEdit" name="questionLineEdit">
+                     <property name="placeholderText">
+                      <string>Poser une question…</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="sendMessageButton">
+                     <property name="styleSheet">
+                      <string notr="true">QPushButton { background:#87CEEB; color:white; font-weight:600; border-radius:8px; padding:10px 20px; font-size:14px; } QPushButton:hover { background:#6FB8FF; }</string>
+                     </property>
+                     <property name="text">
+                      <string>Envoyer</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QChartView</class>
+   <extends>QWidget</extends>
+   <header>QtCharts/QChartView</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
