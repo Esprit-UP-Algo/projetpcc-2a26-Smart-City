@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>NexoraDashboard</class>
+ <widget class="QMainWindow" name="NexoraDashboard">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1400</width>
+    <height>900</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>NEXORA - Menu Principal</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+   QMainWindow {
+       background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+           stop:0 #F8FAFB, stop:1 #EDF2F7);
+       font-family: "Segoe UI", Arial, sans-serif;
+   }
+   </string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">
+    QWidget#centralwidget {
+        background: transparent;
+    }
+    </string>
+   </property>
+   <layout class="QHBoxLayout" name="mainLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    
+    <!-- Sidebar Navigation -->
+    <item>
+     <widget class="QFrame" name="sidebarFrame">
+      <property name="minimumSize">
+       <size>
+        <width>260</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>260</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">
+       QFrame#sidebarFrame {
+           background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+               stop:0 #87CEEB, stop:0.3 #87CEFA, stop:0.7 #7FC7FF, stop:1 #6FB8FF);
+           border: none;
+           border-right: 2px solid rgba(255,255,255,0.3);
+           box-shadow: 2px 0 10px rgba(135,206,235,0.2);
+       }
+       </string>
+      </property>
+      <layout class="QVBoxLayout" name="sidebarLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       
+       <!-- Logo/Title Section -->
+       <item>
+        <widget class="QFrame" name="logoFrame">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>90</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">
+          QFrame#logoFrame {
+              background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                  stop:0 rgba(255,255,255,0.25), stop:1 rgba(255,255,255,0.1));
+              border: none;
+              border-bottom: 2px solid rgba(255,255,255,0.2);
+              border-radius: 0px;
+              padding: 25px 20px;
+          }
+          </string>
+         </property>
+         <layout class="QVBoxLayout" name="logoLayout">
+          <item>
+           <widget class="QLabel" name="logoImage">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>60</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>60</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">
+             QLabel {
+                 background: transparent;
+                 border: none;
+             }
+             </string>
+            </property>
+            <property name="pixmap">
+             <pixmap>:/resources/nexora.png</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       
+       <!-- Navigation Menu -->
+       <item>
+        <widget class="QFrame" name="menuFrame">
+         <property name="styleSheet">
+          <string notr="true">
+          QFrame#menuFrame {
+              background: transparent;
+              border: none;
+          }
+          QPushButton {
+              background: rgba(255,255,255,0.2);
+              border: none;
+              color: white;
+              font-size: 14px;
+              font-weight: 600;
+              text-align: left;
+              padding: 15px 25px;
+              margin: 3px 15px;
+              border-radius: 8px;
+              min-height: 40px;
+              max-height: 40px;
+          }
+          QPushButton:hover {
+              background: rgba(255,255,255,0.3);
+              color: white;
+          }
+          QPushButton:checked {
+              background: rgba(255,255,255,0.25);
+              color: white;
+              font-weight: bold;
+              border-left: 4px solid #FFF;
+          }
+          </string>
+         </property>
+         <layout class="QVBoxLayout" name="menuLayout">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>20</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          
+          <item>
+           <widget class="QPushButton" name="residentsBtn">
+            <property name="text">
+             <string>Résidents</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/resources/res.png</normaloff>
+             </iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          
+          <item>
+           <widget class="QPushButton" name="financesBtn">
+            <property name="text">
+             <string>💰 Finances</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          
+          <item>
+           <widget class="QPushButton" name="incidentsBtn">
+            <property name="text">
+             <string>🚨 Incidents</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          
+          <item>
+           <widget class="QPushButton" name="transportsBtn">
+            <property name="text">
+             <string>🚗 Transports</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          
+          <item>
+           <widget class="QPushButton" name="locauxBtn">
+            <property name="text">
+             <string>🏢 Locaux</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          
+          <item>
+           <widget class="QPushButton" name="adminInfoBtn">
+            <property name="text">
+             <string>🗃️ Infos DB</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          
+          <item>
+           <widget class="QPushButton" name="adminFilesBtn">
+            <property name="text">
+             <string>📁 Gestion Fichiers</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          
+          <item>
+           <widget class="QPushButton" name="settingsBtn">
+            <property name="text">
+             <string>⚙️ Paramètres</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       
+       <!-- Spacer -->
+       <item>
+        <spacer name="sidebarSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       
+       <!-- User Info Section -->
+       <item>
+        <widget class="QFrame" name="userFrame">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>100</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">
+          QFrame#userFrame {
+              background: rgba(255,255,255,0.1);
+              border-radius: 15px;
+              border-top: 2px solid rgba(255,255,255,0.2);
+              margin: 15px;
+              padding: 15px;
+          }
+          QLabel {
+              color: white;
+              background: transparent;
+              font-size: 14px;
+          }
+          QPushButton {
+              background: rgba(255,255,255,0.2);
+              color: white;
+              border: 1px solid rgba(255,255,255,0.3);
+              border-radius: 8px;
+              padding: 8px;
+              font-weight: 600;
+              font-size: 12px;
+          }
+          QPushButton:hover {
+              background: rgba(255,255,255,0.3);
+          }
+          </string>
+         </property>
+         <layout class="QVBoxLayout" name="userLayout">
+          <item>
+           <widget class="QLabel" name="userLabel">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/resources/admin.png&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt; Admin Smart City&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="logoutBtn">
+            <property name="text">
+             <string>Déconnexion</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/resources/logout.png</normaloff>
+             </iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       
+      </layout>
+     </widget>
+    </item>
+    
+    <!-- Content Area -->
+    <item>
+     <widget class="QFrame" name="contentFrame">
+      <property name="styleSheet">
+       <string notr="true">
+       QFrame#contentFrame {
+           background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+               stop:0 #F8FAFB, stop:1 #EDF2F7);
+           border: none;
+       }
+       </string>
+      </property>
+      <layout class="QVBoxLayout" name="contentLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       
+       <!-- Page Content - Full Area -->
+       <item>
+        <widget class="QStackedWidget" name="pageStackedWidget">
+         <property name="styleSheet">
+          <string notr="true">
+          QStackedWidget {
+              background: transparent;
+              border: none;
+              margin: 0px;
+              padding: 0px;
+          }
+          </string>
+         </property>
+        </widget>
+       </item>
+       
+      </layout>
+     </widget>
+    </item>
+    
+   </layout>
+  </widget>
+ </widget>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

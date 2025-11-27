@@ -1,0 +1,1167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SettingsPage</class>
+ <widget class="QWidget" name="SettingsPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Paramètres</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: #F5F7FA;</string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="spacing">
+    <number>20</number>
+   </property>
+   <property name="leftMargin">
+    <number>20</number>
+   </property>
+   <property name="topMargin">
+    <number>20</number>
+   </property>
+   <property name="rightMargin">
+    <number>20</number>
+   </property>
+   <property name="bottomMargin">
+    <number>20</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="titleLabel">
+     <property name="styleSheet">
+      <string notr="true">font-size: 28px; font-weight: bold; color: #2C3E50;</string>
+     </property>
+     <property name="text">
+      <string>⚙️ Paramètres</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="contentLayout">
+     <property name="spacing">
+      <number>20</number>
+     </property>
+     <item>
+      <widget class="QWidget" name="leftCardWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>300</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>300</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: white; border-radius: 15px;</string>
+       </property>
+       <layout class="QVBoxLayout" name="leftCardLayout">
+        <property name="spacing">
+         <number>10</number>
+        </property>
+        <property name="leftMargin">
+         <number>15</number>
+        </property>
+        <property name="topMargin">
+         <number>25</number>
+        </property>
+        <property name="rightMargin">
+         <number>15</number>
+        </property>
+        <property name="bottomMargin">
+         <number>25</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="menuTitle">
+          <property name="styleSheet">
+           <string notr="true">font-size: 16px; font-weight: bold; color: #7F8C8D; padding: 10px;</string>
+          </property>
+          <property name="text">
+           <string>Menu</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="profileButton">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: left;
+    padding-left: 20px;
+    font-size: 15px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #3A7BC8;
+}</string>
+          </property>
+          <property name="text">
+           <string>👤 Profil</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="themeButton">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+    background-color: #ECF0F1;
+    color: #2C3E50;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: left;
+    padding-left: 20px;
+    font-size: 15px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #4A90E2;
+    color: white;
+}</string>
+          </property>
+          <property name="text">
+           <string>🎨 Apparence</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="notificationsButton">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+    background-color: #ECF0F1;
+    color: #2C3E50;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: left;
+    padding-left: 20px;
+    font-size: 15px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #4A90E2;
+    color: white;
+}</string>
+          </property>
+          <property name="text">
+           <string>🔔 Notifications</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="securityButton">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+    background-color: #ECF0F1;
+    color: #2C3E50;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: left;
+    padding-left: 20px;
+    font-size: 15px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #4A90E2;
+    color: white;
+}</string>
+          </property>
+          <property name="text">
+           <string>🔐 Sécurité</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="databaseButton">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+    background-color: #ECF0F1;
+    color: #2C3E50;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: left;
+    padding-left: 20px;
+    font-size: 15px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #4A90E2;
+    color: white;
+}</string>
+          </property>
+          <property name="text">
+           <string>📊 Base de données</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="aboutButton">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+    background-color: #ECF0F1;
+    color: #2C3E50;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: left;
+    padding-left: 20px;
+    font-size: 15px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #4A90E2;
+    color: white;
+}</string>
+          </property>
+          <property name="text">
+           <string>ℹ️ À propos</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="menuSpacer">
+          <property name="orientation">
+           <enum>Qt::Orientation::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QStackedWidget" name="settingsStackedWidget">
+       <property name="currentIndex">
+        <number>4</number>
+       </property>
+       <widget class="QWidget" name="profilePage">
+        <layout class="QVBoxLayout" name="profilePageLayout">
+         <property name="spacing">
+          <number>20</number>
+         </property>
+         <item>
+          <widget class="QWidget" name="profileCardWidget" native="true">
+           <property name="styleSheet">
+            <string notr="true">background-color: white; border-radius: 15px;</string>
+           </property>
+           <layout class="QVBoxLayout" name="profileCardLayout">
+            <property name="spacing">
+             <number>20</number>
+            </property>
+            <property name="leftMargin">
+             <number>30</number>
+            </property>
+            <property name="topMargin">
+             <number>30</number>
+            </property>
+            <property name="rightMargin">
+             <number>30</number>
+            </property>
+            <property name="bottomMargin">
+             <number>30</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="profileTitle">
+              <property name="styleSheet">
+               <string notr="true">font-size: 22px; font-weight: bold; color: #2C3E50;</string>
+              </property>
+              <property name="text">
+               <string>👤 Informations du Profil</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QFormLayout" name="profileFormLayout">
+              <property name="horizontalSpacing">
+               <number>20</number>
+              </property>
+              <property name="verticalSpacing">
+               <number>15</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QLabel" name="usernameLabel">
+                <property name="styleSheet">
+                 <string notr="true">font-size: 15px; font-weight: bold; color: #7F8C8D;</string>
+                </property>
+                <property name="text">
+                 <string>Nom d'utilisateur:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="usernameLineEdit">
+                <property name="styleSheet">
+                 <string notr="true">padding: 10px; border: 2px solid #E0E0E0; border-radius: 8px; font-size: 14px; background-color: #F9F9F9;</string>
+                </property>
+                <property name="text">
+                 <string>smart city</string>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="roleLabel">
+                <property name="styleSheet">
+                 <string notr="true">font-size: 15px; font-weight: bold; color: #7F8C8D;</string>
+                </property>
+                <property name="text">
+                 <string>Rôle:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="roleLineEdit">
+                <property name="styleSheet">
+                 <string notr="true">padding: 10px; border: 2px solid #E0E0E0; border-radius: 8px; font-size: 14px; background-color: #F9F9F9;</string>
+                </property>
+                <property name="text">
+                 <string>Administrateur</string>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="emailLabel">
+                <property name="styleSheet">
+                 <string notr="true">font-size: 15px; font-weight: bold; color: #7F8C8D;</string>
+                </property>
+                <property name="text">
+                 <string>Email:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="emailLineEdit">
+                <property name="styleSheet">
+                 <string notr="true">padding: 10px; border: 2px solid #E0E0E0; border-radius: 8px; font-size: 14px;</string>
+                </property>
+                <property name="text">
+                 <string>admin@nexora.tn</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="phoneLabel">
+                <property name="styleSheet">
+                 <string notr="true">font-size: 15px; font-weight: bold; color: #7F8C8D;</string>
+                </property>
+                <property name="text">
+                 <string>Téléphone:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="phoneLineEdit">
+                <property name="styleSheet">
+                 <string notr="true">padding: 10px; border: 2px solid #E0E0E0; border-radius: 8px; font-size: 14px;</string>
+                </property>
+                <property name="text">
+                 <string>+216 XX XXX XXX</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="profileButtonsLayout">
+              <item>
+               <spacer name="profileButtonsSpacer">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="saveProfileButton">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>45</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color: #27AE60; color: white; border: none; border-radius: 10px; padding: 0 30px; font-size: 15px; font-weight: bold;</string>
+                </property>
+                <property name="text">
+                 <string>💾 Enregistrer</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <spacer name="profilePageSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="themePage">
+        <layout class="QVBoxLayout" name="themePageLayout">
+         <item>
+          <widget class="QWidget" name="themeCardWidget" native="true">
+           <property name="styleSheet">
+            <string notr="true">background-color: white; border-radius: 15px;</string>
+           </property>
+           <layout class="QVBoxLayout" name="themeCardLayout">
+            <property name="spacing">
+             <number>20</number>
+            </property>
+            <property name="leftMargin">
+             <number>30</number>
+            </property>
+            <property name="topMargin">
+             <number>30</number>
+            </property>
+            <property name="rightMargin">
+             <number>30</number>
+            </property>
+            <property name="bottomMargin">
+             <number>30</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="themeTitle">
+              <property name="styleSheet">
+               <string notr="true">font-size: 22px; font-weight: bold; color: #2C3E50;</string>
+              </property>
+              <property name="text">
+               <string>🎨 Personnalisation de l'Apparence</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="themeSubtitle">
+              <property name="styleSheet">
+               <string notr="true">font-size: 14px; color: #7F8C8D;</string>
+              </property>
+              <property name="text">
+               <string>Choisissez votre thème préféré</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="themesLayout">
+              <property name="spacing">
+               <number>20</number>
+              </property>
+              <item>
+               <widget class="QRadioButton" name="lightThemeRadio">
+                <property name="styleSheet">
+                 <string notr="true">font-size: 15px; padding: 15px;</string>
+                </property>
+                <property name="text">
+                 <string>☀️ Clair (Actuel)</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="darkThemeRadio">
+                <property name="styleSheet">
+                 <string notr="true">font-size: 15px; padding: 15px;</string>
+                </property>
+                <property name="text">
+                 <string>🌙 Sombre</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="autoThemeRadio">
+                <property name="styleSheet">
+                 <string notr="true">font-size: 15px; padding: 15px;</string>
+                </property>
+                <property name="text">
+                 <string>🔄 Automatique</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="Line" name="line1">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="languageLabel">
+              <property name="styleSheet">
+               <string notr="true">font-size: 16px; font-weight: bold; color: #2C3E50;</string>
+              </property>
+              <property name="text">
+               <string>Langue:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="languageComboBox">
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>45</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">padding: 10px; border: 2px solid #E0E0E0; border-radius: 8px; font-size: 14px;</string>
+              </property>
+              <item>
+               <property name="text">
+                <string>🇫🇷 Français</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>🇬🇧 English</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>🇹🇳 العربية</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <spacer name="themePageSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="notificationsPage">
+        <layout class="QVBoxLayout" name="notificationsPageLayout">
+         <item>
+          <widget class="QWidget" name="notifCardWidget" native="true">
+           <property name="styleSheet">
+            <string notr="true">background-color: white; border-radius: 15px;</string>
+           </property>
+           <layout class="QVBoxLayout" name="notifCardLayout">
+            <property name="spacing">
+             <number>20</number>
+            </property>
+            <property name="leftMargin">
+             <number>30</number>
+            </property>
+            <property name="topMargin">
+             <number>30</number>
+            </property>
+            <property name="rightMargin">
+             <number>30</number>
+            </property>
+            <property name="bottomMargin">
+             <number>30</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="notifTitle">
+              <property name="styleSheet">
+               <string notr="true">font-size: 22px; font-weight: bold; color: #2C3E50;</string>
+              </property>
+              <property name="text">
+               <string>🔔 Paramètres de Notifications</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="enableNotificationsCheckBox">
+              <property name="styleSheet">
+               <string notr="true">font-size: 15px; padding: 10px;</string>
+              </property>
+              <property name="text">
+               <string>Activer les notifications</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="soundCheckBox">
+              <property name="styleSheet">
+               <string notr="true">font-size: 15px; padding: 10px;</string>
+              </property>
+              <property name="text">
+               <string>🔊 Son des notifications</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="emailNotifCheckBox">
+              <property name="styleSheet">
+               <string notr="true">font-size: 15px; padding: 10px;</string>
+              </property>
+              <property name="text">
+               <string>📧 Notifications par email</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="line2">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="notifTypesLabel">
+              <property name="styleSheet">
+               <string notr="true">font-size: 16px; font-weight: bold; color: #2C3E50;</string>
+              </property>
+              <property name="text">
+               <string>Types de notifications:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="residentsNotifCheckBox">
+              <property name="styleSheet">
+               <string notr="true">font-size: 14px; padding: 8px;</string>
+              </property>
+              <property name="text">
+               <string>👥 Nouveaux résidents</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="transactionsNotifCheckBox">
+              <property name="styleSheet">
+               <string notr="true">font-size: 14px; padding: 8px;</string>
+              </property>
+              <property name="text">
+               <string>💰 Transactions importantes</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="incidentsNotifCheckBox">
+              <property name="styleSheet">
+               <string notr="true">font-size: 14px; padding: 8px;</string>
+              </property>
+              <property name="text">
+               <string>🚨 Incidents critiques</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="transportsNotifCheckBox">
+              <property name="styleSheet">
+               <string notr="true">font-size: 14px; padding: 8px;</string>
+              </property>
+              <property name="text">
+               <string>🚗 Maintenance véhicules</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <spacer name="notifPageSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="securityPage">
+        <layout class="QVBoxLayout" name="securityPageLayout">
+         <item>
+          <widget class="QWidget" name="securityCardWidget" native="true">
+           <property name="styleSheet">
+            <string notr="true">background-color: white; border-radius: 15px;</string>
+           </property>
+           <layout class="QVBoxLayout" name="securityCardLayout">
+            <property name="spacing">
+             <number>20</number>
+            </property>
+            <property name="leftMargin">
+             <number>30</number>
+            </property>
+            <property name="topMargin">
+             <number>30</number>
+            </property>
+            <property name="rightMargin">
+             <number>30</number>
+            </property>
+            <property name="bottomMargin">
+             <number>30</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="securityTitle">
+              <property name="styleSheet">
+               <string notr="true">font-size: 22px; font-weight: bold; color: #2C3E50;</string>
+              </property>
+              <property name="text">
+               <string>🔐 Sécurité et Confidentialité</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="changePasswordButton">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>50</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background-color: #3498DB; color: white; border: none; border-radius: 10px; padding: 0 20px; font-size: 15px; font-weight: bold; text-align: left;</string>
+              </property>
+              <property name="text">
+               <string>🔑 Changer le mot de passe</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="autoLogoutCheckBox">
+              <property name="styleSheet">
+               <string notr="true">font-size: 14px; padding: 10px;</string>
+              </property>
+              <property name="text">
+               <string>⏱️ Déconnexion automatique (30 min d'inactivité)</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="twoFactorCheckBox">
+              <property name="styleSheet">
+               <string notr="true">font-size: 14px; padding: 10px;</string>
+              </property>
+              <property name="text">
+               <string>🛡️ Authentification à deux facteurs</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="line3">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="sessionLabel">
+              <property name="styleSheet">
+               <string notr="true">font-size: 16px; font-weight: bold; color: #2C3E50;</string>
+              </property>
+              <property name="text">
+               <string>Session actuelle:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="sessionInfoLabel">
+              <property name="styleSheet">
+               <string notr="true">font-size: 14px; color: #7F8C8D; padding: 10px; background-color: #F9F9F9; border-radius: 8px;</string>
+              </property>
+              <property name="text">
+               <string>• Connecté depuis: Aujourd'hui à 09:30
+• Adresse IP: 192.168.1.100
+• Appareil: Windows 10 Desktop</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <spacer name="securityPageSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="databasePage">
+        <layout class="QVBoxLayout" name="databasePageLayout">
+         <item>
+          <widget class="QWidget" name="dbCardWidget" native="true">
+           <property name="styleSheet">
+            <string notr="true">background-color: white; border-radius: 15px;</string>
+           </property>
+           <layout class="QVBoxLayout" name="dbCardLayout">
+            <property name="spacing">
+             <number>20</number>
+            </property>
+            <property name="leftMargin">
+             <number>30</number>
+            </property>
+            <property name="topMargin">
+             <number>30</number>
+            </property>
+            <property name="rightMargin">
+             <number>30</number>
+            </property>
+            <property name="bottomMargin">
+             <number>30</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="dbTitle">
+              <property name="styleSheet">
+               <string notr="true">font-size: 22px; font-weight: bold; color: #2C3E50;</string>
+              </property>
+              <property name="text">
+               <string>📊 Gestion de la Base de Données</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="dbInfoLabel">
+              <property name="styleSheet">
+               <string notr="true">font-size: 16px; font-weight: bold; color: #2C3E50;</string>
+              </property>
+              <property name="text">
+               <string>Informations sur la base de données:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="dbStatsLabel">
+              <property name="styleSheet">
+               <string notr="true">font-size: 14px; color: #7F8C8D; padding: 15px; background-color: #F9F9F9; border-radius: 8px;</string>
+              </property>
+              <property name="text">
+               <string>• Type: SQLite
+• Emplacement: nexora.db
+• Taille: 2.5 MB
+• Dernière sauvegarde: Jamais</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="dbButtonsLayout">
+              <property name="spacing">
+               <number>15</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="backupButton">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>50</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color: #27AE60; color: white; border: none; border-radius: 10px; padding: 0 20px; font-size: 15px; font-weight: bold;</string>
+                </property>
+                <property name="text">
+                 <string>💾 Sauvegarder</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="restoreButton">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>50</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color: #3498DB; color: white; border: none; border-radius: 10px; padding: 0 20px; font-size: 15px; font-weight: bold;</string>
+                </property>
+                <property name="text">
+                 <string>📂 Restaurer</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="clearDataButton">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>50</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color: #E74C3C; color: white; border: none; border-radius: 10px; padding: 0 20px; font-size: 15px; font-weight: bold;</string>
+                </property>
+                <property name="text">
+                 <string>🗑️ Vider les données</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="Line" name="line4">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="autoBackupCheckBox">
+              <property name="styleSheet">
+               <string notr="true">font-size: 14px; padding: 10px;</string>
+              </property>
+              <property name="text">
+               <string>🔄 Sauvegarde automatique quotidienne</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <spacer name="dbPageSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="aboutPage">
+        <layout class="QVBoxLayout" name="aboutPageLayout">
+         <item>
+          <widget class="QWidget" name="aboutCardWidget" native="true">
+           <property name="styleSheet">
+            <string notr="true">background-color: white; border-radius: 15px;</string>
+           </property>
+           <layout class="QVBoxLayout" name="aboutCardLayout">
+            <property name="spacing">
+             <number>20</number>
+            </property>
+            <property name="leftMargin">
+             <number>30</number>
+            </property>
+            <property name="topMargin">
+             <number>30</number>
+            </property>
+            <property name="rightMargin">
+             <number>30</number>
+            </property>
+            <property name="bottomMargin">
+             <number>30</number>
+            </property>
+            <item alignment="Qt::AlignmentFlag::AlignHCenter">
+             <widget class="QLabel" name="logoAboutLabel">
+              <property name="styleSheet">
+               <string notr="true">font-size: 48px; font-weight: bold; color: #4A90E2;</string>
+              </property>
+              <property name="text">
+               <string>🏙️ NEXORA</string>
+              </property>
+             </widget>
+            </item>
+            <item alignment="Qt::AlignmentFlag::AlignHCenter">
+             <widget class="QLabel" name="versionLabel">
+              <property name="styleSheet">
+               <string notr="true">font-size: 18px; color: #7F8C8D;</string>
+              </property>
+              <property name="text">
+               <string>Version 1.0.0</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="line5">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="descriptionLabel">
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16px;&quot;&gt;Plateforme de gestion intelligente pour Smart Cities&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14px; color:#7f8c8d;&quot;&gt;Gérez efficacement vos résidents, finances, incidents et transports&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="line6">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="featuresLabel">
+              <property name="styleSheet">
+               <string notr="true">font-size: 14px; color: #2C3E50; padding: 15px; background-color: #F9F9F9; border-radius: 8px;</string>
+              </property>
+              <property name="text">
+               <string>Fonctionnalités:
+
+👥 Gestion des résidents avec recherche avancée
+💰 Suivi des transactions financières
+🚨 Déclaration et suivi des incidents
+🚗 Gestion de flotte de véhicules
+📊 Statistiques en temps réel
+📄 Exports PDF et CSV</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="line7">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item alignment="Qt::AlignmentFlag::AlignHCenter">
+             <widget class="QLabel" name="copyrightLabel">
+              <property name="styleSheet">
+               <string notr="true">font-size: 12px; color: #95A5A6;</string>
+              </property>
+              <property name="text">
+               <string>© 2025 NEXORA. Tous droits réservés.</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <spacer name="aboutPageSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
