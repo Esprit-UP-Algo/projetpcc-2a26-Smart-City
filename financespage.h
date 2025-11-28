@@ -8,6 +8,10 @@
 
 class FinancialAssistant;
 class QChartView;
+class QBarSeries;
+class QBarSet;
+class QBarCategoryAxis;
+class QValueAxis;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class FinancesPage; }
@@ -32,6 +36,7 @@ private slots:
     void onFilterTextChanged(const QString &text);
     void onSortIndexChanged(int index);
     void onExportPdfClicked();
+    void onPreviewQRCode();
 
     // Slots pour les sous-onglets
     void onSubTabStat();
@@ -46,6 +51,7 @@ private:
     Ui::FinancesPage *ui;
     FinancialAssistant *financialAssistant;
     QString currentTransactionCode;
+    bool usePieChart; // Pour alterner entre pie et bar charts
 
     void setupTableHeaders();
     void setupUiBehavior();

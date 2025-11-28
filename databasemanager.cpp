@@ -497,8 +497,8 @@ QVariantMap DatabaseManager::getFinancialStatistics(int year, int month)
 
     QSqlQuery q(db);
     q.prepare(R"(
-        SELECT NVL(SUM(CASE WHEN "TYPE"='Revenu' THEN MONTANT ELSE 0 END),0) AS REVENU,
-               NVL(SUM(CASE WHEN "TYPE"='Dépense' THEN MONTANT ELSE 0 END),0) AS DEPENSE
+        SELECT NVL(SUM(CASE WHEN "TYPE"='Entrée' THEN MONTANT ELSE 0 END),0) AS REVENU,
+               NVL(SUM(CASE WHEN "TYPE"='Sortie' THEN MONTANT ELSE 0 END),0) AS DEPENSE
         FROM TRANSACTIONS
         WHERE EXTRACT(YEAR FROM DATE_TRANSACTION)=:y
           AND EXTRACT(MONTH FROM DATE_TRANSACTION)=:m
@@ -521,8 +521,8 @@ QVariantMap DatabaseManager::getMonthlyEvolution(int year)
     QSqlQuery q(db);
     q.prepare(R"(
         SELECT EXTRACT(MONTH FROM DATE_TRANSACTION) AS MOIS,
-               NVL(SUM(CASE WHEN "TYPE"='Revenu' THEN MONTANT ELSE 0 END),0) AS REVENU,
-               NVL(SUM(CASE WHEN "TYPE"='Dépense' THEN MONTANT ELSE 0 END),0) AS DEPENSE
+               NVL(SUM(CASE WHEN "TYPE"='Entrée' THEN MONTANT ELSE 0 END),0) AS REVENU,
+               NVL(SUM(CASE WHEN "TYPE"='Sortie' THEN MONTANT ELSE 0 END),0) AS DEPENSE
         FROM TRANSACTIONS
         WHERE EXTRACT(YEAR FROM DATE_TRANSACTION)=:y
         GROUP BY EXTRACT(MONTH FROM DATE_TRANSACTION)
@@ -548,7 +548,7 @@ double DatabaseManager::getTotalRevenue(int year, int month)
     q.prepare(R"(
         SELECT NVL(SUM(MONTANT),0)
         FROM TRANSACTIONS
-        WHERE "TYPE"='Revenu'
+        WHERE "TYPE"='Entrée'
           AND EXTRACT(YEAR FROM DATE_TRANSACTION)=:y
           AND EXTRACT(MONTH FROM DATE_TRANSACTION)=:m
     )");
@@ -568,7 +568,7 @@ double DatabaseManager::getTotalExpenses(int year, int month)
     q.prepare(R"(
         SELECT NVL(SUM(MONTANT),0)
         FROM TRANSACTIONS
-        WHERE "TYPE"='Dépense'
+        WHERE "TYPE"='Sortie'
           AND EXTRACT(YEAR FROM DATE_TRANSACTION)=:y
           AND EXTRACT(MONTH FROM DATE_TRANSACTION)=:m
     )");

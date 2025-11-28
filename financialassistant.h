@@ -26,6 +26,7 @@ private:
     QString prepareFinancialContext() const;
     QString analyzeSpendingPatterns() const;
     QString generateBudgetAdvice() const;
+    void generateSimulatedResponse(const QString &question, const QString &context);
 };
 
 #endif // FINANCIALASSISTANT_H

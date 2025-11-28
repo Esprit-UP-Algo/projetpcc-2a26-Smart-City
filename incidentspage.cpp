@@ -62,7 +62,7 @@ void IncidentsPage::onSaveIncident()
 
     // Vérifier ID_R
     bool okIdR = false;
-    int idRes = cinResidentText.toInt(&okIdR);
+    cinResidentText.toInt(&okIdR); // Vérifier que c'est un nombre valide
     if (!okIdR || cinResidentText.length() != 8) {
         ui->errorLabel->setText("ID résident invalide !");
         return;
