@@ -91,3 +91,5 @@ config.h
 # Ignore local settings
 *.local
 *.tmp
+openaichat.cpp
+config.h
