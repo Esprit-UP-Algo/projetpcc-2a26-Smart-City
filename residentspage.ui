@@ -1,0 +1,1049 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ResidentsPage</class>
+ <widget class="QWidget" name="ResidentsPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>1586</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Résidents</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+    QWidget#ResidentsPage {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+            stop:0 #F8FAFB, stop:1 #EDF2F7);
+        font-family: &quot;Segoe UI&quot;;
+    }
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>40</number>
+   </property>
+   <property name="topMargin">
+    <number>30</number>
+   </property>
+   <property name="rightMargin">
+    <number>40</number>
+   </property>
+   <property name="bottomMargin">
+    <number>30</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="titleLabel">
+     <property name="styleSheet">
+      <string notr="true">
+      QLabel { 
+          font-size:28px; 
+          font-weight:700; 
+          color:#2D3748; 
+          letter-spacing:0.5px;
+          padding: 8px 0px;
+      }
+     </string>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/resources/resident.png&quot; width=&quot;32&quot; height=&quot;32&quot;/&gt; Gestion des Résidents&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="tabFrame">
+     <property name="styleSheet">
+      <string notr="true">
+      QFrame#tabFrame { background: transparent; }
+      QPushButton {
+          background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+              stop:0 rgba(255,255,255,0.9), stop:1 rgba(248,250,251,0.8)); 
+          color: #4A5568; border: 1px solid rgba(135,206,235,0.3);
+          padding: 12px 20px; border-top-left-radius: 12px;
+          border-top-right-radius: 12px; font-weight: 600;
+          font-size: 14px; margin-right: 2px;
+      }
+      QPushButton:checked {
+          background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+              stop:0 #87CEEB, stop:1 #87CEFA); 
+          color: white; border: 1px solid #87CEEB;
+          box-shadow: 0 2px 8px rgba(135,206,235,0.3);
+      }
+      QPushButton:hover:!checked { 
+          background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+              stop:0 rgba(255,255,255,1), stop:1 rgba(135,206,235,0.1));
+          border: 1px solid rgba(135,206,235,0.5);
+      }
+     </string>
+     </property>
+     <layout class="QHBoxLayout" name="tabLayout">
+      <item>
+       <widget class="QPushButton" name="tabAddButton">
+        <property name="text">
+         <string>Ajouter</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resources.qrc">
+          <normaloff>:/resources/ajouter.png</normaloff>:/resources/ajouter.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="tabListButton">
+        <property name="text">
+         <string>Liste</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resources.qrc">
+          <normaloff>:/resources/listee.png</normaloff>:/resources/listee.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="tabStatsButton">
+        <property name="text">
+         <string>Statistiques</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resources.qrc">
+          <normaloff>:/resources/statt.png</normaloff>:/resources/statt.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="contentCard">
+     <property name="styleSheet">
+      <string notr="true">
+      QFrame#contentCard {
+          background: white;
+          border-radius: 0 0 20px 20px;
+          border: 1px solid #E2E8F0;
+          border-top: none;
+          box-shadow: 0 4px 18px rgba(31,45,92,0.08);
+      }
+      QLabel { color:#1E293B; }
+     </string>
+     </property>
+     <layout class="QVBoxLayout" name="contentLayout">
+      <property name="leftMargin">
+       <number>30</number>
+      </property>
+      <property name="topMargin">
+       <number>30</number>
+      </property>
+      <property name="rightMargin">
+       <number>30</number>
+      </property>
+      <property name="bottomMargin">
+       <number>30</number>
+      </property>
+      <item>
+       <widget class="QStackedWidget" name="stackedWidget">
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="addPage">
+         <layout class="QVBoxLayout" name="addPageLayout">
+          <item>
+           <widget class="QLabel" name="addTitle">
+            <property name="styleSheet">
+             <string notr="true">QLabel { font-size:16px; font-weight:600; color:#4A5568; margin-bottom:8px; }</string>
+            </property>
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/resources/ajouter.png&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt; Ajouter un Résident&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="formFrame">
+            <property name="styleSheet">
+             <string notr="true">
+             QFrame#formFrame {
+                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                     stop:0 rgba(255,255,255,0.95), stop:1 rgba(248,250,251,0.9));
+                 border: 1px solid rgba(135,206,235,0.2);
+                 border-radius: 12px;
+                 padding: 24px;
+                 box-shadow: 0 2px 12px rgba(135,206,235,0.1);
+             }
+             QLabel { font-size: 14px; font-weight: 600; color: #4A5568; }
+             QLineEdit, QComboBox, QDateEdit {
+                 border: 1px solid rgba(135,206,235,0.3);
+                 border-radius: 8px;
+                 padding: 10px;
+                 background: rgba(255,255,255,0.8);
+                 font-size: 13px;
+                 color: #2D3748;
+             }
+             QLineEdit:focus, QComboBox:focus { 
+                 border: 2px solid #87CEEB; 
+                 background: rgba(255,255,255,1);
+                 box-shadow: 0 0 8px rgba(135,206,235,0.3);
+             }
+            </string>
+            </property>
+            <layout class="QGridLayout" name="formLayout">
+             <property name="horizontalSpacing">
+              <number>30</number>
+             </property>
+             <property name="verticalSpacing">
+              <number>20</number>
+             </property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="cinLabel">
+               <property name="text">
+                <string>CIN *</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="cinEdit">
+               <property name="placeholderText">
+                <string>8 chiffres</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLabel" name="nomLabel">
+               <property name="text">
+                <string>Nom *</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QLineEdit" name="nomEdit">
+               <property name="placeholderText">
+                <string>Nom</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="prenomLabel">
+               <property name="text">
+                <string>Prénom *</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="prenomEdit">
+               <property name="placeholderText">
+                <string>Prénom</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLabel" name="sexeLabel">
+               <property name="text">
+                <string>Sexe</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QComboBox" name="sexeCombo">
+               <item>
+                <property name="text">
+                 <string>Masculin</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Féminin</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="telephoneLabel">
+               <property name="text">
+                <string>Téléphone</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLineEdit" name="telephoneEdit">
+               <property name="placeholderText">
+                <string>Ex: 50900111</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QLabel" name="emailLabel">
+               <property name="text">
+                <string>Email</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3">
+              <widget class="QLineEdit" name="emailEdit">
+               <property name="placeholderText">
+                <string>exemple@mail.com</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="dateLabel">
+               <property name="text">
+                <string>Date de naissance</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QDateEdit" name="dateEdit">
+               <property name="calendarPopup">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="2">
+              <widget class="QLabel" name="appartementLabel">
+               <property name="text">
+                <string>Adresse *</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="3">
+              <widget class="QLineEdit" name="appartementEdit">
+               <property name="placeholderText">
+                <string>Rue, immeuble...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="etageLabel">
+               <property name="text">
+                <string>Satisfaction (%)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QLineEdit" name="etageLineEdit">
+               <property name="placeholderText">
+                <string>0 - 100</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="2">
+              <widget class="QLabel" name="statutLabel">
+               <property name="text">
+                <string>Statut</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="3">
+              <widget class="QComboBox" name="statutComboBox">
+               <item>
+                <property name="text">
+                 <string>Locataire</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Propriétaire</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="errorLabel">
+            <property name="styleSheet">
+             <string notr="true">
+             QLabel {
+                 color: #D32F2F;
+                 font-size: 14px;
+                 font-weight: 600;
+                 background: #FFEBEE;
+                 border: 1px solid #FFCDD2;
+                 border-radius: 6px;
+                 padding: 8px 12px;
+                 margin: 5px 0px;
+             }
+             </string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="formButtonsLayout">
+            <item>
+             <spacer name="formSpacerLeft">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="cancelFormButton">
+              <property name="styleSheet">
+               <string notr="true">
+               QPushButton {
+                   background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                       stop:0 rgba(255,255,255,0.9), stop:1 rgba(248,250,251,0.8));
+                   color: #4A5568; 
+                   border: 1px solid rgba(135,206,235,0.3);
+                   border-radius: 12px; 
+                   padding: 12px 24px; 
+                   font-weight: 600;
+                   font-size: 14px;
+               } 
+               QPushButton:hover {
+                   background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                       stop:0 rgba(248,250,251,1), stop:1 rgba(235,240,245,0.9));
+                   border: 1px solid rgba(135,206,235,0.5);
+               }
+               </string>
+              </property>
+              <property name="text">
+               <string>Annuler</string>
+              </property>
+              <property name="icon">
+               <iconset resource="resources.qrc">
+                <normaloff>:/resources/annul.png</normaloff>:/resources/annul.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="saveFormButton">
+              <property name="styleSheet">
+               <string notr="true">
+               QPushButton {
+                   background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                       stop:0 #87CEEB, stop:1 #87CEFA);
+                   color: white; 
+                   border-radius: 12px; 
+                   padding: 12px 24px; 
+                   font-weight: bold;
+                   font-size: 14px;
+                   border: 1px solid rgba(135,206,235,0.3);
+               } 
+               QPushButton:hover {
+                   background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                       stop:0 #7FC7FF, stop:1 #6FB8FF);
+                   box-shadow: 0 4px 15px rgba(135,206,235,0.4);
+               }
+               </string>
+              </property>
+              <property name="text">
+               <string>Enregistrer</string>
+              </property>
+              <property name="icon">
+               <iconset resource="resources.qrc">
+                <normaloff>:/resources/uplo.png</normaloff>:/resources/uplo.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="formSpacerRight">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="listPage">
+         <layout class="QVBoxLayout" name="listLayout">
+          <item>
+           <widget class="QFrame" name="toolbarFrame">
+            <property name="styleSheet">
+             <string notr="true">
+             QFrame#toolbarFrame {
+                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                     stop:0 rgba(255,255,255,0.95), stop:1 rgba(248,250,251,0.9));
+                 border: 1px solid rgba(135,206,235,0.2);
+                 border-radius: 12px;
+                 padding: 15px;
+                 margin: 5px 0px;
+             }
+             QLineEdit {
+                 border: 1px solid rgba(135,206,235,0.4);
+                 border-radius: 10px;
+                 padding: 10px 15px;
+                 background: rgba(255,255,255,0.9);
+                 font-size: 14px;
+                 color: #2D3748;
+             }
+             QLineEdit:focus {
+                 border: 2px solid #87CEEB;
+                 background: rgba(255,255,255,1);
+                 box-shadow: 0 0 8px rgba(135,206,235,0.3);
+             }
+             QComboBox {
+                 border: 1px solid rgba(135,206,235,0.4);
+                 border-radius: 10px;
+                 padding: 10px 15px;
+                 background: rgba(255,255,255,0.9);
+                 font-size: 14px;
+                 color: #2D3748;
+                 min-width: 160px;
+             }
+             QComboBox:focus {
+                 border: 2px solid #87CEEB;
+                 background: rgba(255,255,255,1);
+             }
+             QComboBox::drop-down {
+                 border: none;
+                 width: 30px;
+             }
+             QComboBox::down-arrow {
+                 image: none;
+                 border-left: 5px solid transparent;
+                 border-right: 5px solid transparent;
+                 border-top: 6px solid #87CEEB;
+                 width: 0px;
+                 height: 0px;
+             }
+             </string>
+            </property>
+            <layout class="QHBoxLayout" name="toolbarLayout">
+             <item>
+              <widget class="QLineEdit" name="searchEdit">
+               <property name="minimumSize">
+                <size>
+                 <width>280</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="placeholderText">
+                <string>Rechercher par Nom ou CIN…</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="searchButton">
+               <property name="minimumSize">
+                <size>
+                 <width>40</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>40</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">QPushButton {
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                        stop:0 #87CEEB, stop:1 #4682B4);
+                    border-radius: 8px;
+                    border: none;
+                } 
+                QPushButton:hover {
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                        stop:0 #4682B4, stop:1 #2E5984);
+                }
+                </string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="resources.qrc">
+                 <normaloff>:/resources/loupe.png</normaloff>:/resources/loupe.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="sortCombo">
+               <item>
+                <property name="text">
+                 <string>Trier par CIN</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Trier par Nom</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                <string>Trier par Adresse</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                <string>Trier par Date de naissance</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item>
+              <spacer name="toolbarSpacer">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="exportPdfButton">
+               <property name="styleSheet">
+                <string notr="true">QPushButton {
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                        stop:0 #87CEEB, stop:1 #4682B4);
+                    color: white; 
+                    border-radius: 8px; 
+                    padding: 8px 16px; 
+                    font-weight: 600;
+                    border: 1px solid rgba(135,206,235,0.3);
+                } 
+                QPushButton:hover {
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                        stop:0 #4682B4, stop:1 #2E5984);
+                    box-shadow: 0 4px 12px rgba(135,206,235,0.3);
+                }</string>
+               </property>
+               <property name="text">
+                <string>Export PDF</string>
+               </property>
+               <property name="icon">
+                <iconset resource="resources.qrc">
+                 <normaloff>:/resources/pdf.png</normaloff>:/resources/pdf.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>16</width>
+                 <height>16</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTableWidget" name="residentsTable">
+            <property name="styleSheet">
+             <string notr="true">
+             QTableWidget {
+                 border: 1px solid rgba(135,206,235,0.3);
+                 border-radius: 12px;
+                 background: rgba(255,255,255,0.95);
+                 gridline-color: rgba(135,206,235,0.2);
+             }
+             QHeaderView::section {
+                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                     stop:0 #87CEEB, stop:1 #87CEFA);
+                 color: white;
+                 font-weight: 600;
+                 padding: 12px;
+                 border: none;
+                 border-right: 1px solid rgba(255,255,255,0.3);
+             }
+             QTableWidget::item {
+                 padding: 10px;
+                 border-bottom: 1px solid rgba(135,206,235,0.1);
+                 color: #2D3748;
+             }
+             QTableWidget::item:selected {
+                 background: rgba(135,206,235,0.2);
+                 color: #2D3748;
+             }
+             QTableWidget::item:alternate {
+                 background: rgba(248,250,251,0.8);
+             }
+            </string>
+            </property>
+            <column>
+             <property name="text">
+              <string>CIN</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Nom</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Prénom</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Sexe</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Téléphone</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Email</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Date d’entrée</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Appartement</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Étage</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Statut</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="actionsLayout">
+            <item>
+             <spacer name="actionSpacer">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="editResidentButton">
+              <property name="styleSheet">
+               <string notr="true">
+               QPushButton {
+                   background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                       stop:0 #F59E0B, stop:1 #D97706);
+                   color: white; 
+                   border-radius: 10px; 
+                   padding: 10px 18px; 
+                   font-weight: 600;
+                   border: 1px solid rgba(245,158,11,0.3);
+               } 
+               QPushButton:hover {
+                   background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                       stop:0 #D97706, stop:1 #B45309);
+                   box-shadow: 0 4px 12px rgba(245,158,11,0.3);
+               }
+               </string>
+              </property>
+              <property name="text">
+               <string>Modifier</string>
+              </property>
+              <property name="icon">
+               <iconset resource="resources.qrc">
+                <normaloff>:/resources/modify.png</normaloff>:/resources/modify.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="deleteResidentButton">
+              <property name="styleSheet">
+               <string notr="true">
+               QPushButton {
+                   background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                       stop:0 #DC2626, stop:1 #B91C1C);
+                   color: white; 
+                   border-radius: 10px; 
+                   padding: 10px 18px; 
+                   font-weight: 600;
+                   border: 1px solid rgba(220,38,38,0.3);
+               } 
+               QPushButton:hover {
+                   background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                       stop:0 #B91C1C, stop:1 #991B1B);
+                   box-shadow: 0 4px 12px rgba(220,38,38,0.3);
+               }
+               </string>
+              </property>
+              <property name="text">
+               <string>Supprimer</string>
+              </property>
+              <property name="icon">
+               <iconset resource="resources.qrc">
+                <normaloff>:/resources/trash.png</normaloff>:/resources/trash.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="statsPage">
+         <property name="styleSheet">
+          <string notr="true">
+          QWidget#statsPage {
+              background: transparent;
+          }
+          </string>
+         </property>
+         <layout class="QVBoxLayout" name="statsLayout">
+          <property name="spacing">
+           <number>25</number>
+          </property>
+          <property name="leftMargin">
+           <number>30</number>
+          </property>
+          <property name="topMargin">
+           <number>20</number>
+          </property>
+          <property name="rightMargin">
+           <number>30</number>
+          </property>
+          <property name="bottomMargin">
+           <number>20</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="statsTitle">
+            <property name="styleSheet">
+             <string notr="true">
+             QLabel {
+                 font-size: 24px;
+                 font-weight: 700;
+                 color: #1F2D5C;
+                 padding: 15px 0px;
+                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                     stop:0 rgba(135,206,235,0.1), stop:1 transparent);
+                 border-left: 4px solid #87CEEB;
+                 padding-left: 20px;
+             }
+             </string>
+            </property>
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/resources/statt.png&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt; Statistiques Intelligentes — Score de Satisfaction Estimé&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="resultCard">
+            <property name="styleSheet">
+             <string notr="true">
+             QFrame#resultCard {
+                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                     stop:0 #87CEEB, stop:1 #4682B4);
+                 border-radius: 15px;
+                 padding: 30px;
+                 border: 2px solid #87CEEB;
+             }
+             QLabel {
+                 background: transparent;
+                 border: none;
+             }
+             </string>
+            </property>
+            <layout class="QVBoxLayout" name="resultLayout">
+             <property name="spacing">
+              <number>15</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="resultTitle">
+               <property name="styleSheet">
+                <string notr="true">
+                QLabel {
+                    font-size: 20px;
+                    font-weight: 700;
+                    color: white;
+                    background: transparent;
+                    border: none;
+                    margin-bottom: 15px;
+                }
+                </string>
+               </property>
+               <property name="text">
+                <string>🧠 Résultat Automatique :</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="satisfactionScore">
+               <property name="styleSheet">
+                <string notr="true">
+                QLabel {
+                    font-size: 28px;
+                    font-weight: 800;
+                    color: white;
+                    background: transparent;
+                    border: none;
+                    padding: 15px 10px;
+                }
+                </string>
+               </property>
+               <property name="text">
+                <string>Score global de satisfaction : 82 / 100</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="satisfactionAnalysis">
+               <property name="styleSheet">
+                <string notr="true">
+                QLabel {
+                    font-size: 16px;
+                    font-weight: 500;
+                    color: white;
+                    background: rgba(255,255,255,0.15);
+                    border-radius: 8px;
+                    border: 1px solid rgba(255,255,255,0.2);
+                    padding: 18px;
+                    margin-top: 10px;
+                }
+                </string>
+               </property>
+               <property name="text">
+                <string>Bonne stabilité. Quelques incidents mineurs ont été signalés ce mois-ci.</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignCenter</set>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="algorithmText">
+            <property name="styleSheet">
+             <string notr="true">
+             QLabel {
+                 font-size: 14px;
+                 color: #4A5568;
+                 background: transparent;
+                 border: none;
+                 margin-top: 20px;
+                 line-height: 1.6;
+             }
+             </string>
+            </property>
+            <property name="text">
+             <string>Algorithme : Renouvellement de contrat (+10), Départ avant date (−20), Incident (−5), Aucun incident 6 mois (+5)</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>
+
