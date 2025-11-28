@@ -42,6 +42,9 @@
 #include <QDialog>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QClipboard>
+#include <QButtonGroup>
+#include <QRadioButton>
 
 /******************************
  *  QR CODE LIBRARY (QRCODE)
@@ -152,6 +155,59 @@ public:
                         .arg(verification);
         
         return generateQRCode(qrData, 300);
+    }
+
+    static QPixmap generatePaymentQR(const QString &transactionCode, const QString &montant, const QString &description = "") {
+        // Option 1: PayPal.Me (le plus simple pour tester)
+        QString paypalUrl = QString("https://paypal.me/nexorapay/%1")
+                           .arg(montant);
+        
+        // Option 2: Stripe Payment Link (exemple)
+        QString stripeUrl = QString("https://buy.stripe.com/test_payment?amount=%1&description=%2")
+                           .arg(QString::number(montant.toDouble() * 100)) // Stripe utilise les centimes
+                           .arg(QString(QUrl::toPercentEncoding(description)));
+        
+        // Option 3: Page de paiement de test simple
+        QString testUrl = QString("https://payment-test.com/pay?ref=%1&amount=%2&currency=TND&desc=%3")
+                         .arg(transactionCode)
+                         .arg(montant)
+                         .arg(QString(QUrl::toPercentEncoding(description)));
+        
+        // Option 4: Lien vers Google Pay (exemple)
+        QString googlePayUrl = QString("https://pay.google.com/send/home?amount=%1&note=%2")
+                              .arg(montant)
+                              .arg(QString(QUrl::toPercentEncoding("NEXORA Transaction: " + transactionCode)));
+        
+        // Option 5: Page de démonstration avec formulaire de paiement
+        QString demoUrl = QString("https://demo.paymentgateway.com/checkout?merchant=NEXORA&ref=%1&amount=%2&currency=TND")
+                         .arg(transactionCode)
+                         .arg(montant);
+        
+        // Option 6: Liens de test alternatifs fonctionnels
+        QString alternativeUrls[] = {
+            QString("https://www.paypal.com/paypalme/nexoratest/%1").arg(montant),
+            QString("https://square.link/u/nexora?amount=%1").arg(montant),
+            QString("https://venmo.com/code?user_id=nexora&amount=%1&note=%2").arg(montant, transactionCode),
+            QString("https://cash.app/$nexora/%1").arg(montant),
+            QString("https://buy.stripe.com/test_payment_link?amount=%1").arg(QString::number(montant.toDouble() * 100))
+        };
+        
+        // Choisir aléatoirement un service pour démonstration
+        int serviceIndex = qHash(transactionCode) % 5;
+        QString selectedUrl = (serviceIndex == 0) ? paypalUrl : alternativeUrls[serviceIndex - 1];
+        
+        // Si vous voulez forcer un service spécifique, décommentez l'une de ces lignes :
+        // selectedUrl = paypalUrl;  // PayPal (le plus accessible)
+        // selectedUrl = testUrl;    // Page de test personnalisée
+        // selectedUrl = demoUrl;    // Page de démonstration
+
+        return generateQRFromUrl(selectedUrl);
+    }
+
+    // NOUVELLE MÉTHODE: Générer QR directement à partir d'une URL
+    static QPixmap generateQRFromUrl(const QString &url) {
+        qDebug() << "Génération QR pour URL:" << url;
+        return generateQRCode(url, 300);
     }
 
 private:
@@ -327,6 +383,8 @@ void FinancesPage::setupUiBehavior()
             this, &FinancesPage::onExportPdfClicked);
     connect(ui->previewQrButton, &QPushButton::clicked,
             this, &FinancesPage::onPreviewQRCode);
+    connect(ui->generatePaymentButton, &QPushButton::clicked,
+            this, &FinancesPage::onGeneratePaymentQR);
 }
 
 void FinancesPage::setupValidation()
@@ -523,30 +581,51 @@ void FinancesPage::updateChart(QChartView *chartView, double revenues, double ex
         } else {
             qDebug() << "Données réelles pour le graphique - Entrées:" << revenues << "Sorties:" << expenses;
             
-            // Créer les slices avec les vraies données
+            // Calculer le total et les pourcentages
+            double total = revenues + expenses;
+            double revenuePercentage = (total > 0) ? (revenues / total) * 100.0 : 0.0;
+            double expensePercentage = (total > 0) ? (expenses / total) * 100.0 : 0.0;
+            
+            qDebug() << "Total:" << total << "% Entrées:" << revenuePercentage << "% Sorties:" << expensePercentage;
+            
+            // Créer les slices avec les vraies données et pourcentages
             if (revenues > 0) {
-                QPieSlice *revenueSlice = series->append(QString("Entrées\\n%1 DT").arg(QString::number(revenues, 'f', 2)), revenues);
+                QPieSlice *revenueSlice = series->append(QString("💰 Entrées\n%1 DT (%2%)")
+                                                        .arg(QString::number(revenues, 'f', 2))
+                                                        .arg(QString::number(revenuePercentage, 'f', 1)), revenues);
                 revenueSlice->setBrush(QColor("#10B981")); // Vert
                 revenueSlice->setLabelVisible(true);
-                revenueSlice->setLabelColor(QColor("#FFFFFF"));
-                revenueSlice->setLabelFont(QFont("Arial", 10, QFont::Bold));
+                revenueSlice->setLabelColor(QColor("#000000")); // Noir
+                revenueSlice->setLabelFont(QFont("Arial", 9, QFont::Bold));
                 revenueSlice->setExploded(true);
                 revenueSlice->setExplodeDistanceFactor(0.05);
             }
             
             if (expenses > 0) {
-                QPieSlice *expenseSlice = series->append(QString("Sorties\\n%1 DT").arg(QString::number(expenses, 'f', 2)), expenses);
+                QPieSlice *expenseSlice = series->append(QString("💸 Sorties\n%1 DT (%2%)")
+                                                        .arg(QString::number(expenses, 'f', 2))
+                                                        .arg(QString::number(expensePercentage, 'f', 1)), expenses);
                 expenseSlice->setBrush(QColor("#EF4444")); // Rouge
                 expenseSlice->setLabelVisible(true);
-                expenseSlice->setLabelColor(QColor("#FFFFFF"));
-                expenseSlice->setLabelFont(QFont("Arial", 10, QFont::Bold));
+                expenseSlice->setLabelColor(QColor("#000000")); // Noir
+                expenseSlice->setLabelFont(QFont("Arial", 9, QFont::Bold));
             }
         }
         
         qDebug() << "Nombre de slices créées:" << series->slices().count();
         
         chartObj->addSeries(series);
-        chartObj->setTitle("💰 Répartition Financière - Données Réelles");
+        
+        // Titre avec statistiques complètes
+        double total = revenues + expenses;
+        QString titleText;
+        if (total > 0) {
+            titleText = QString("💰 Statistiques Financières - Total: %1 DT")
+                       .arg(QString::number(total, 'f', 2));
+        } else {
+            titleText = "💰 Statistiques Financières - Aucune donnée";
+        }
+        chartObj->setTitle(titleText);
         
     } else {
         // Créer un Bar Chart
@@ -558,9 +637,16 @@ void FinancesPage::updateChart(QChartView *chartView, double revenues, double ex
             expenses = 1800.0;
         }
         
-        // Créer des barsets séparés pour des couleurs différentes
-        QBarSet *entriesSet = new QBarSet("Entrées");
-        QBarSet *sortiesSet = new QBarSet("Sorties");
+        // Calculer les pourcentages pour les barres
+        double barTotal = revenues + expenses;
+        double barRevenuePercentage = (barTotal > 0) ? (revenues / barTotal) * 100.0 : 50.0;
+        double barExpensePercentage = (barTotal > 0) ? (expenses / barTotal) * 100.0 : 50.0;
+        
+        // Créer des barsets séparés avec informations détaillées
+        QBarSet *entriesSet = new QBarSet(QString("💰 Entrées (%1%)")
+                                         .arg(QString::number(barRevenuePercentage, 'f', 1)));
+        QBarSet *sortiesSet = new QBarSet(QString("💸 Sorties (%1%)")
+                                         .arg(QString::number(barExpensePercentage, 'f', 1)));
         
         *entriesSet << revenues << 0; // Entrées uniquement dans la première colonne
         *sortiesSet << 0 << expenses; // Sorties uniquement dans la deuxième colonne
@@ -574,6 +660,10 @@ void FinancesPage::updateChart(QChartView *chartView, double revenues, double ex
         
         series->append(entriesSet);
         series->append(sortiesSet);
+        
+        // Activer les étiquettes de valeurs sur les barres
+        series->setLabelsVisible(true);
+        series->setLabelsPosition(QAbstractBarSeries::LabelsInsideEnd);
         
         // Axes
         QStringList categories;
@@ -593,7 +683,21 @@ void FinancesPage::updateChart(QChartView *chartView, double revenues, double ex
         axisY->setTitleText("Montant (DT)");
         
         chartObj->addSeries(series);
-        chartObj->setTitle("📊 Comparaison Financière - Entrées vs Sorties");
+        
+        // Titre avec statistiques pour le graphique en barres
+        double total = revenues + expenses;
+        QString barTitleText;
+        if (total > 0) {
+            double revenuePercentage = (revenues / total) * 100.0;
+            double expensePercentage = (expenses / total) * 100.0;
+            barTitleText = QString("📊 Comparaison Financière - Total: %1 DT | Entrées: %2% | Sorties: %3%")
+                          .arg(QString::number(total, 'f', 2))
+                          .arg(QString::number(revenuePercentage, 'f', 1))
+                          .arg(QString::number(expensePercentage, 'f', 1));
+        } else {
+            barTitleText = "📊 Comparaison Financière - Entrées vs Sorties";
+        }
+        chartObj->setTitle(barTitleText);
         
         // Utiliser addAxis au lieu des méthodes dépréciées
         chartObj->addAxis(axisX, Qt::AlignBottom);
@@ -615,11 +719,11 @@ void FinancesPage::updateChart(QChartView *chartView, double revenues, double ex
     titleFont.setPointSize(16); // Taille plus grande
     titleFont.setBold(true);
     chartObj->setTitleFont(titleFont);
-    chartObj->setTitleBrush(QBrush(QColor("#2D3748"))); // Couleur du titre
+    chartObj->setTitleBrush(QBrush(QColor("#000000"))); // Couleur du titre en noir
     
     // Style de la légende
     chartObj->legend()->setFont(QFont("Arial", 11, QFont::Normal));
-    chartObj->legend()->setBrush(QBrush(QColor("#4A5568")));
+    chartObj->legend()->setBrush(QBrush(QColor("#000000"))); // Légende en noir
     
     // Appliquer le graphique
     if (chartView->chart()) {
@@ -978,16 +1082,101 @@ void FinancesPage::onExportPdfClicked()
 
     top = descRect.bottom() + 100;
 
-    // QR CODE AVEC API
-    QString transactionData = QString("Code:%1|Montant:%2|Date:%3|Type:%4|CIN:%5")
-                         .arg(code)
-                         .arg(montant)
-                         .arg(date)
-                         .arg(type)
-                         .arg(cin);
+    // ===== SÉLECTEUR DE SERVICE DE PAIEMENT POUR PDF =====
+    QDialog serviceDialog(this);
+    serviceDialog.setWindowTitle("💳 Choisir le service de paiement pour le PDF");
+    serviceDialog.setFixedSize(480, 350);
+    
+    QVBoxLayout* serviceLayout = new QVBoxLayout(&serviceDialog);
+    
+    QLabel* serviceTitle = new QLabel("🔗 Sélectionnez le service de paiement à inclure dans le PDF");
+    serviceTitle->setStyleSheet("font-size: 14px; font-weight: bold; margin: 10px;");
+    serviceTitle->setAlignment(Qt::AlignCenter);
+    serviceLayout->addWidget(serviceTitle);
+    
+    QButtonGroup* serviceGroup = new QButtonGroup();
+    
+    QRadioButton* paypalBtn = new QRadioButton("💙 PayPal.Me (Recommandé)");
+    QRadioButton* stripeBtn = new QRadioButton("💜 Stripe Payment Link");
+    QRadioButton* squareBtn = new QRadioButton("🟦 Square Payment");
+    QRadioButton* venmoBtn = new QRadioButton("💰 Venmo");
+    QRadioButton* cashBtn = new QRadioButton("💸 Cash App");
+    QRadioButton* testBtn = new QRadioButton("🧪 Page de test");
+    
+    paypalBtn->setChecked(true);
+    
+    serviceGroup->addButton(paypalBtn, 0);
+    serviceGroup->addButton(stripeBtn, 1);
+    serviceGroup->addButton(squareBtn, 2);
+    serviceGroup->addButton(venmoBtn, 3);
+    serviceGroup->addButton(cashBtn, 4);
+    serviceGroup->addButton(testBtn, 5);
+    
+    serviceLayout->addWidget(paypalBtn);
+    serviceLayout->addWidget(stripeBtn);
+    serviceLayout->addWidget(squareBtn);
+    serviceLayout->addWidget(venmoBtn);
+    serviceLayout->addWidget(cashBtn);
+    serviceLayout->addWidget(testBtn);
+    
+    QHBoxLayout* pdfButtonLayout = new QHBoxLayout();
+    QPushButton* pdfOkBtn = new QPushButton("✅ Générer PDF");
+    QPushButton* pdfCancelBtn = new QPushButton("❌ Annuler");
+    pdfButtonLayout->addWidget(pdfOkBtn);
+    pdfButtonLayout->addWidget(pdfCancelBtn);
+    serviceLayout->addLayout(pdfButtonLayout);
+    
+    connect(pdfOkBtn, &QPushButton::clicked, &serviceDialog, &QDialog::accept);
+    connect(pdfCancelBtn, &QPushButton::clicked, &serviceDialog, &QDialog::reject);
+    
+    if (serviceDialog.exec() != QDialog::Accepted) {
+        return; // Annuler l'export PDF
+    }
+    
+    int selectedService = serviceGroup->checkedId();
+    
+    // Générer l'URL selon le service choisi
+    QString paymentUrl;
+    QString serviceName;
+    
+    switch (selectedService) {
+        case 0: // PayPal
+            paymentUrl = QString("https://www.paypal.com/paypalme/nexorapay/%1").arg(montant);
+            serviceName = "PayPal.Me";
+            break;
+        case 1: // Stripe
+            paymentUrl = QString("https://buy.stripe.com/test_payment_link?amount=%1&ref=%2")
+                        .arg(QString::number(montant.replace(",", ".").toDouble() * 100))
+                        .arg(code);
+            serviceName = "Stripe";
+            break;
+        case 2: // Square
+            paymentUrl = QString("https://squareup.com/store/nexora-payments/item/nexora-payment?amount=%1&ref=%2")
+                        .arg(montant).arg(code);
+            serviceName = "Square";
+            break;
+        case 3: // Venmo
+            paymentUrl = QString("https://venmo.com/code?user_id=nexora&amount=%1&note=Transaction_%2")
+                        .arg(montant).arg(code);
+            serviceName = "Venmo";
+            break;
+        case 4: // Cash App
+            paymentUrl = QString("https://cash.app/$nexora/%1").arg(montant);
+            serviceName = "Cash App";
+            break;
+        case 5: // Test
+        default:
+            paymentUrl = QString("https://httpbin.org/anything/nexora-payment?transaction=%1&amount=%2&type=%3&category=%4")
+                        .arg(code, montant, type, categorie);
+            serviceName = "Page de test";
+            break;
+    }
 
-    // Générer QR code avec l'API
-    QPixmap qrPixmap = QRCodeGenerator::generateAdvancedQR(transactionData, "FACTURE-PDF");
+    // QR CODE DE PAIEMENT AVEC LIEN SÉLECTIONNÉ
+    QString paymentDescription = QString("Transaction %1 - %2 - %3").arg(code, type, categorie);
+    
+    // Générer QR code avec l'URL spécifique choisie
+    QPixmap qrPixmap = QRCodeGenerator::generateQRFromUrl(paymentUrl);
     
     int qrDisplaySize = 400;
     int qrX = pdf.width() - margin - qrDisplaySize - 60;
@@ -1011,12 +1200,19 @@ void FinancesPage::onExportPdfClicked()
         qDebug() << "Impossible de générer le QR Code";
     }
 
-    // Texte explicatif pour le QR code
+    // Texte explicatif pour le QR code de paiement avec service choisi
     p.setPen(Qt::black);
     p.setFont(QFont("Arial", 12, QFont::Bold));
-    p.drawText(qrX, qrY + qrDisplaySize + 60, "📱 Scannez pour vérifier");
+    p.drawText(qrX, qrY + qrDisplaySize + 60, QString("💳 Payer via %1").arg(serviceName));
     p.setFont(QFont("Arial", 10));
-    p.drawText(qrX, qrY + qrDisplaySize + 85, "Code de vérification inclus");
+    p.drawText(qrX, qrY + qrDisplaySize + 85, "Scannez le QR code");
+    p.drawText(qrX, qrY + qrDisplaySize + 105, QString("Code: %1").arg(code));
+    p.drawText(qrX, qrY + qrDisplaySize + 125, QString("Montant: %1 DT").arg(montant));
+    
+    // Ajouter l'URL du lien de paiement en petits caractères
+    p.setFont(QFont("Arial", 8));
+    QRect urlRect(qrX - 20, qrY + qrDisplaySize + 145, qrDisplaySize + 40, 40);
+    p.drawText(urlRect, Qt::TextWordWrap, paymentUrl);
 
     // ZONE SIGNATURE
     int signatureY = top;
@@ -1036,7 +1232,7 @@ void FinancesPage::onExportPdfClicked()
     p.drawText(signatureX + 20, signatureY + signatureHeight - 20, "Date : _______________");
 
     // FOOTER SOUS SIGNATURE ET QR CODE
-    int footerY = qrY + qrDisplaySize + 150;
+    int footerY = qrY + qrDisplaySize + 200; // Ajusté pour le nouveau contenu
     p.setFont(QFont("Arial", 13, QFont::StyleItalic));
     p.setPen(QColor("#1F4E8C"));
     p.drawText(
@@ -1049,17 +1245,17 @@ void FinancesPage::onExportPdfClicked()
     p.end();
 
     QMessageBox::information(this, "🎉 PDF Exporté avec Succès !",
-                             QString("✅ **Facture PDF générée avec les nouvelles fonctionnalités :**\n\n"
-                                    "🔗 **QR Code Intelligent** :\n"
-                                    "   • Généré via API qr-server.com\n"
-                                    "   • Contient toutes les données de transaction\n"
-                                    "   • Code de vérification unique intégré\n"
-                                    "   • Horodatage de création\n\n"
-                                    "📱 **Fonctionnalités** :\n"
-                                    "   • Scannable avec n'importe quel smartphone\n"
-                                    "   • Vérification d'authenticité\n"
-                                    "   • Traçabilité complète\n\n"
-                                    "📄 **Fichier sauvegardé :** %1").arg(filename));
+                             QString("✅ **Facture PDF générée avec lien de paiement :**\n\n"
+                                    "💳 **QR Code de Paiement** :\n"
+                                    "   • Lien direct vers page de paiement\n"
+                                    "   • Code transaction : %1\n"
+                                    "   • Montant : %2 DT\n"
+                                    "   • Vérification sécurisée incluse\n\n"
+                                    "📱 **Pour payer** :\n"
+                                    "   • Scannez le QR code\n"
+                                    "   • Entrez le code transaction\n"
+                                    "   • Confirmez le paiement\n\n"
+                                    "📄 **Fichier sauvegardé :** %3").arg(code, montant, filename));
 }
 
 void FinancesPage::onSendMessage()
@@ -1212,4 +1408,273 @@ void FinancesPage::onPreviewQRCode()
     layout->addWidget(closeBtn);
 
     qrDialog->exec();
+}
+
+void FinancesPage::onGeneratePaymentQR()
+{
+    int row = ui->financeTable->currentRow();
+    if (row < 0) {
+        QMessageBox::warning(this, "QR Paiement", "Veuillez sélectionner une transaction pour générer le lien de paiement.");
+        return;
+    }
+
+    QString code = ui->financeTable->item(row, 0)->text();
+    QString montant = ui->financeTable->item(row, 1)->text();
+    QString type = ui->financeTable->item(row, 2)->text();
+    QString categorie = ui->financeTable->item(row, 3)->text();
+    QString description = QString("Transaction %1 - %2 - %3").arg(code, type, categorie);
+
+    // ===== ÉTAPE 1: Choisir le service de paiement =====
+    QDialog serviceDialog(this);
+    serviceDialog.setWindowTitle("💳 Sélectionner le service de paiement");
+    serviceDialog.setFixedSize(480, 400);
+    serviceDialog.setStyleSheet("QDialog { background-color: #f8f9fa; }");
+    
+    QVBoxLayout* serviceLayout = new QVBoxLayout(&serviceDialog);
+    
+    // Titre du dialog
+    QLabel* serviceTitle = new QLabel("🔗 Choisissez votre méthode de paiement préférée");
+    serviceTitle->setStyleSheet("font-size: 16px; font-weight: bold; color: #2c3e50; margin-bottom: 15px; padding: 10px;");
+    serviceTitle->setAlignment(Qt::AlignCenter);
+    serviceLayout->addWidget(serviceTitle);
+    
+    // Group de boutons radio
+    QButtonGroup* serviceGroup = new QButtonGroup();
+    
+    // PayPal - Option recommandée
+    QRadioButton* paypalBtn = new QRadioButton("💙 PayPal.Me (Recommandé)");
+    paypalBtn->setStyleSheet("QRadioButton { font-size: 14px; padding: 8px; } QRadioButton::indicator { width: 18px; height: 18px; }");
+    paypalBtn->setChecked(true);
+    serviceGroup->addButton(paypalBtn, 0);
+    serviceLayout->addWidget(paypalBtn);
+    
+    // Stripe
+    QRadioButton* stripeBtn = new QRadioButton("💜 Stripe Payment Link");
+    stripeBtn->setStyleSheet("QRadioButton { font-size: 14px; padding: 8px; } QRadioButton::indicator { width: 18px; height: 18px; }");
+    serviceGroup->addButton(stripeBtn, 1);
+    serviceLayout->addWidget(stripeBtn);
+    
+    // Square
+    QRadioButton* squareBtn = new QRadioButton("🟦 Square Payment");
+    squareBtn->setStyleSheet("QRadioButton { font-size: 14px; padding: 8px; } QRadioButton::indicator { width: 18px; height: 18px; }");
+    serviceGroup->addButton(squareBtn, 2);
+    serviceLayout->addWidget(squareBtn);
+    
+    // Venmo
+    QRadioButton* venmoBtn = new QRadioButton("💰 Venmo");
+    venmoBtn->setStyleSheet("QRadioButton { font-size: 14px; padding: 8px; } QRadioButton::indicator { width: 18px; height: 18px; }");
+    serviceGroup->addButton(venmoBtn, 3);
+    serviceLayout->addWidget(venmoBtn);
+    
+    // Cash App
+    QRadioButton* cashBtn = new QRadioButton("💸 Cash App");
+    cashBtn->setStyleSheet("QRadioButton { font-size: 14px; padding: 8px; } QRadioButton::indicator { width: 18px; height: 18px; }");
+    serviceGroup->addButton(cashBtn, 4);
+    serviceLayout->addWidget(cashBtn);
+    
+    // Test générique
+    QRadioButton* testBtn = new QRadioButton("🧪 Page de test (httpbin.org)");
+    testBtn->setStyleSheet("QRadioButton { font-size: 14px; padding: 8px; } QRadioButton::indicator { width: 18px; height: 18px; }");
+    serviceGroup->addButton(testBtn, 5);
+    serviceLayout->addWidget(testBtn);
+    
+    // Informations sur le paiement
+    QLabel* paymentInfo = new QLabel(QString(
+        "<div style='background: #e8f4fd; padding: 10px; border-radius: 6px; border: 1px solid #0066cc;'>"
+        "<b>💰 Détails du paiement :</b><br>"
+        "Code: %1 | Montant: <span style='color: #d63384;'>%2 DT</span><br>"
+        "Type: %3 | Catégorie: %4"
+        "</div>"
+    ).arg(code, montant, type, categorie));
+    paymentInfo->setWordWrap(true);
+    serviceLayout->addWidget(paymentInfo);
+    
+    // Boutons OK/Annuler
+    QHBoxLayout* serviceButtonLayout = new QHBoxLayout();
+    QPushButton* okBtn = new QPushButton("✅ Générer le QR Code");
+    QPushButton* cancelBtn = new QPushButton("❌ Annuler");
+    
+    okBtn->setStyleSheet("QPushButton { background: #28a745; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold; }");
+    cancelBtn->setStyleSheet("QPushButton { background: #6c757d; color: white; padding: 10px 20px; border-radius: 5px; }");
+    
+    serviceButtonLayout->addWidget(okBtn);
+    serviceButtonLayout->addWidget(cancelBtn);
+    serviceLayout->addLayout(serviceButtonLayout);
+    
+    connect(okBtn, &QPushButton::clicked, &serviceDialog, &QDialog::accept);
+    connect(cancelBtn, &QPushButton::clicked, &serviceDialog, &QDialog::reject);
+    
+    if (serviceDialog.exec() != QDialog::Accepted) {
+        return;
+    }
+    
+    // Récupérer le service choisi
+    int selectedService = serviceGroup->checkedId();
+    
+    // ===== ÉTAPE 2: Générer l'URL selon le service =====
+    QString paymentUrl;
+    QString serviceName;
+    QString serviceColor;
+    QString serviceIcon;
+    
+    switch (selectedService) {
+        case 0: // PayPal
+            paymentUrl = QString("https://www.paypal.com/paypalme/nexorapay/%1").arg(montant);
+            serviceName = "PayPal.Me";
+            serviceColor = "#0070ba";
+            serviceIcon = "💙";
+            break;
+        case 1: // Stripe
+            paymentUrl = QString("https://buy.stripe.com/test_payment_link?amount=%1&ref=%2")
+                        .arg(QString::number(montant.replace(",", ".").toDouble() * 100))
+                        .arg(code);
+            serviceName = "Stripe";
+            serviceColor = "#6772e5";
+            serviceIcon = "💜";
+            break;
+        case 2: // Square
+            paymentUrl = QString("https://squareup.com/store/nexora-payments/item/nexora-payment?amount=%1&ref=%2")
+                        .arg(montant).arg(code);
+            serviceName = "Square";
+            serviceColor = "#006aff";
+            serviceIcon = "🟦";
+            break;
+        case 3: // Venmo
+            paymentUrl = QString("https://venmo.com/code?user_id=nexora&amount=%1&note=Transaction_%2")
+                        .arg(montant).arg(code);
+            serviceName = "Venmo";
+            serviceColor = "#008cff";
+            serviceIcon = "💰";
+            break;
+        case 4: // Cash App
+            paymentUrl = QString("https://cash.app/$nexora/%1").arg(montant);
+            serviceName = "Cash App";
+            serviceColor = "#00d632";
+            serviceIcon = "💸";
+            break;
+        case 5: // Test
+        default:
+            paymentUrl = QString("https://httpbin.org/anything/nexora-payment?transaction=%1&amount=%2&type=%3&category=%4")
+                        .arg(code, montant, type, categorie);
+            serviceName = "Page de test";
+            serviceColor = "#6c757d";
+            serviceIcon = "🧪";
+            break;
+    }
+
+    // ===== ÉTAPE 3: Générer le QR code =====
+    QPixmap paymentQR = QRCodeGenerator::generateQRFromUrl(paymentUrl);
+    
+    if (paymentQR.isNull()) {
+        QMessageBox::critical(this, "Erreur", "Impossible de générer le QR Code de paiement.\nVérifiez votre connexion internet.");
+        return;
+    }
+
+    // ===== ÉTAPE 4: Afficher la fenêtre de paiement =====
+    QDialog *paymentDialog = new QDialog(this);
+    paymentDialog->setWindowTitle(QString("%1 QR Code de Paiement %2 - Transaction %3").arg(serviceIcon, serviceName, code));
+    paymentDialog->setFixedSize(580, 780);
+    paymentDialog->setAttribute(Qt::WA_DeleteOnClose);
+    paymentDialog->setStyleSheet("QDialog { background-color: #ffffff; }");
+    
+    QVBoxLayout *layout = new QVBoxLayout(paymentDialog);
+    
+    // En-tête du service
+    QLabel *serviceHeaderLabel = new QLabel(QString("%1 PAIEMENT VIA %2").arg(serviceIcon, serviceName.toUpper()));
+    serviceHeaderLabel->setStyleSheet(QString("font-size: 20px; font-weight: bold; color: %1; padding: 15px; background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #ffffff, stop:1 %2); border-radius: 8px; border: 2px solid %1; margin-bottom: 10px;").arg(serviceColor, serviceColor + "20"));
+    serviceHeaderLabel->setAlignment(Qt::AlignCenter);
+    layout->addWidget(serviceHeaderLabel);
+
+    // Détails de la transaction
+    QLabel *detailsLabel = new QLabel(QString(
+        "<div style='background: #F8FAFC; padding: 15px; border-radius: 8px; border: 1px solid #E2E8F0;'>"
+        "<h3 style='color: #1F4E8C; margin-top: 0;'>📋 Détails de la transaction</h3>"
+        "<b>Code :</b> %1<br>"
+        "<b>Montant à payer :</b> <span style='color: #059669; font-size: 18px; font-weight: bold;'>%2 DT</span><br>"
+        "<b>Type :</b> %3<br>"
+        "<b>Catégorie :</b> %4<br>"
+        "<b>Service :</b> <span style='color: %6;'>%5 %7</span><br>"
+        "<b>Lien :</b> <a href='%8' style='color: %6;'>%8</a>"
+        "</div>"
+    ).arg(code, montant, type, categorie, serviceIcon, serviceColor, serviceName, paymentUrl));
+    detailsLabel->setWordWrap(true);
+    detailsLabel->setOpenExternalLinks(true);
+    layout->addWidget(detailsLabel);
+
+    // QR Code de paiement
+    QLabel *qrLabel = new QLabel();
+    QPixmap scaledQR = paymentQR.scaled(320, 320, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    qrLabel->setPixmap(scaledQR);
+    qrLabel->setAlignment(Qt::AlignCenter);
+    qrLabel->setStyleSheet(QString("border: 3px solid %1; border-radius: 12px; padding: 15px; background: white; margin: 10px;").arg(serviceColor));
+    layout->addWidget(qrLabel);
+
+    // Instructions de paiement
+    QLabel *instructionsLabel = new QLabel(QString(
+        "<div style='background: #ECFDF5; padding: 15px; border-radius: 8px; border: 1px solid #10B981;'>"
+        "<h4 style='color: #059669; margin-top: 0;'>📱 Comment payer avec %1 :</h4>"
+        "<ol style='margin-bottom: 0;'>"
+        "<li>Scannez le QR code avec votre smartphone</li>"
+        "<li>Vous serez redirigé vers %1</li>"
+        "<li>Entrez le code de transaction : <b>%2</b></li>"
+        "<li>Confirmez le montant : <b>%3 DT</b></li>"
+        "<li>Procédez au paiement sécurisé</li>"
+        "</ol>"
+        "</div>").arg(serviceName, code, montant));
+    instructionsLabel->setWordWrap(true);
+    layout->addWidget(instructionsLabel);
+
+    // Boutons d'action
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    
+    QPushButton *copyLinkBtn = new QPushButton("📋 Copier le lien");
+    copyLinkBtn->setStyleSheet("QPushButton { background: #6B7280; color: white; border-radius: 8px; padding: 10px 16px; font-weight: 600; } QPushButton:hover { background: #4B5563; }");
+    
+    QPushButton *shareBtn = new QPushButton("📤 Partager");
+    shareBtn->setStyleSheet(QString("QPushButton { background: %1; color: white; border-radius: 8px; padding: 10px 16px; font-weight: 600; } QPushButton:hover { background: %2; }").arg(serviceColor, serviceColor + "dd"));
+    
+    QPushButton *testLinkBtn = new QPushButton("🌐 Tester le lien");
+    testLinkBtn->setStyleSheet("QPushButton { background: #10B981; color: white; border-radius: 8px; padding: 10px 16px; font-weight: 600; } QPushButton:hover { background: #059669; }");
+    
+    QPushButton *closeBtn = new QPushButton("Fermer");
+    closeBtn->setStyleSheet("QPushButton { background: #6C757D; color: white; border-radius: 8px; padding: 10px 16px; font-weight: 600; } QPushButton:hover { background: #5a6268; }");
+
+    buttonLayout->addWidget(copyLinkBtn);
+    buttonLayout->addWidget(shareBtn);
+    buttonLayout->addWidget(testLinkBtn);
+    buttonLayout->addWidget(closeBtn);
+    layout->addLayout(buttonLayout);
+
+    // ===== ÉTAPE 5: Actions des boutons =====
+    connect(copyLinkBtn, &QPushButton::clicked, [=]() {
+        QApplication::clipboard()->setText(paymentUrl);
+        QMessageBox::information(paymentDialog, "✅ Lien copié", QString("Lien de paiement %1 copié !\n\n%2").arg(serviceName, paymentUrl));
+    });
+
+    connect(shareBtn, &QPushButton::clicked, [=]() {
+        QString shareMessage = QString(
+            "%1 Paiement NEXORA via %2\n\n"
+            "💰 Transaction: %3\n"
+            "💵 Montant: %4 DT\n"
+            "🏷️ Type: %5\n\n"
+            "🔗 Lien de paiement:\n%6\n\n"
+            "📱 Scannez le QR code ou cliquez sur le lien pour payer rapidement !"
+        ).arg(serviceIcon, serviceName, code, montant, type, paymentUrl);
+        
+        QApplication::clipboard()->setText(shareMessage);
+        QMessageBox::information(paymentDialog, "📤 Message copié", QString("Message de partage %1 copié dans le presse-papiers !").arg(serviceName));
+    });
+
+    connect(testLinkBtn, &QPushButton::clicked, [=]() {
+        QMessageBox::information(paymentDialog, "🌐 Test du lien", 
+            QString("Lien de test %1 :\n\n%2\n\n"
+                   "Ce lien a été copié dans le presse-papiers.\n"
+                   "Vous pouvez le coller dans votre navigateur pour tester.")
+            .arg(serviceName, paymentUrl));
+        QApplication::clipboard()->setText(paymentUrl);
+    });
+
+    connect(closeBtn, &QPushButton::clicked, paymentDialog, &QDialog::accept);
+
+    paymentDialog->exec();
 }

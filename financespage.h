@@ -37,6 +37,7 @@ private slots:
     void onSortIndexChanged(int index);
     void onExportPdfClicked();
     void onPreviewQRCode();
+    void onGeneratePaymentQR();
 
     // Slots pour les sous-onglets
     void onSubTabStat();

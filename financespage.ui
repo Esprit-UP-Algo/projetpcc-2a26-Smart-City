@@ -391,6 +391,16 @@
               </widget>
              </item>
              <item>
+              <widget class="QPushButton" name="generatePaymentButton">
+               <property name="styleSheet">
+                <string notr="true">QPushButton { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #F59E0B, stop:1 #D97706); color:white; border-radius:8px; padding:8px 16px; font-weight:600; } QPushButton:hover { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #D97706, stop:1 #B45309); }</string>
+               </property>
+               <property name="text">
+                <string>💳 QR Paiement</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QPushButton" name="exportPdfButton">
                <property name="styleSheet">
                 <string notr="true">QPushButton { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #87CEEB, stop:1 #4682B4); color:white; border-radius:8px; padding:8px 16px; font-weight:600; } QPushButton:hover { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #4682B4, stop:1 #2E5984); }</string>
