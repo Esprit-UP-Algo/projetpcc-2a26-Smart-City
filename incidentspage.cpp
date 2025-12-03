@@ -5,6 +5,7 @@
 #include "MapDialog.h"
 #include "thememanager.h"
 #include "languagemanager.h"
+#include <QRegularExpression>
 
 #include <QMessageBox>
 #include <QDateTime>
@@ -34,6 +35,26 @@ IncidentsPage::IncidentsPage(QWidget *parent)
 
 {
     ui->setupUi(this);
+
+
+
+
+    // =====================
+    // INITIALISATION ARDUINO
+    // =====================
+    arduino = new Arduino(this);
+
+    // Connexion du signal reçu du RFID
+    connect(arduino, &Arduino::dataReceived,
+            this, &IncidentsPage::onArduinoMessage);
+
+    // Connexion au port (mets COM3 ou COM4 selon ton PC)
+    if (arduino->connectArduino("COM3")) {
+        qDebug() << "Arduino connecté avec succès.";
+    } else {
+        qWarning() << "Échec connexion Arduino.";
+    }
+
     qDebug() << "=== TEST AU DÉMARRAGE ===";
     testQtCharts();
     qDebug() << "=== FIN TEST ===";
@@ -55,7 +76,7 @@ IncidentsPage::IncidentsPage(QWidget *parent)
     }
 
     // CONFIGURATION DE BASE UNIQUEMENT
-    ui->mainLayout->setSpacing(10);
+
 
     // Configuration tableau
     ui->incidentTable->horizontalHeader()->setStretchLastSection(true);
@@ -260,6 +281,26 @@ void IncidentsPage::onSaveIncident()
         success = DatabaseManager::instance().addIncident(data);
         if (success) {
             QMessageBox::information(this, "Succès", "Incident signalé avec succès !");
+            // === ENVOYER INCIDENT À L'OLED ===
+            if (arduino && arduino->isConnected()) {
+                QString msg = "INCIDENT:" + type + " - " + localisation + "\n";
+                arduino->sendToArduino(msg);
+                qDebug() << "[QT → Arduino] Envoi OLED:" << msg;
+            }
+
+            //---------------------------------------------------------
+            //  ENVOI À L’ARDUINO POUR AFFICHAGE OLED
+            //---------------------------------------------------------
+            QString msg = type + " - " + localisation;
+
+            // remplacer les accents pour Arduino
+            msg = msg.normalized(QString::NormalizationForm_D);
+            msg.remove(QRegularExpression("[^a-zA-Z0-9 -]"));
+
+
+            arduino->sendToArduino("INCIDENT:" + msg + "\n");
+            qDebug() << "[QT → Arduino] INCIDENT:" + msg;
+
 
             // -------------------- ENVOI EMAIL --------------------
             // -------------------- ENVOI EMAIL --------------------
@@ -326,47 +367,52 @@ void IncidentsPage::refreshList()
     ui->incidentTable->setRowCount(0);
 
     for (const auto &m : list) {
+
         int row = ui->incidentTable->rowCount();
         ui->incidentTable->insertRow(row);
 
         // ID
-        QTableWidgetItem *idItem = new QTableWidgetItem(QString::number(m["id"].toInt()));
-        idItem->setData(Qt::UserRole, m["id"].toInt());
-        ui->incidentTable->setItem(row, 0, idItem);
+        ui->incidentTable->setItem(row, 0,
+                                   new QTableWidgetItem(QString::number(m["id"].toInt())));
+
 
         // Type
-        QTableWidgetItem *typeItem = new QTableWidgetItem(m["type_incident"].toString());
-        ui->incidentTable->setItem(row, 1, typeItem);
+        ui->incidentTable->setItem(row, 1,
+                                   new QTableWidgetItem(m["type_incident"].toString()));
 
         // Localisation
-        QTableWidgetItem *locItem = new QTableWidgetItem(m["localisation"].toString());
-        ui->incidentTable->setItem(row, 2, locItem);
+        ui->incidentTable->setItem(row, 2,
+                                   new QTableWidgetItem(m["localisation"].toString()));
 
-        // Date & Heure
-        QDateTime dateHeure = QDateTime::fromString(m["date_heure"].toString(), "yyyy-MM-dd HH:mm:ss");
-        if (!dateHeure.isValid()) {
-            dateHeure = QDateTime::fromString(m["date_heure"].toString(), "yyyy-MM-dd HH:mm");
-        }
-        QTableWidgetItem *dateItem = new QTableWidgetItem(dateHeure.toString("yyyy-MM-dd HH:mm:ss"));
-        dateItem->setData(Qt::UserRole, dateHeure);
-        ui->incidentTable->setItem(row, 3, dateItem);
+        // Date/Heure
+        QDateTime dt = QDateTime::fromString(m["date_heure"].toString(), "yyyy-MM-dd HH:mm:ss");
+        if (!dt.isValid())
+            dt = QDateTime::fromString(m["date_heure"].toString(), "yyyy-MM-dd HH:mm");
+        ui->incidentTable->setItem(row, 3,
+                                   new QTableWidgetItem(dt.toString("yyyy-MM-dd HH:mm:ss")));
 
         // Niveau
-        QTableWidgetItem *niveauItem = new QTableWidgetItem(QString::number(m["niveau"].toInt()));
-        niveauItem->setData(Qt::UserRole, m["niveau"].toInt());
-        ui->incidentTable->setItem(row, 4, niveauItem);
+        ui->incidentTable->setItem(row, 4,
+                                   new QTableWidgetItem(QString::number(m["niveau"].toInt())));
 
         // Statut
-        QTableWidgetItem *statutItem = new QTableWidgetItem(m["statut"].toString());
-        ui->incidentTable->setItem(row, 5, statutItem);
+        ui->incidentTable->setItem(row, 5,
+                                   new QTableWidgetItem(m["statut"].toString()));
 
-        // CIN Résident
-        QTableWidgetItem *cinItem = new QTableWidgetItem(m["cin_resident"].toString());
-        ui->incidentTable->setItem(row, 6, cinItem);
+        // CIN Résident (peut être NULL)
+        QString cin = m["cin_resident"].toString();
+        if (cin.isEmpty())
+            cin = "-";
+        ui->incidentTable->setItem(row, 6, new QTableWidgetItem(cin));
+
+
+        ui->incidentTable->setItem(row, 6,
+                                   new QTableWidgetItem(cin));
     }
 
     ui->incidentTable->setSortingEnabled(true);
 }
+
 
 // -------------------- Recherche --------------------
 void IncidentsPage::onSearch()
@@ -1012,3 +1058,48 @@ QString IncidentsPage::genererDecisionFinale(const QString& statut, const QStrin
                        "• Communication : Point situation dans 24 heures").arg(surveillance);
     }
 }
+
+
+
+
+
+void IncidentsPage::onArduinoMessage(QString msg)
+{
+    qDebug() << "[RFID] Message reçu:" << msg;
+
+    // ============================
+    // 1 — PANNE ASCENSEUR
+    // ============================
+    if (msg.contains("PANNE")) {
+
+        QVariantMap data;
+        data["type_incident"] = "Panne ascenseur";
+        data["localisation"]  = "Batiment 1";
+        data["date_heure"]    = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+        data["niveau"]        = 4;
+        data["statut"]        = "Signalé";
+        data["cin_resident"] = QVariant();   // NULL VALUE
+          // NULL pour champ NUMBER
+        // pas lié à un résident précis
+
+        DatabaseManager::instance().addIncident(data);
+
+        refreshList();     // Mettre à jour la liste dans l'UI
+        refreshStats();
+
+        QMessageBox::critical(this,
+                              "Alerte Ascenseur",
+                              "⚠️ PANNE détectée automatiquement par RFID !");
+    }
+
+    // ============================
+    // 2 — ACCÈS APPROUVÉ OU REFUSÉ
+    // ============================
+    if (msg == "ACCES_OK") {
+        QMessageBox::information(this, "RFID", "Accès approuvé pour resident 1 !");
+    }
+    else if (msg.contains("REFUSE")) {
+        QMessageBox::warning(this, "RFID", "Accès refusé par RFID.");
+    }
+}
+

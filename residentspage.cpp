@@ -78,7 +78,7 @@ ResidentsPage::ResidentsPage(QWidget *parent)
             this, &ResidentsPage::onArduinoData);
 
     // Connecter Arduino au port COM3
-    arduino->connectArduino("COM3");
+
 }
 
 ResidentsPage::~ResidentsPage()

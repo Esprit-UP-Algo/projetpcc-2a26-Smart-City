@@ -28,6 +28,8 @@ private slots:
 
 private:
     QSerialPort *serial;
+    QString buffer;
+
 };
 
 #endif // ARDUINO_H

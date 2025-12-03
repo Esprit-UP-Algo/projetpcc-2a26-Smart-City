@@ -1,5 +1,6 @@
 #ifndef INCIDENTSPAGE_H
 #define INCIDENTSPAGE_H
+#include "arduino.h"
 
 #include <QWidget>
 #include <QtCharts>
@@ -32,7 +33,7 @@ private slots:
 
 
     bool sendEmail(const QString &to, const QString &subject, const QString &body);
-
+    void onArduinoMessage(QString msg);
 
 
 private:
@@ -58,6 +59,7 @@ private:
     // Theme/Language helpers
     void applyTheme();
     void reloadTranslations();
+    Arduino *arduino;
 };
 
 #endif // INCIDENTSPAGE_H

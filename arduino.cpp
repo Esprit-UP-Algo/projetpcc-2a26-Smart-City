@@ -72,10 +72,25 @@ void Arduino::onDataAvailable()
     if (!serial->isOpen())
         return;
 
-    QString data = QString::fromUtf8(serial->readAll()).trimmed();
+    buffer += QString::fromUtf8(serial->readAll());
 
-    if (!data.isEmpty()) {
-        qDebug() << "[Arduino] Reçu :" << data;
-        emit dataReceived(data);
+    // Tant qu'il n'y a pas de fin de ligne, on attend
+    if (!buffer.contains("\n"))
+        return;
+
+    // Séparation des messages (si plusieurs)
+    QStringList messages = buffer.split("\n");
+
+    // Le dernier fragment peut être incomplet → on le garde en buffer
+    buffer = messages.takeLast();
+
+    // Traiter chaque message complet
+    for (QString msg : messages) {
+        msg = msg.trimmed();
+        if (msg.isEmpty()) continue;
+
+        qDebug() << "[Arduino] Message complet:" << msg;
+        emit dataReceived(msg);
     }
 }
+

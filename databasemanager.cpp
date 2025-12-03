@@ -750,49 +750,74 @@ double DatabaseManager::getTotalExpenses(int year, int month)
 /*==================================================
  *  MODULE INCIDENTS  (avec ID_RESIDENT)
  *=================================================*/
-
 bool DatabaseManager::addIncident(const QVariantMap &data)
 {
     if (!db.isOpen())
         return false;
 
+    QVariant idResident; // sera NUMBER ou NULL proprement
+
+    // ============================
+    // 1️⃣ GESTION DU CIN
+    // ============================
     QString cin = data.value("cin_resident").toString().trimmed();
-    QVariant idResident;
-    if (!cin.isEmpty()) {
-        QString id = getResidentIdFromCin(cin);
-        if (id.isEmpty()) {
+    if (cin.isEmpty())
+    {
+        // Important : NULL de type NUMBER
+        idResident = QVariant(QVariant::Int);
+    }
+    else
+    {
+        QString rid = getResidentIdFromCin(cin);
+        if (rid.isEmpty()) {
             QMessageBox::warning(nullptr, "Erreur",
                                  QString("Le CIN %1 n'existe pas dans RESIDENTS.").arg(cin));
             return false;
         }
-        idResident = id;
+        idResident = rid.toInt(); // Oracle accepte
     }
 
+    // ============================
+    // 2️⃣ INSERT SANS ID_INCIDENT
+    // ============================
     QSqlQuery q(db);
     q.prepare(R"(
         INSERT INTO INCIDENTS
             (TYPE_INCIDENT, LOCALISATION, DATE_HEURE,
              NIVEAU, STATUT, ID_RESIDENT)
-        VALUES (:type, :localisation,
-                TO_TIMESTAMP(:date_heure,'YYYY-MM-DD HH24:MI:SS'),
-                :niveau, :statut, :idResident)
+        VALUES (
+            :type,
+            :localisation,
+            TO_TIMESTAMP(:date_heure, 'YYYY-MM-DD HH24:MI:SS'),
+            :niveau,
+            :statut,
+            :idResident
+        )
     )");
+
     q.bindValue(":type",         data.value("type_incident").toString().trimmed());
     q.bindValue(":localisation", data.value("localisation").toString().trimmed());
     q.bindValue(":date_heure",   data.value("date_heure").toString().trimmed());
     q.bindValue(":niveau",       data.value("niveau").toInt());
     q.bindValue(":statut",       data.value("statut").toString().trimmed());
-    q.bindValue(":idResident",   idResident);
 
+    // 🔥 FIX CRITIQUE : Oracle veut NUMBER ou NULL (NUMBER)
+    q.bindValue(":idResident", idResident);
+
+    // ============================
+    // 3️⃣ EXECUTION
+    // ============================
     if (!q.exec()) {
         qWarning() << "❌ addIncident:" << q.lastError().text();
+
         QMessageBox::critical(nullptr, "Erreur Oracle",
                               "Impossible d'ajouter l'incident.\n\n" + q.lastError().text());
         return false;
     }
-    db.commit();
+
     return true;
 }
+
 
 bool DatabaseManager::updateIncident(int id, const QVariantMap &data)
 {
@@ -861,39 +886,50 @@ bool DatabaseManager::deleteIncident(int id)
 QList<QVariantMap> DatabaseManager::getAllIncidents()
 {
     QList<QVariantMap> list;
+
     if (!db.isOpen())
         return list;
 
     QSqlQuery q(db);
-    if (!q.exec(R"(
-        SELECT  i.ID_INCIDENT,
-                i.TYPE_INCIDENT,
-                i.LOCALISATION,
-                TO_CHAR(i.DATE_HEURE,'YYYY-MM-DD HH24:MI:SS') AS DATE_HEURE,
-                i.NIVEAU,
-                i.STATUT,
-                r.CIN AS CIN_RESIDENT
-        FROM INCIDENTS i
-        LEFT JOIN RESIDENTS r ON i.ID_RESIDENT = r.ID
-        ORDER BY i.DATE_HEURE DESC
-    )")) {
+
+    q.prepare(R"(
+    SELECT
+        I.ID_INCIDENT AS ID,
+        I.TYPE_INCIDENT,
+        I.LOCALISATION,
+        TO_CHAR(I.DATE_HEURE, 'YYYY-MM-DD HH24:MI:SS') AS DATE_HEURE,
+        I.NIVEAU,
+        I.STATUT,
+        R.CIN AS CIN_RESIDENT
+    FROM INCIDENTS I
+    LEFT JOIN RESIDENTS R ON I.ID_RESIDENT = R.ID
+    ORDER BY I.ID_INCIDENT DESC
+)");
+
+
+    if (!q.exec()) {
         qWarning() << "❌ getAllIncidents:" << q.lastError().text();
         return list;
     }
 
     while (q.next()) {
         QVariantMap m;
-        m["id"]           = q.value("ID_INCIDENT").toInt();
-        m["type_incident"]= q.value("TYPE_INCIDENT");
-        m["localisation"] = q.value("LOCALISATION");
-        m["date_heure"]   = q.value("DATE_HEURE");
-        m["niveau"]       = q.value("NIVEAU");
-        m["statut"]       = q.value("STATUT");
-        m["cin_resident"] = q.value("CIN_RESIDENT");
-        list << m;
+        m["id"] = q.value("ID");   // <-- le nom EXACT du select
+
+
+        m["type_incident"] = q.value("TYPE_INCIDENT");
+        m["localisation"]  = q.value("LOCALISATION");
+        m["date_heure"]    = q.value("DATE_HEURE");
+        m["niveau"]        = q.value("NIVEAU");
+        m["statut"]        = q.value("STATUT");
+        m["cin_resident"]  = q.value("CIN_RESIDENT");  // ⭐ CIN ICI
+
+        list.append(m);
     }
+
     return list;
 }
+
 
 QVariantMap DatabaseManager::getIncident(int id)
 {
