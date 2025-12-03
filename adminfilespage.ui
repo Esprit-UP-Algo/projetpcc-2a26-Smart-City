@@ -1,0 +1,1106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AdminFilesPage</class>
+ <widget class="QWidget" name="AdminFilesPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1140</width>
+    <height>900</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Centre de Gestion des Données</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+   QWidget#AdminFilesPage {
+       background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+           stop:0 #F7FAFC, stop:1 #EDF2F7);
+       font-family: "Segoe UI", Arial, sans-serif;
+   }
+
+   QLabel {
+       background: transparent;
+   }
+
+   QFrame {
+       background-color: #FFFFFF;
+       border: 1px solid #E1E8ED;
+       border-radius: 14px;
+   }
+
+   QFrame#headerCard,
+   QFrame#overviewCard,
+   QFrame#operationsCard,
+   QFrame#modulesCard {
+       /* fake shadow look */
+       border: 1px solid #E1E8ED;
+   }
+
+   QPushButton {
+       background-color: #1F2D5C;
+       color: #FFFFFF;
+       border-radius: 6px;
+       padding: 6px 12px;
+       font-size: 11px;
+       font-weight: 600;
+       border: none;
+   }
+
+   QPushButton:hover {
+       background-color: #2A3F6F;
+   }
+
+   QPushButton:pressed {
+       background-color: #1A2648;
+   }
+
+   /* primary actions */
+   QPushButton#btnBackup {
+       background-color: #1F2D5C;
+   }
+   QPushButton#btnRestore {
+       background-color: #3498DB;
+   }
+   QPushButton#btnImportAll {
+       background-color: #27AE60;
+   }
+   QPushButton#btnPurge {
+       background-color: #E74C3C;
+   }
+
+   QPushButton#btnBackup:hover     { background-color: #2A3F6F; }
+   QPushButton#btnRestore:hover    { background-color: #2980B9; }
+   QPushButton#btnImportAll:hover  { background-color: #229954; }
+   QPushButton#btnPurge:hover      { background-color: #C0392B; }
+
+   QCheckBox {
+       font-size: 13px;
+       color: #1F2D5C;
+       spacing: 8px;
+   }
+   QCheckBox::indicator {
+       width: 18px;
+       height: 18px;
+   }
+   QCheckBox::indicator:unchecked {
+       border: 2px solid #BDC3C7;
+       border-radius: 3px;
+       background-color: #FFFFFF;
+   }
+   QCheckBox::indicator:checked {
+       border: 2px solid #1F2D5C;
+       border-radius: 3px;
+       background-color: #1F2D5C;
+   }
+   </string>
+  </property>
+
+  <!-- MAIN LAYOUT -->
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="spacing">
+    <number>26</number>
+   </property>
+   <property name="leftMargin">
+    <number>40</number>
+   </property>
+   <property name="topMargin">
+    <number>32</number>
+   </property>
+   <property name="rightMargin">
+    <number>40</number>
+   </property>
+   <property name="bottomMargin">
+    <number>32</number>
+   </property>
+
+   <!-- HEADER CARD -->
+   <item>
+    <widget class="QFrame" name="headerCard">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>90</height>
+      </size>
+     </property>
+     <layout class="QHBoxLayout" name="headerLayout">
+      <property name="leftMargin">
+       <number>28</number>
+      </property>
+      <property name="topMargin">
+       <number>20</number>
+      </property>
+      <property name="rightMargin">
+       <number>28</number>
+      </property>
+      <property name="bottomMargin">
+       <number>20</number>
+      </property>
+      <property name="spacing">
+       <number>10</number>
+      </property>
+
+      <item>
+       <layout class="QVBoxLayout" name="headerTextLayout">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="pageTitle">
+          <property name="text">
+           <string>Centre de Gestion des Données</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+           font-size: 28px;
+           font-weight: 800;
+           color: #1F2D5C;
+           </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="pageSubtitle">
+          <property name="text">
+           <string>Vue globale, opérations critiques et contrôle fin des modules de la base NEXORA.</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+           font-size: 12px;
+           color: #7F8C8D;
+           </string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+
+      <item>
+       <spacer name="headerSpacer">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+
+   <!-- MIDDLE ROW : OVERVIEW + OPERATIONS -->
+   <item>
+    <layout class="QHBoxLayout" name="middleRowLayout">
+     <property name="spacing">
+      <number>22</number>
+     </property>
+
+     <!-- OVERVIEW CARD (LEFT) -->
+     <item>
+      <widget class="QFrame" name="overviewCard">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>260</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="overviewLayout">
+        <property name="leftMargin">
+         <number>26</number>
+        </property>
+        <property name="topMargin">
+         <number>22</number>
+        </property>
+        <property name="rightMargin">
+         <number>26</number>
+        </property>
+        <property name="bottomMargin">
+         <number>22</number>
+        </property>
+        <property name="spacing">
+         <number>16</number>
+        </property>
+
+        <item>
+         <widget class="QLabel" name="overviewTitle">
+          <property name="text">
+           <string>Vue globale des enregistrements</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+           font-size: 18px;
+           font-weight: 700;
+           color: #1F2D5C;
+           </string>
+          </property>
+         </widget>
+        </item>
+
+        <item>
+         <widget class="QLabel" name="overviewSubtitle">
+          <property name="text">
+           <string>Suivi consolidé des principales tables de la base NEXORA.</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+           font-size: 11px;
+           color: #7F8C8D;
+           </string>
+          </property>
+         </widget>
+        </item>
+
+        <!-- STATS CARDS GRID -->
+        <item>
+         <layout class="QGridLayout" name="overviewGrid">
+          <property name="horizontalSpacing">
+           <number>14</number>
+          </property>
+          <property name="verticalSpacing">
+           <number>12</number>
+          </property>
+
+          <!-- Residents -->
+          <item row="0" column="0">
+           <widget class="QFrame" name="cardResidents">
+            <layout class="QVBoxLayout" name="cardResidentsLayout">
+             <property name="leftMargin">
+              <number>14</number>
+             </property>
+             <property name="topMargin">
+              <number>10</number>
+             </property>
+             <property name="rightMargin">
+              <number>14</number>
+             </property>
+             <property name="bottomMargin">
+              <number>10</number>
+             </property>
+             <property name="spacing">
+              <number>4</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="labelResidentsTitle">
+               <property name="text">
+                <string>Résidents</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">
+                font-size: 12px;
+                font-weight: 600;
+                color: #7F8C8D;
+                </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="countResidents">
+               <property name="text">
+                <string>0 enregistrements</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">
+                font-size: 15px;
+                font-weight: 700;
+                color: #3498DB;
+                </string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+
+          <!-- Incidents -->
+          <item row="0" column="1">
+           <widget class="QFrame" name="cardIncidents">
+            <layout class="QVBoxLayout" name="cardIncidentsLayout">
+             <property name="leftMargin">
+              <number>14</number>
+             </property>
+             <property name="topMargin">
+              <number>10</number>
+             </property>
+             <property name="rightMargin">
+              <number>14</number>
+             </property>
+             <property name="bottomMargin">
+              <number>10</number>
+             </property>
+             <property name="spacing">
+              <number>4</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="labelIncidentsTitle">
+               <property name="text">
+                <string>Incidents</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">
+                font-size: 12px;
+                font-weight: 600;
+                color: #7F8C8D;
+                </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="countIncidents">
+               <property name="text">
+                <string>0 enregistrements</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">
+                font-size: 15px;
+                font-weight: 700;
+                color: #E74C3C;
+                </string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+
+          <!-- Finances -->
+          <item row="1" column="0">
+           <widget class="QFrame" name="cardFinance">
+            <layout class="QVBoxLayout" name="cardFinanceLayout">
+             <property name="leftMargin">
+              <number>14</number>
+             </property>
+             <property name="topMargin">
+              <number>10</number>
+             </property>
+             <property name="rightMargin">
+              <number>14</number>
+             </property>
+             <property name="bottomMargin">
+              <number>10</number>
+             </property>
+             <property name="spacing">
+              <number>4</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="labelFinanceTitle">
+               <property name="text">
+                <string>Finances</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">
+                font-size: 12px;
+                font-weight: 600;
+                color: #7F8C8D;
+                </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="countFinance">
+               <property name="text">
+                <string>0 enregistrements</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">
+                font-size: 15px;
+                font-weight: 700;
+                color: #27AE60;
+                </string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+
+          <!-- Locaux -->
+          <item row="1" column="1">
+           <widget class="QFrame" name="cardLocaux">
+            <layout class="QVBoxLayout" name="cardLocauxLayout">
+             <property name="leftMargin">
+              <number>14</number>
+             </property>
+             <property name="topMargin">
+              <number>10</number>
+             </property>
+             <property name="rightMargin">
+              <number>14</number>
+             </property>
+             <property name="bottomMargin">
+              <number>10</number>
+             </property>
+             <property name="spacing">
+              <number>4</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="labelLocauxTitle">
+               <property name="text">
+                <string>Locaux</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">
+                font-size: 12px;
+                font-weight: 600;
+                color: #7F8C8D;
+                </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="countLocaux">
+               <property name="text">
+                <string>0 enregistrements</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">
+                font-size: 15px;
+                font-weight: 700;
+                color: #9B59B6;
+                </string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+
+          <!-- Transport -->
+          <item row="2" column="0" colspan="2">
+           <widget class="QFrame" name="cardTransport">
+            <layout class="QHBoxLayout" name="cardTransportLayout">
+             <property name="leftMargin">
+              <number>14</number>
+             </property>
+             <property name="topMargin">
+              <number>10</number>
+             </property>
+             <property name="rightMargin">
+              <number>14</number>
+             </property>
+             <property name="bottomMargin">
+              <number>10</number>
+             </property>
+             <property name="spacing">
+              <number>6</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="labelTransportTitle">
+               <property name="text">
+                <string>Transport</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">
+                font-size: 12px;
+                font-weight: 600;
+                color: #7F8C8D;
+                </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="transportSpacer">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="countTransport">
+               <property name="text">
+                <string>0 enregistrements</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">
+                font-size: 15px;
+                font-weight: 700;
+                color: #F39C12;
+                </string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+
+         </layout>
+        </item>
+
+       </layout>
+      </widget>
+     </item>
+
+     <!-- OPERATIONS CARD (RIGHT) -->
+     <item>
+      <widget class="QFrame" name="operationsCard">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>260</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="operationsLayout">
+        <property name="leftMargin">
+         <number>26</number>
+        </property>
+        <property name="topMargin">
+         <number>22</number>
+        </property>
+        <property name="rightMargin">
+         <number>26</number>
+        </property>
+        <property name="bottomMargin">
+         <number>22</number>
+        </property>
+        <property name="spacing">
+         <number>18</number>
+        </property>
+
+        <item>
+         <widget class="QLabel" name="operationsTitle">
+          <property name="text">
+           <string>Opérations sur la base</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+           font-size: 18px;
+           font-weight: 700;
+           color: #1F2D5C;
+           </string>
+          </property>
+         </widget>
+        </item>
+
+        <item>
+         <widget class="QLabel" name="operationsSubtitle">
+          <property name="text">
+           <string>Sauvegarde, restauration, vidage contrôlé et vue analytique de la base NEXORA.</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+           font-size: 11px;
+           color: #7F8C8D;
+           </string>
+          </property>
+         </widget>
+        </item>
+
+        <!-- ROW 1 : BACKUP + RESTORE -->
+        <item>
+         <layout class="QHBoxLayout" name="opsRow1">
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btnBackup">
+            <property name="minimumSize">
+             <size>
+              <width>160</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Sauvegarder la base</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnRestore">
+            <property name="minimumSize">
+             <size>
+              <width>200</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Restaurer depuis une sauvegarde</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+
+        <!-- ROW 2 : STATS + PURGE -->
+        <item>
+         <layout class="QHBoxLayout" name="opsRow2">
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btnImportAll">
+            <property name="minimumSize">
+             <size>
+              <width>160</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Voir les statistiques</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnPurge">
+            <property name="minimumSize">
+             <size>
+              <width>160</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Vider toutes les données</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+
+        <!-- AUTO BACKUP CHECKBOX -->
+        <item>
+         <layout class="QHBoxLayout" name="autoBackupLayout">
+          <item>
+           <widget class="QCheckBox" name="chkAutoBackup">
+            <property name="text">
+             <string>Activer la sauvegarde automatique quotidienne</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="autoBackupSpacer">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+
+       </layout>
+      </widget>
+     </item>
+
+    </layout>
+   </item>
+
+   <!-- MODULES CONTROL CARD (BOTTOM FULL WIDTH) -->
+   <item>
+    <widget class="QFrame" name="modulesCard">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>260</height>
+      </size>
+     </property>
+     <layout class="QVBoxLayout" name="modulesLayout">
+      <property name="leftMargin">
+       <number>26</number>
+      </property>
+      <property name="topMargin">
+       <number>22</number>
+      </property>
+      <property name="rightMargin">
+       <number>26</number>
+      </property>
+      <property name="bottomMargin">
+       <number>22</number>
+      </property>
+      <property name="spacing">
+       <number>16</number>
+      </property>
+
+      <item>
+       <widget class="QLabel" name="modulesTitle">
+        <property name="text">
+         <string>Contrôle détaillé par module</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">
+         font-size: 18px;
+         font-weight: 700;
+         color: #1F2D5C;
+         </string>
+        </property>
+       </widget>
+      </item>
+
+      <item>
+       <widget class="QLabel" name="modulesSubtitle">
+        <property name="text">
+         <string>Accès direct : visualisation d'un échantillon, actualisation des indicateurs et purge ciblée par table.</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">
+         font-size: 11px;
+         color: #7F8C8D;
+         </string>
+        </property>
+       </widget>
+      </item>
+
+      <!-- HEADER ROW -->
+      <item>
+       <layout class="QGridLayout" name="modulesGrid">
+        <property name="horizontalSpacing">
+         <number>12</number>
+        </property>
+        <property name="verticalSpacing">
+         <number>8</number>
+        </property>
+
+        <item row="0" column="0">
+         <widget class="QLabel" name="modulesHeaderModule">
+          <property name="text">
+           <string>Module</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+           font-size: 13px;
+           font-weight: 700;
+           color: #1F2D5C;
+           </string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="modulesHeaderCount">
+          <property name="text">
+           <string>Enregistrements</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+           font-size: 13px;
+           font-weight: 700;
+           color: #1F2D5C;
+           </string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QLabel" name="modulesHeaderActions">
+          <property name="text">
+           <string>Actions</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+           font-size: 13px;
+           font-weight: 700;
+           color: #1F2D5C;
+           </string>
+          </property>
+         </widget>
+        </item>
+
+        <!-- ROW RESIDENTS -->
+        <item row="1" column="0">
+         <widget class="QLabel" name="fileResidents">
+          <property name="text">
+           <string>Résidents</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+           font-size: 12px;
+           font-weight: 600;
+           color: #34495E;
+           </string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLabel" name="countResidentsRow">
+          <property name="text">
+           <string>lié à la carte ci-dessus</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+           font-size: 11px;
+           color: #95A5A6;
+           </string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <layout class="QHBoxLayout" name="residentActions">
+          <property name="spacing">
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btnResidentsView">
+            <property name="text">
+             <string>Voir</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnResidentsImport">
+            <property name="text">
+             <string>Actualiser</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnResidentsClear">
+            <property name="text">
+             <string>Vider</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+
+        <!-- ROW INCIDENTS -->
+        <item row="2" column="0">
+         <widget class="QLabel" name="fileIncidents">
+          <property name="text">
+           <string>Incidents</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+           font-size: 12px;
+           font-weight: 600;
+           color: #34495E;
+           </string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLabel" name="countIncidentsRow">
+          <property name="text">
+           <string>lié à la carte ci-dessus</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+           font-size: 11px;
+           color: #95A5A6;
+           </string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <layout class="QHBoxLayout" name="incidentActions">
+          <property name="spacing">
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btnIncidentsView">
+            <property name="text">
+             <string>Voir</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnIncidentsImport">
+            <property name="text">
+             <string>Actualiser</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnIncidentsClear">
+            <property name="text">
+             <string>Vider</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+
+        <!-- ROW FINANCE -->
+        <item row="3" column="0">
+         <widget class="QLabel" name="fileFinance">
+          <property name="text">
+           <string>Finances</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+           font-size: 12px;
+           font-weight: 600;
+           color: #34495E;
+           </string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLabel" name="countFinanceRow">
+          <property name="text">
+           <string>lié à la carte ci-dessus</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+           font-size: 11px;
+           color: #95A5A6;
+           </string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <layout class="QHBoxLayout" name="financeActions">
+          <property name="spacing">
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btnFinanceView">
+            <property name="text">
+             <string>Voir</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnFinanceImport">
+            <property name="text">
+             <string>Actualiser</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnFinanceClear">
+            <property name="text">
+             <string>Vider</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+
+        <!-- ROW LOCAUX -->
+        <item row="4" column="0">
+         <widget class="QLabel" name="fileLocaux">
+          <property name="text">
+           <string>Locaux</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+           font-size: 12px;
+           font-weight: 600;
+           color: #34495E;
+           </string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLabel" name="countLocauxRow">
+          <property name="text">
+           <string>lié à la carte ci-dessus</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+           font-size: 11px;
+           color: #95A5A6;
+           </string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="2">
+         <layout class="QHBoxLayout" name="locauxActions">
+          <property name="spacing">
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btnLocauxView">
+            <property name="text">
+             <string>Voir</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnLocauxImport">
+            <property name="text">
+             <string>Actualiser</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnLocauxClear">
+            <property name="text">
+             <string>Vider</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+
+        <!-- ROW TRANSPORT -->
+        <item row="5" column="0">
+         <widget class="QLabel" name="fileTransport">
+          <property name="text">
+           <string>Transport</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+           font-size: 12px;
+           font-weight: 600;
+           color: #34495E;
+           </string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLabel" name="countTransportRow">
+          <property name="text">
+           <string>lié à la carte ci-dessus</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+           font-size: 11px;
+           color: #95A5A6;
+           </string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="2">
+         <layout class="QHBoxLayout" name="transportActions">
+          <property name="spacing">
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btnTransportView">
+            <property name="text">
+             <string>Voir</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnTransportImport">
+            <property name="text">
+             <string>Actualiser</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnTransportClear">
+            <property name="text">
+             <string>Vider</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+
+       </layout>
+      </item>
+
+     </layout>
+    </widget>
+   </item>
+
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
