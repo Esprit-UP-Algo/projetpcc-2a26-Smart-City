@@ -1,0 +1,42 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/pic1.png</file>
+        <file>resources/nexorab.png</file>
+        <file>resources/nexora.png</file>
+        <file>resources/resident.png</file>
+        <file>resources/ajouter.png</file>
+        <file>resources/listee.png</file>
+        <file>resources/statt.png</file>
+        <file>resources/uplo.png</file>
+        <file>resources/annul.png</file>
+        <file>resources/res.png</file>
+        <file>resources/modify.png</file>
+        <file>resources/trash.png</file>
+        <file>resources/pdf.png</file>
+        <file>resources/loupe.png</file>
+        <file>resources/admin.png</file>
+        <file>resources/logout.png</file>
+        <file>resources/login.png</file>
+        <file>resources/condo.png</file>
+        <file>resources/map.png</file>
+        <file>resources/incident.png</file>
+        <file>resources/incidentt.png</file>
+        <file>resources/parametre.png</file>
+        <file>resources/profil.png</file>
+        <file>resources/art.png</file>
+        <file>resources/notif.png</file>
+        <file>resources/mdp.png</file>
+        <file>resources/info.png</file>
+        <file>resources/enr.png</file>
+        <file>resources/signal.png</file>
+        <file>resources/money.png</file>
+        <file>resources/chatbot.png</file>
+        <file>resources/qr.png</file>
+        <file>resources/car.png</file>
+        <file>resources/local.png</file>
+        <file>resources/history.png</file>
+        <file>resources/notify.png</file>
+        <file>resources/infos.png</file>
+        <file>resources/folder.png</file>
+    </qresource>
+</RCC>
