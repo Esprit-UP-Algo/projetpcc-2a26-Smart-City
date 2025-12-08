@@ -1,4 +1,4 @@
-QT += core gui widgets sql charts printsupport network
+QT += core gui widgets sql charts printsupport network serialport
 
 CONFIG += c++17
 
@@ -16,7 +16,8 @@ SOURCES += \
     transportpage.cpp \
     databasemanager.cpp \
     connection.cpp \
-    financespage.cpp
+    financespage.cpp \
+    arduino.cpp
 
 HEADERS += \
     config.h \
@@ -32,7 +33,8 @@ HEADERS += \
     settingspage.h \
     databasemanager.h \
     connection.h \
-    financespage.h
+    financespage.h \
+    arduino.h
 
 FORMS += \
     mainwindow.ui \

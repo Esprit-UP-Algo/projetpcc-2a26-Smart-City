@@ -1,6 +1,9 @@
 ﻿#include "welcomedialog.h"
 #include "ui_welcomedialog.h"
 #include "nexoradashboard.h"
+#include "mainwindow.h"
+#include "transportpage.h"
+#include "financespage.h"
 #include <QApplication>
 #include <QScreen>
 #include <QTimer>
@@ -87,9 +90,31 @@ void WelcomeDialog::closeAndProceed()
     // Accept dialog and close
     accept();
     
-    // Create and show dashboard
+    // Récupérer MainWindow parent
+    MainWindow *mainWin = qobject_cast<MainWindow*>(parent());
+    
+    // Create and show dashboard avec connexion Arduino
     NexoraDashboard *dashboard = new NexoraDashboard();
     dashboard->show();
+    
+    // 🔥 CONNEXION ARDUINO → TRANSPORT POUR VALIDATION
+    if (mainWin && dashboard->getTransportPage()) {
+        // 🔥 NOUVEAU: Arduino → TransportPage pour validation du véhicule
+        connect(mainWin, &MainWindow::vehicleCodeForValidation,
+                dashboard->getTransportPage(), &TransportPage::onVehiclePaymentRequestedWithCode);
+        
+        // 🔥 CONNEXION INVERSE - RÉPONSE ARDUINO
+        connect(dashboard->getTransportPage(), &TransportPage::arduinoResponse,
+                mainWin, &MainWindow::sendArduinoResponse);
+        
+        // 🔥 CONNEXION TRANSACTIONS → FINANCES (TransportPage notifie FinancePage)
+        if (dashboard->getFinancesPage()) {
+            connect(dashboard->getTransportPage(), &TransportPage::transactionCreated,
+                    dashboard->getFinancesPage(), &FinancesPage::reloadTransactions);
+        }
+        
+        qDebug() << "🔗 [WELCOME] Connexion Arduino→TransportPage→Finance établie";
+    }
     
     // Close the parent window (login window)
     if (parent()) {

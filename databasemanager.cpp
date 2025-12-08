@@ -1,5 +1,6 @@
 ﻿#include "databasemanager.h"
 #include "connection.h"
+
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QVariant>
@@ -24,7 +25,6 @@ QSqlDatabase DatabaseManager::database() const
     return db;
 }
 
-//
 //
 // ==================== MODULE RÉSIDENTS (COMPATIBLE AVEC UI) ====================
 //
@@ -70,7 +70,6 @@ QList<QVariantMap> DatabaseManager::getAllResidents()
     return list;
 }
 
-
 QVariantMap DatabaseManager::getResident(const QString &cin)
 {
     QVariantMap r;
@@ -102,7 +101,6 @@ QVariantMap DatabaseManager::getResident(const QString &cin)
 
     return r;
 }
-
 
 bool DatabaseManager::addResident(const QVariantMap &data)
 {
@@ -137,7 +135,6 @@ bool DatabaseManager::addResident(const QVariantMap &data)
     db.commit();
     return true;
 }
-
 
 bool DatabaseManager::updateResident(const QString &cin, const QVariantMap &data)
 {
@@ -178,7 +175,6 @@ bool DatabaseManager::updateResident(const QString &cin, const QVariantMap &data
     return true;
 }
 
-
 bool DatabaseManager::deleteResident(const QString &cin)
 {
     if (!db.isOpen()) return false;
@@ -195,7 +191,6 @@ bool DatabaseManager::deleteResident(const QString &cin)
     db.commit();
     return true;
 }
-
 
 QList<QVariantMap> DatabaseManager::searchResidents(const QString &term)
 {
@@ -239,7 +234,6 @@ QList<QVariantMap> DatabaseManager::searchResidents(const QString &term)
     return list;
 }
 
-
 // ====== Statistiques de base ======
 QVariantMap DatabaseManager::getStatistics()
 {
@@ -259,6 +253,7 @@ QVariantMap DatabaseManager::getStatistics()
 
     return stats;
 }
+
 //
 // ==================== MODULE TRANSACTIONS ====================
 //
@@ -276,8 +271,8 @@ bool DatabaseManager::addTransaction(const QVariantMap &data)
         QString str = value.toString().trimmed();
         if (!str.isEmpty()) {
             return QDate::fromString(str, "yyyy-MM-dd").isValid()
-                       ? str
-                       : QDate::fromString(str, "dd/MM/yyyy").toString("yyyy-MM-dd");
+            ? str
+            : QDate::fromString(str, "dd/MM/yyyy").toString("yyyy-MM-dd");
         }
         return QDate::currentDate().toString("yyyy-MM-dd");
     };
@@ -773,7 +768,7 @@ QVariantMap DatabaseManager::getIncidentsStatistics()
 }
 
 //
-// ==================== MODULE VÉHICULES (Parking) ====================
+// ==================== MODULE VÉHICULES (Parking simple) ====================
 //
 bool DatabaseManager::addVehicule(const QVariantMap &data)
 {
@@ -791,6 +786,9 @@ bool DatabaseManager::addVehicule(const QVariantMap &data)
     return true;
 }
 
+//
+// ==================== MODULE LOCAUX ====================
+//
 bool DatabaseManager::addLocal(const QVariantMap &data)
 {
     if (!db.isOpen())
@@ -959,7 +957,7 @@ QList<QVariantMap> DatabaseManager::searchLocaux(const QString &term)
 }
 
 //
-// ==================== MODULE TRANSPORT ====================
+// ==================== MODULE TRANSPORT (Smart City) ====================
 //
 bool DatabaseManager::addTransportVehicule(const QVariantMap &data)
 {
@@ -991,7 +989,7 @@ bool DatabaseManager::addTransportVehicule(const QVariantMap &data)
     query.bindValue(":statut", statut);
     query.bindValue(":date_ajout", date_ajout);
     query.bindValue(":temps_utilise", temps_utilise);
-    
+
     // Gérer code_unique : NULL si vide, sinon vérifier qu'il existe dans TRANSACTIONS (finance)
     if (code_unique.isEmpty()) {
         query.bindValue(":code_unique", QVariant());
@@ -1002,8 +1000,8 @@ bool DatabaseManager::addTransportVehicule(const QVariantMap &data)
         checkQuery.bindValue(":code", code_unique);
         if (checkQuery.exec() && checkQuery.next() && checkQuery.value(0).toInt() == 0) {
             QMessageBox::warning(nullptr, "Erreur de validation",
-                                QString("Le code transaction '%1' n'existe pas dans la base de données.\n"
-                                        "Veuillez d'abord créer la transaction ou laisser ce champ vide.").arg(code_unique));
+                                 QString("Le code transaction '%1' n'existe pas dans la base de données.\n"
+                                         "Veuillez d'abord créer la transaction ou laisser ce champ vide.").arg(code_unique));
             return false;
         }
         query.bindValue(":code_unique", code_unique);
@@ -1024,22 +1022,22 @@ bool DatabaseManager::addTransportVehicule(const QVariantMap &data)
         QString errorMsg = query.lastError().text();
         qDebug() << "❌ Erreur SQL lors de l'insertion:" << errorMsg;
         qDebug() << "❌ Requête:" << query.lastQuery();
-        
+
         // Vérifier si c'est une erreur de contrainte de clé étrangère
         QString userMessage;
         if (errorMsg.contains("FK_TRANSPORT_LOCAUX") || errorMsg.contains("ORA-02291")) {
             if (code_unique.isEmpty()) {
                 userMessage = "Erreur de contrainte de clé étrangère.\n"
-                             "Le code transaction doit exister dans la table TRANSACTIONS (finance).\n"
-                             "Veuillez créer la transaction d'abord ou laisser le champ vide.";
+                              "Le code transaction doit exister dans la table TRANSACTIONS (finance).\n"
+                              "Veuillez créer la transaction d'abord ou laisser le champ vide.";
             } else {
                 userMessage = QString("Le code transaction '%1' n'existe pas dans la table TRANSACTIONS (finance).\n"
-                                     "Veuillez créer la transaction d'abord ou laisser le champ vide.").arg(code_unique);
+                                      "Veuillez créer la transaction d'abord ou laisser le champ vide.").arg(code_unique);
             }
         } else {
             userMessage = QString("Impossible d'ajouter le véhicule de transport.\n\nDétails: %1").arg(errorMsg);
         }
-        
+
         QMessageBox::critical(nullptr, "Erreur Oracle", userMessage);
         return false;
     }
@@ -1072,7 +1070,7 @@ bool DatabaseManager::updateTransportVehicule(const QString &id, const QVariantM
     query.bindValue(":statut", data.value("statut"));
     query.bindValue(":date_ajout", data.value("date_ajout"));
     query.bindValue(":temps_utilise", data.value("temps_utilise").toDouble());
-    
+
     QString code_unique = data.value("code_unique").toString().trimmed();
     if (code_unique.isEmpty()) {
         query.bindValue(":code_unique", QVariant());
@@ -1083,34 +1081,34 @@ bool DatabaseManager::updateTransportVehicule(const QString &id, const QVariantM
         checkQuery.bindValue(":code", code_unique);
         if (checkQuery.exec() && checkQuery.next() && checkQuery.value(0).toInt() == 0) {
             QMessageBox::warning(nullptr, "Erreur de validation",
-                                QString("Le code transaction '%1' n'existe pas dans la base de données.\n"
-                                        "Veuillez d'abord créer la transaction ou laisser ce champ vide.").arg(code_unique));
+                                 QString("Le code transaction '%1' n'existe pas dans la base de données.\n"
+                                         "Veuillez d'abord créer la transaction ou laisser ce champ vide.").arg(code_unique));
             return false;
         }
         query.bindValue(":code_unique", code_unique);
     }
-    
+
     query.bindValue(":id", id.toUpper());
 
     if (!query.exec()) {
         QString errorMsg = query.lastError().text();
         qDebug() << "❌ Erreur mise à jour transport:" << errorMsg;
-        
+
         // Vérifier si c'est une erreur de contrainte de clé étrangère
         QString userMessage;
         if (errorMsg.contains("FK_TRANSPORT_LOCAUX") || errorMsg.contains("ORA-02291")) {
             if (code_unique.isEmpty()) {
                 userMessage = "Erreur de contrainte de clé étrangère.\n"
-                             "Le code transaction doit exister dans la table TRANSACTIONS (finance).\n"
-                             "Veuillez créer la transaction d'abord ou laisser le champ vide.";
+                              "Le code transaction doit exister dans la table TRANSACTIONS (finance).\n"
+                              "Veuillez créer la transaction d'abord ou laisser le champ vide.";
             } else {
                 userMessage = QString("Le code transaction '%1' n'existe pas dans la table TRANSACTIONS (finance).\n"
-                                     "Veuillez créer la transaction d'abord ou laisser le champ vide.").arg(code_unique);
+                                      "Veuillez créer la transaction d'abord ou laisser le champ vide.").arg(code_unique);
             }
         } else {
             userMessage = QString("Impossible de modifier le véhicule de transport.\n\nDétails: %1").arg(errorMsg);
         }
-        
+
         QMessageBox::critical(nullptr, "Erreur Oracle", userMessage);
         return false;
     }
@@ -1260,6 +1258,7 @@ QVariantMap DatabaseManager::getTransportStatistics()
 
     return stats;
 }
+
 // ==================== AJOUTS FINANCE / RESIDENTS ====================
 // 🔥 NE RIEN MODIFIER AU-DESSUS — JUSTE AJOUT
 
@@ -1293,4 +1292,53 @@ QVariantMap DatabaseManager::getResidentByCIN(const QString &cin)
     }
 
     return m;
+}
+
+// ==================== AJOUTS TRANSPORT (UTILITAIRES) ====================
+// Pour Arduino / scénarios borne de recharge, etc.
+
+bool DatabaseManager::vehiculeExists(const QString &id)
+{
+    if (!db.isOpen())
+        return false;
+
+    QSqlQuery q(db);
+    q.prepare("SELECT COUNT(*) FROM TRANSPORT_VEHICULES WHERE id_vehicule = :id");
+    q.bindValue(":id", id.toUpper());
+
+    if (!q.exec() || !q.next())
+        return false;
+
+    return q.value(0).toInt() > 0;
+}
+
+QVariantMap DatabaseManager::getVehiculeByID(const QString &id)
+{
+    QVariantMap map;
+    if (!db.isOpen())
+        return map;
+
+    QSqlQuery q(db);
+    q.prepare(R"(
+        SELECT id_vehicule, type, capacite, zone, horaire, statut,
+               TO_CHAR(date_ajout, 'YYYY-MM-DD') AS date_ajout,
+               temps_utilise, code_unique
+        FROM TRANSPORT_VEHICULES
+        WHERE id_vehicule = :id
+    )");
+    q.bindValue(":id", id.toUpper());
+
+    if (q.exec() && q.next()) {
+        map["id_vehicule"]  = q.value("id_vehicule");
+        map["type"]         = q.value("type");
+        map["capacite"]     = q.value("capacite");
+        map["zone"]         = q.value("zone");
+        map["horaire"]      = q.value("horaire");
+        map["statut"]       = q.value("statut");
+        map["date_ajout"]   = q.value("date_ajout");
+        map["temps_utilise"]= q.value("temps_utilise");
+        map["code_unique"]  = q.value("code_unique");
+    }
+
+    return map;
 }

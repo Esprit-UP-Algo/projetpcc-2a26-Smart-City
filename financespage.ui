@@ -17,6 +17,9 @@
    <string notr="true">QWidget#FinancesPage { background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #F8FAFB, stop:1 #EDF2F7); font-family: &quot;Segoe UI&quot;; }</string>
   </property>
   <layout class="QVBoxLayout" name="mainLayout">
+   <property name="spacing">
+    <number>10</number>
+   </property>
    <property name="leftMargin">
     <number>20</number>
    </property>
@@ -28,9 +31,6 @@
    </property>
    <property name="bottomMargin">
     <number>15</number>
-   </property>
-   <property name="spacing">
-    <number>10</number>
    </property>
    <item>
     <widget class="QLabel" name="titleLabel">
@@ -90,6 +90,9 @@
       <string notr="true">QFrame#contentCard { background:white; border-radius:0 0 20px 20px; border:1px solid #E2E8F0; border-top:none; box-shadow:0 4px 18px rgba(31,45,92,0.08); }</string>
      </property>
      <layout class="QVBoxLayout" name="contentLayout">
+      <property name="spacing">
+       <number>10</number>
+      </property>
       <property name="leftMargin">
        <number>15</number>
       </property>
@@ -102,13 +105,10 @@
       <property name="bottomMargin">
        <number>15</number>
       </property>
-      <property name="spacing">
-       <number>10</number>
-      </property>
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>2</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="addPage">
          <layout class="QVBoxLayout" name="addPageLayout">
@@ -391,6 +391,16 @@
               </widget>
              </item>
              <item>
+              <widget class="QPushButton" name="arduinoBorneButton">
+               <property name="styleSheet">
+                <string notr="true">QPushButton { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #8B5CF6, stop:1 #7C3AED); color:white; border-radius:8px; padding:8px 16px; font-weight:600; } QPushButton:hover { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #7C3AED, stop:1 #6D28D9); }</string>
+               </property>
+               <property name="text">
+                <string>🚦 Borne Arduino</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QPushButton" name="generatePaymentButton">
                <property name="styleSheet">
                 <string notr="true">QPushButton { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #F59E0B, stop:1 #D97706); color:white; border-radius:8px; padding:8px 16px; font-weight:600; } QPushButton:hover { background:qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #D97706, stop:1 #B45309); }</string>
@@ -499,6 +509,9 @@
           <string notr="true">QWidget#statsPage { background:transparent; }</string>
          </property>
          <layout class="QVBoxLayout" name="statsLayout">
+          <property name="spacing">
+           <number>5</number>
+          </property>
           <property name="leftMargin">
            <number>3</number>
           </property>
@@ -510,9 +523,6 @@
           </property>
           <property name="bottomMargin">
            <number>3</number>
-          </property>
-          <property name="spacing">
-           <number>5</number>
           </property>
           <item>
            <widget class="QFrame" name="statsSubTabFrame">
@@ -632,6 +642,9 @@
             </widget>
             <widget class="QWidget" name="chatSubPage">
              <layout class="QVBoxLayout" name="chatSubLayout">
+              <property name="spacing">
+               <number>10</number>
+              </property>
               <property name="leftMargin">
                <number>10</number>
               </property>
@@ -642,9 +655,6 @@
                <number>10</number>
               </property>
               <property name="bottomMargin">
-               <number>10</number>
-              </property>
-              <property name="spacing">
                <number>10</number>
               </property>
               <item>
@@ -665,6 +675,12 @@
                  </item>
                  <item>
                   <widget class="QTextEdit" name="chatTextEdit">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                     <horstretch>0</horstretch>
+                     <verstretch>1</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -676,12 +692,6 @@
                      <width>16777215</width>
                      <height>500</height>
                     </size>
-                   </property>
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                     <horstretch>0</horstretch>
-                     <verstretch>1</verstretch>
-                    </sizepolicy>
                    </property>
                    <property name="readOnly">
                     <bool>true</bool>

@@ -29,6 +29,9 @@ class NexoraDashboard : public QMainWindow
 public:
     NexoraDashboard(QWidget *parent = nullptr);
     ~NexoraDashboard();
+    
+    TransportPage* getTransportPage() const { return transportsPage; }  // 🔥 NOUVEAU
+    FinancesPage* getFinancesPage() const { return financesPage; }      // 🔥 NOUVEAU
 
 private slots:
     void onResidentsClicked();

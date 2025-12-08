@@ -74,6 +74,18 @@ public:
     inline QVariantMap getVehicule(const QString &id) { return getTransportVehicule(id); }
     inline bool updateVehicule(const QString &id, const QVariantMap &data) { return updateTransportVehicule(id, data); }
     inline bool deleteVehicule(const QString &id) { return deleteTransportVehicule(id); }
+    inline bool ajouterVehiculeTransport(const QString &id, const QString &type, const QString &zone, const QString &statut) {
+        QVariantMap data;
+        data["id_vehicule"] = id;
+        data["type"] = type;
+        data["zone"] = zone;
+        data["statut"] = statut;
+        return addTransportVehicule(data);
+    }
+    
+    // Méthodes additionnelles pour compatibilité
+    bool vehiculeExists(const QString &id);
+    QVariantMap getVehiculeByID(const QString &id);
 
 signals:
     void vehiculeAdded();

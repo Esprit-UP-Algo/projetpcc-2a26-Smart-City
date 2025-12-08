@@ -5,6 +5,9 @@
 #include <QVariantMap>
 #include <QPair>
 #include <QTextCharFormat>
+#include <QSqlQuery>
+#include <QSqlError>
+#include "arduino.h"
 
 class FinancialAssistant;
 class QChartView;
@@ -24,6 +27,16 @@ class FinancesPage : public QWidget
 public:
     FinancesPage(QWidget *parent = nullptr);
     ~FinancesPage();
+    
+    // Méthode publique pour forcer la mise à jour depuis TransportPage
+    void forceRefreshFromExternalTransaction(const QString &vehicleCode, double amount);
+
+public slots:
+    void reloadTransactions(); // Méthode publique pour recharger les transactions
+    void onArduinoDataReceived(const QByteArray &data); // Déplacé vers public
+
+signals:
+    void arduinoResponseNeeded(const QString &response); // Signal pour envoyer réponse via MainWindow
 
 private slots:
     void onEditClicked();
@@ -39,6 +52,10 @@ private slots:
     void onPreviewQRCode();
     void onGeneratePaymentQR();
 
+    // ===== GESTION BORNE ARDUINO ===== (DÉPLACÉ VERS PUBLIC SLOTS)
+    void processVehicleTransaction(const QString &vehicleCode, double amount);
+    void displayTransactionResult(const QString &vehicleCode, double amount, bool success);
+
     // Slots pour les sous-onglets
     void onSubTabStat();
     void onSubTabChat();
@@ -48,16 +65,22 @@ private slots:
     void onAIResponse(const QString &response);
     void onAIError(const QString &error);
 
+    // Slots pour Arduino (déclarés plus haut dans la section GESTION BORNE ARDUINO)
+
 private:
     Ui::FinancesPage *ui;
     FinancialAssistant *financialAssistant;
     QString currentTransactionCode;
     bool usePieChart; // Pour alterner entre pie et bar charts
 
+    // ===== BORNE ARDUINO TRANSPORT =====
+    Arduino *arduinoBorne;
+    QString pendingVehicleCode;
+    double vehicleTransactionAmount = 5.0; // Montant par défaut pour recharge
+
     void setupTableHeaders();
     void setupUiBehavior();
     void setupValidation();
-    void reloadTransactions();
     void setTransactions(const QList<QVariantMap> &list);
     void loadTransaction(const QVariantMap &transaction);
     void loadResidentCINs();
