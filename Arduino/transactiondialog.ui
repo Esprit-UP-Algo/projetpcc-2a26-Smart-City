@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TransactionDialog</class>
+ <widget class="QDialog" name="TransactionDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>1000</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Transaction</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: white;</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>25</number>
+   </property>
+   <property name="leftMargin">
+    <number>40</number>
+   </property>
+   <property name="topMargin">
+    <number>40</number>
+   </property>
+   <property name="rightMargin">
+    <number>40</number>
+   </property>
+   <property name="bottomMargin">
+    <number>40</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="dialogTitle">
+     <property name="styleSheet">
+      <string notr="true">font-size: 24px; font-weight: bold; color: #2C3E50;</string>
+     </property>
+     <property name="text">
+      <string>Nouvelle Transaction</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QFormLayout" name="formLayout">
+     <property name="labelAlignment">
+      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+     </property>
+     <property name="horizontalSpacing">
+      <number>20</number>
+     </property>
+     <property name="verticalSpacing">
+      <number>18</number>
+     </property>
+     <item row="0" column="0">
+      <widget class="QLabel" name="codeFieldLabel">
+       <property name="styleSheet">
+        <string notr="true">font-size: 15px; font-weight: bold; color: #2C3E50;</string>
+       </property>
+       <property name="text">
+        <string>Code *:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="codeEdit">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>45</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">padding: 12px; border: 2px solid #BDC3C7; border-radius: 8px; font-size: 15px;</string>
+       </property>
+       <property name="placeholderText">
+        <string>Ex: TRN001</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="montantFieldLabel">
+       <property name="text">
+        <string>Montant *:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QDoubleSpinBox" name="montantSpinBox">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>45</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">padding: 12px; border: 2px solid #BDC3C7; border-radius: 8px; font-size: 15px;</string>
+       </property>
+       <property name="suffix">
+        <string> DT</string>
+       </property>
+       <property name="decimals">
+        <number>2</number>
+       </property>
+       <property name="maximum">
+        <double>1000000.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="dateFieldLabel">
+       <property name="text">
+        <string>Date *:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QDateEdit" name="dateEdit">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>45</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">padding: 12px; border: 2px solid #BDC3C7; border-radius: 8px; font-size: 15px;</string>
+       </property>
+       <property name="displayFormat">
+        <string>dd/MM/yyyy</string>
+       </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="typeFieldLabel">
+       <property name="text">
+        <string>Type *:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QComboBox" name="typeCombo">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>45</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">padding: 12px; border: 2px solid #BDC3C7; border-radius: 8px; font-size: 15px;</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>Entree</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Sortie</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="categorieFieldLabel">
+       <property name="text">
+        <string>Catégorie *:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="categorieCombo">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>45</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">padding: 12px; border: 2px solid #BDC3C7; border-radius: 8px; font-size: 15px;</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>Loyer</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Charges</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Services</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Maintenance</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Autre</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="modePaiementFieldLabel">
+       <property name="text">
+        <string>Mode de paiement *:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QComboBox" name="modePaiementCombo">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>45</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">padding: 12px; border: 2px solid #BDC3C7; border-radius: 8px; font-size: 15px;</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>Especes</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Carte</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Virement</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Cheque</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="buttonLayout">
+     <property name="spacing">
+      <number>15</number>
+     </property>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cancelButton">
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: #95A5A6; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; padding: 0 35px;</string>
+       </property>
+       <property name="text">
+        <string>Annuler</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="saveButton">
+       <property name="minimumSize">
+        <size>
+         <width>140</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: #4A90E2; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; padding: 0 35px;</string>
+       </property>
+       <property name="text">
+        <string>Enregistrer</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources>  <include location="resources.qrc"/> </resources>
+ <connections>
+  <connection>
+   <sender>cancelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>TransactionDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>371</x>
+     <y>369</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>249</x>
+     <y>199</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
+
+

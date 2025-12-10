@@ -1,0 +1,1230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TransportPage</class>
+ <widget class="QWidget" name="TransportPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1200</width>
+    <height>800</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Gestion Véhicules de Transport</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget#TransportPage {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #F8FAFB, stop:0.3 #EDF2F7, stop:0.7 #E2E8F0, stop:1 #CBD5E0);
+        font-family: &quot;Segoe UI&quot;;
+}</string>
+  </property>
+  <widget class="QLabel" name="titleLabel">
+   <property name="geometry">
+    <rect>
+     <x>25</x>
+     <y>20</y>
+     <width>1150</width>
+     <height>45</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel {
+        font-size:24px;
+        font-weight:700;
+        color:#2D3748;
+        letter-spacing:0.5px;
+        padding: 6px 0px;
+}</string>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/resources/car.png&quot; width=&quot;28&quot; height=&quot;28&quot;/&gt;&lt;span style=&quot; font-size:18pt; font-weight:600;&quot;&gt; Gestion des Véhicules de Transport&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QFrame" name="tabFrame">
+   <property name="geometry">
+    <rect>
+     <x>25</x>
+     <y>75</y>
+     <width>1150</width>
+     <height>55</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QFrame#tabFrame { background: transparent; }
+QPushButton {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 rgba(255,255,255,0.9), stop:1 rgba(248,250,251,0.8));
+        color: #4A5568; border: 1px solid rgba(135,206,235,0.3);
+        padding: 12px 20px; border-top-left-radius: 12px;
+        border-top-right-radius: 12px; font-weight: 600;
+        font-size: 14px; margin-right: 2px;
+}
+QPushButton:checked {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #87CEEB, stop:1 #87CEFA);
+        color: white; border: 1px solid #87CEEB;
+}
+QPushButton:hover:!checked {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 rgba(255,255,255,1), stop:1 rgba(135,206,235,0.1));
+        border: 1px solid rgba(135,206,235,0.5);
+}</string>
+   </property>
+   <layout class="QHBoxLayout" name="tabLayout">
+    <item>
+     <widget class="QPushButton" name="tabAddButton">
+      <property name="text">
+       <string>Ajouter</string>
+      </property>
+      <property name="icon">
+       <iconset resource="resources.qrc">
+        <normaloff>:/resources/ajouter.png</normaloff>:/resources/ajouter.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>16</width>
+        <height>16</height>
+       </size>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="tabListButton">
+      <property name="text">
+       <string>Liste</string>
+      </property>
+      <property name="icon">
+       <iconset resource="resources.qrc">
+        <normaloff>:/resources/listee.png</normaloff>:/resources/listee.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>16</width>
+        <height>16</height>
+       </size>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="tabStatsButton">
+      <property name="text">
+       <string>Statistiques</string>
+      </property>
+      <property name="icon">
+       <iconset resource="resources.qrc">
+        <normaloff>:/resources/statt.png</normaloff>:/resources/statt.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>16</width>
+        <height>16</height>
+       </size>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Orientation::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QPushButton" name="notificationButton">
+      <property name="toolTip">
+       <string>Afficher les notifications de maintenance</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #FFD93D, stop:1 #FF9A3D);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 20px;
+        font-weight: bold;
+        font-size: 14px;
+        margin-right: 2px;
+}
+QPushButton:hover {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #FFC83D, stop:1 #FF8A3D);
+}
+QPushButton:pressed {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #FFB83D, stop:1 #FF7A3D);
+}</string>
+      </property>
+      <property name="text">
+       <string>Notifications</string>
+      </property>
+      <property name="icon">
+       <iconset resource="resources.qrc">
+        <normaloff>:/resources/notify.png</normaloff>
+       </iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>16</width>
+        <height>16</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QFrame" name="contentCard">
+   <property name="geometry">
+    <rect>
+     <x>25</x>
+     <y>135</y>
+     <width>1150</width>
+     <height>640</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>1150</width>
+     <height>640</height>
+    </size>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QFrame#contentCard {
+        background: white;
+        border-radius: 0 0 20px 20px;
+        border: 1px solid #E2E8F0;
+        border-top: none;
+}</string>
+   </property>
+   <layout class="QVBoxLayout" name="contentLayout">
+    <property name="leftMargin">
+     <number>25</number>
+    </property>
+    <property name="topMargin">
+     <number>25</number>
+    </property>
+    <property name="rightMargin">
+     <number>25</number>
+    </property>
+    <property name="bottomMargin">
+     <number>25</number>
+    </property>
+    <item>
+     <widget class="QStackedWidget" name="stackedWidget">
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <widget class="QWidget" name="addPage">
+       <layout class="QVBoxLayout" name="addPageLayout">
+        <item>
+         <widget class="QLabel" name="addTitle">
+          <property name="styleSheet">
+           <string notr="true">QLabel { font-size:16px; font-weight:600; color:#4A5568; margin-bottom:8px; }</string>
+          </property>
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/resources/ajouter.png&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt; Ajouter un Véhicule&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFrame" name="formFrame">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>420</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QFrame#formFrame {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 rgba(255,255,255,0.95), stop:1 rgba(248,250,251,0.9));
+        border: 1px solid rgba(135,206,235,0.2);
+        border-radius: 12px;
+        padding: 24px;
+}
+QLabel { font-size: 14px; font-weight: 600; color: #4A5568; }
+QLineEdit, QComboBox, QDateEdit {
+        border: 1px solid rgba(135,206,235,0.3);
+        border-radius: 8px;
+        padding: 10px;
+        background: rgba(255,255,255,0.8);
+        font-size: 13px;
+        color: #2D3748;
+}
+QLineEdit:focus, QComboBox:focus {
+        border: 2px solid #87CEEB;
+        background: rgba(255,255,255,1);
+}</string>
+          </property>
+          <layout class="QGridLayout" name="formLayout">
+           <property name="horizontalSpacing">
+            <number>25</number>
+           </property>
+           <property name="verticalSpacing">
+            <number>18</number>
+           </property>
+           <item row="4" column="1">
+            <widget class="QDateEdit" name="dateAjoutEdit">
+             <property name="calendarPopup">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="idLabel">
+             <property name="text">
+              <string>ID Véhicule *</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="2">
+            <widget class="QLabel" name="zoneLabel">
+             <property name="text">
+              <string>Zone</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QLineEdit" name="codeUniqueEdit">
+             <property name="placeholderText">
+              <string>Code transaction</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="idEdit">
+             <property name="placeholderText">
+              <string>VH001</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="codeUniqueLabel">
+             <property name="text">
+              <string>Code Unique</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="3">
+            <widget class="QComboBox" name="statutCombo">
+             <item>
+              <property name="text">
+               <string>disponible</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>maintenance</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>reserve</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="horaireLabel">
+             <property name="text">
+              <string>Horaire</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="2">
+            <widget class="QLabel" name="statutLabel">
+             <property name="text">
+              <string>Statut *</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QLabel" name="typeLabel">
+             <property name="text">
+              <string>Type *</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="capaciteLabel">
+             <property name="text">
+              <string>Capacité *</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QLineEdit" name="horaireEdit">
+             <property name="placeholderText">
+              <string>Ex: 08:00-18:00</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="3">
+            <widget class="QLineEdit" name="tempsUtiliseEdit">
+             <property name="placeholderText">
+              <string>Ex: 120.5</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="3">
+            <widget class="QLineEdit" name="zoneEdit">
+             <property name="placeholderText">
+              <string>Zone de service</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLineEdit" name="capaciteEdit">
+             <property name="placeholderText">
+              <string>Ex: 4, 20, 5</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="2">
+            <widget class="QLabel" name="tempsUtiliseLabel">
+             <property name="text">
+              <string>Temps Utilisé (h)</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="3">
+            <widget class="QComboBox" name="typeCombo">
+             <item>
+              <property name="text">
+               <string>taxi</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>bus</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>voiture</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="dateAjoutLabel">
+             <property name="text">
+              <string>Date Ajout</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="errorLabel">
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+        color: #D32F2F;
+        font-size: 14px;
+        font-weight: 600;
+        background: #FFEBEE;
+        border: 1px solid #FFCDD2;
+        border-radius: 6px;
+        padding: 8px 12px;
+        margin: 5px 0px;
+}</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="formButtonsLayout">
+          <item>
+           <spacer name="formSpacerLeft">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="cancelFormButton">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>45</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 rgba(255,255,255,0.9), stop:1 rgba(248,250,251,0.8));
+        color: #4A5568;
+        border: 1px solid rgba(135,206,235,0.3);
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-weight: 600;
+        font-size: 14px;
+}
+QPushButton:hover {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 rgba(248,250,251,1), stop:1 rgba(235,240,245,0.9));
+        border: 1px solid rgba(135,206,235,0.5);
+}</string>
+            </property>
+            <property name="text">
+             <string>Annuler</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/resources/annul.png</normaloff>:/resources/annul.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="deleteVehiculeButton">
+            <property name="minimumSize">
+             <size>
+              <width>130</width>
+              <height>45</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #DC2626, stop:1 #B91C1C);
+        color: white;
+        border-radius: 10px;
+        padding: 10px 18px;
+        font-weight: 600;
+        border: 1px solid rgba(220,38,38,0.3);
+}
+QPushButton:hover {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #B91C1C, stop:1 #991B1B);
+}</string>
+            </property>
+            <property name="text">
+             <string>Supprimer</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/resources/trash.png</normaloff>:/resources/trash.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="saveFormButton">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>45</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #87CEEB, stop:1 #87CEFA);
+        color: white;
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-weight: bold;
+        font-size: 14px;
+        border: 1px solid rgba(135,206,235,0.3);
+}
+QPushButton:hover {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #7FC7FF, stop:1 #6FB8FF);
+}</string>
+            </property>
+            <property name="text">
+             <string>Enregistrer</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/resources/uplo.png</normaloff>:/resources/uplo.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="formSpacerRight">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="listPage">
+       <layout class="QVBoxLayout" name="listLayout">
+        <property name="spacing">
+         <number>18</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QFrame" name="toolbarFrame">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>80</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QFrame#toolbarFrame {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 rgba(255,255,255,0.95), stop:1 rgba(248,250,251,0.9));
+        border: 1px solid rgba(135,206,235,0.2);
+        border-radius: 12px;
+        padding: 18px;
+        margin: 5px 0px;
+}
+QLineEdit {
+        border: 1px solid rgba(135,206,235,0.4);
+        border-radius: 10px;
+        padding: 10px 15px;
+        background: rgba(255,255,255,0.9);
+        font-size: 14px;
+        color: #2D3748;
+}
+QLineEdit:focus {
+        border: 2px solid #87CEEB;
+        background: rgba(255,255,255,1);
+}
+QComboBox {
+        border: 1px solid rgba(135,206,235,0.4);
+        border-radius: 10px;
+        padding: 10px 15px;
+        background: rgba(255,255,255,0.9);
+        font-size: 14px;
+        color: #2D3748;
+        min-width: 160px;
+}
+QComboBox:focus {
+        border: 2px solid #87CEEB;
+        background: rgba(255,255,255,1);
+}</string>
+          </property>
+          <layout class="QHBoxLayout" name="toolbarLayout">
+           <property name="spacing">
+            <number>15</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLineEdit" name="searchEdit">
+             <property name="minimumSize">
+              <size>
+               <width>350</width>
+               <height>42</height>
+              </size>
+             </property>
+             <property name="placeholderText">
+              <string>Rechercher par ID, Type ou Date...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="searchButton">
+             <property name="minimumSize">
+              <size>
+               <width>42</width>
+               <height>42</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>42</width>
+               <height>42</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #87CEEB, stop:1 #4682B4);
+        border-radius: 8px; border: none;
+}
+QPushButton:hover {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #4682B4, stop:1 #2E5984);
+}</string>
+             </property>
+             <property name="icon">
+              <iconset resource="resources.qrc">
+               <normaloff>:/resources/loupe.png</normaloff>:/resources/loupe.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="sortCombo">
+             <property name="minimumSize">
+              <size>
+               <width>192</width>
+               <height>42</height>
+              </size>
+             </property>
+             <item>
+              <property name="text">
+               <string>Trier par Date</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Trier par Type</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <spacer name="toolbarSpacer">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="exportPdfButton">
+             <property name="minimumSize">
+              <size>
+               <width>140</width>
+               <height>42</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #87CEEB, stop:1 #4682B4);
+        color: white;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: 600;
+}
+QPushButton:hover {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #4682B4, stop:1 #2E5984);
+}</string>
+             </property>
+             <property name="text">
+              <string>Export PDF</string>
+             </property>
+             <property name="icon">
+              <iconset resource="resources.qrc">
+               <normaloff>:/resources/pdf.png</normaloff>:/resources/pdf.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>16</width>
+               <height>16</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="vehiculesTable">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>350</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QTableWidget {
+        border: 1px solid rgba(135,206,235,0.3);
+        border-radius: 12px;
+        background: rgba(255,255,255,0.95);
+        gridline-color: rgba(135,206,235,0.2);
+}
+QHeaderView::section {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #87CEEB, stop:1 #87CEFA);
+        color: white;
+        font-weight: 600;
+        padding: 12px;
+        border: none;
+        border-right: 1px solid rgba(255,255,255,0.3);
+}
+QTableWidget::item { padding: 12px; color:#2D3748; }
+QTableWidget::item:selected {
+        background: rgba(135,206,235,0.2);
+}</string>
+          </property>
+          <column>
+           <property name="text">
+            <string>ID Véhicule</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Type</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Capacité</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Zone</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Horaire</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Statut</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Date Ajout</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Temps Utilisé (h)</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Kilométrage (km)</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Code Unique</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="actionsLayout">
+          <item>
+           <spacer name="actionSpacer">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="editVehiculeButton">
+            <property name="minimumSize">
+             <size>
+              <width>140</width>
+              <height>48</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #F59E0B, stop:1 #D97706);
+        color: white; border-radius: 10px;
+        padding: 10px 18px; font-weight: 600;
+}
+QPushButton:hover {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #D97706, stop:1 #B45309);
+}</string>
+            </property>
+            <property name="text">
+             <string>Modifier</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/resources/modify.png</normaloff>:/resources/modify.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="statsPage">
+       <property name="styleSheet">
+        <string notr="true">QWidget#statsPage {
+        background: transparent;
+}</string>
+       </property>
+       <layout class="QVBoxLayout" name="statsLayout">
+        <property name="spacing">
+         <number>25</number>
+        </property>
+        <property name="leftMargin">
+         <number>30</number>
+        </property>
+        <property name="topMargin">
+         <number>20</number>
+        </property>
+        <property name="rightMargin">
+         <number>30</number>
+        </property>
+        <property name="bottomMargin">
+         <number>20</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="statsTitle">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>60</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1F2D5C;
+        padding: 15px 0px;
+        background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 rgba(135,206,235,0.1), stop:1 transparent);
+        border-left: 4px solid #87CEEB;
+        padding-left: 20px;
+}</string>
+          </property>
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/resources/statt.png&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt; Statistiques Véhicules — Utilisation &amp;amp; Performance&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFrame" name="resultCard">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>250</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QFrame#resultCard {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #87CEEB, stop:1 #4682B4);
+        border-radius: 15px;
+        padding: 30px;
+        border: 2px solid #87CEEB;
+}
+QLabel { background: transparent; border: none; }</string>
+          </property>
+          <layout class="QVBoxLayout" name="resultLayout">
+           <property name="spacing">
+            <number>15</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="resultTitle">
+             <property name="styleSheet">
+              <string notr="true">QLabel {
+        font-size: 20px;
+        font-weight: 700;
+        color: white;
+}</string>
+             </property>
+             <property name="text">
+              <string>📊 Résumé Utilisation :</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="vehiculePlusUtilise">
+             <property name="styleSheet">
+              <string notr="true">QLabel {
+        font-size: 18px;
+        font-weight: 700;
+        color: white;
+        padding: 8px 10px;
+}</string>
+             </property>
+             <property name="text">
+              <string>Véhicule le + utilisé: VH001 (245h)</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="vehiculeMoinsUtilise">
+             <property name="styleSheet">
+              <string notr="true">QLabel {
+        font-size: 18px;
+        font-weight: 700;
+        color: white;
+        padding: 8px 10px;
+}</string>
+             </property>
+             <property name="text">
+              <string>Véhicule le - utilisé: VH007 (12h)</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="pourcentageKilometrage">
+             <property name="styleSheet">
+              <string notr="true">QLabel {
+        font-size: 16px;
+        font-weight: 500;
+        color: white;
+        background: rgba(255,255,255,0.15);
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.2);
+        padding: 18px;
+}</string>
+             </property>
+             <property name="text">
+              <string>Kilométrage - Taxi: 45% | Bus: 35% | Voiture: 20%</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="afficherStatsButton">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>45</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #87CEEB, stop:1 #4682B4);
+        color: white;
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-weight: bold;
+}
+QPushButton:hover {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #4682B4, stop:1 #2E5984);
+}</string>
+          </property>
+          <property name="text">
+           <string>📊 Afficher les Statistiques</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="historiqueTitle">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1F2D5C;
+        padding: 15px 0px;
+        background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 rgba(135,206,235,0.1), stop:1 transparent);
+        border-left: 4px solid #87CEEB;
+        padding-left: 20px;
+}</string>
+          </property>
+          <property name="text">
+           <string>📜 Historique des Utilisations</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="historiqueLayout">
+          <item>
+           <spacer name="historiqueSpacerLeft">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="historiqueButton">
+            <property name="minimumSize">
+             <size>
+              <width>130</width>
+              <height>45</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #F59E0B, stop:1 #D97706);
+        color: white;
+        border-radius: 10px;
+        padding: 10px 18px;
+        font-weight: 600;
+}
+QPushButton:hover {
+        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #D97706, stop:1 #B45309);
+}</string>
+            </property>
+            <property name="text">
+             <string>Historique</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/resources/history.png</normaloff>
+             </iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="historiqueSpacerRight">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>
