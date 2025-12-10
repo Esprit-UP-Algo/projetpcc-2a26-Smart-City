@@ -42,6 +42,7 @@ private:
     QString removeAccents(const QString &input);
     QChart *statsChart = nullptr;
     QString getServiceEmail(const QString &incidentType);
+    QString lastUID;
 
 
 
@@ -60,6 +61,15 @@ private:
     void applyTheme();
     void reloadTranslations();
     Arduino *arduino;
+    
+    // Système de détection d'incidents de sécurité
+    QMap<QString, int> failedAttempts;     // UID -> nombre de tentatives refusées
+    QMap<QString, QDateTime> lastAttempt; // UID -> dernière tentative
+    static const int MAX_FAILED_ATTEMPTS = 3;
+    static const int RESET_INTERVAL_MINUTES = 5; // Reset après 5 minutes
+    
+    void checkAndResetFailedAttempts(const QString &uid);
+    void createSecurityIncident(const QString &uid);
 };
 
 #endif // INCIDENTSPAGE_H

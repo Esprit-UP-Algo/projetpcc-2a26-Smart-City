@@ -643,75 +643,72 @@ void IncidentsPage::initializeStatsChart()
     if (statsChart) return;
 
     statsChart = new QChart();
+
+    // Série vide – remplie ensuite par updateStats()
     QPieSeries *series = new QPieSeries();
-
-    // DONNÉES FIXES POUR TEST - REMPLACEZ PLUS TARD PAR LA VERSION BD
-    series->append("Signalé", 5);
-    series->append("En cours", 3);
-    series->append("Résolu", 8);
-    series->append("Archivé", 2);
-
-    // CONFIGURATION DES LABELS - TRÈS IMPORTANT
-    for (QPieSlice *slice : series->slices()) {
-        slice->setLabelVisible(true);
-        slice->setLabelPosition(QPieSlice::LabelOutside);
-        slice->setLabelBrush(QBrush(Qt::black));
-        slice->setLabelFont(QFont("Arial", 10, QFont::Bold));
-
-        // Calcul du pourcentage
-        double percentage = (slice->value() / series->sum()) * 100;
-        QString label = QString("%1\n%2 incidents\n%3%")
-                            .arg(slice->label())
-                            .arg(slice->value())
-                            .arg(QString::number(percentage, 'f', 1));
-        slice->setLabel(label);
-    }
-
-    // FORCER L'AFFICHAGE DES LABELS
     series->setLabelsVisible(true);
 
-    // AJOUT AU CHART
     statsChart->addSeries(series);
-    ///////////////////////////////////////
-    statsChart->setTitleFont(QFont("Arial", 14, QFont::Bold));
 
-    // LÉGENDE
+    statsChart->setTitleFont(QFont("Arial", 14, QFont::Bold));
     statsChart->legend()->setVisible(true);
     statsChart->legend()->setAlignment(Qt::AlignBottom);
     statsChart->legend()->setFont(QFont("Arial", 8));
-
-    statsChart->setMargins(QMargins(5, 5, 5, 5)); // Marges réduites
-
-
-    // ANIMATIONS
+    statsChart->setMargins(QMargins(5, 5, 5, 5));
     statsChart->setAnimationOptions(QChart::AllAnimations);
 
-    // APPLICATION
     ui->chartView->setChart(statsChart);
     ui->chartView->setRenderHint(QPainter::Antialiasing);
-
-    ui->chartView->setMinimumHeight(350); // Réduit la hauteur minimum
-
-
-    qDebug() << "Chart initialisé avec données de test";
 }
+
 
 void IncidentsPage::updateStats()
 {
     qDebug() << "=== UPDATE STATS ===";
 
-    if (!ui || !ui->chartView) {
-        qCritical() << "Pointeurs invalides";
-        return;
+    if (!ui || !ui->chartView) return;
+
+    // 🔥 Utilisation correcte du singleton DatabaseManager
+    QVariantMap stats = DatabaseManager::instance().getIncidentStatusCounts();
+
+    int nbSignalé  = stats.value("signalé").toInt();
+    int nbEnCours  = stats.value("en cours").toInt();
+    int nbRésolu   = stats.value("résolu").toInt();
+    int nbArchivé  = stats.value("archivé").toInt();
+
+    if (!statsChart)
+        initializeStatsChart();
+
+    QPieSeries *series = (QPieSeries*) statsChart->series().at(0);
+    series->clear();
+
+    series->append("Signalé", nbSignalé);
+    series->append("En cours", nbEnCours);
+    series->append("Résolu", nbRésolu);
+    series->append("Archivé", nbArchivé);
+
+    for (QPieSlice *slice : series->slices())
+    {
+        slice->setLabelVisible(true);
+        slice->setLabelPosition(QPieSlice::LabelOutside);
+        slice->setLabelBrush(QBrush(Qt::black));
+        slice->setLabelFont(QFont("Arial", 10, QFont::Bold));
+
+        double p = (slice->value() / series->sum()) * 100.0;
+        slice->setLabel(
+            QString("%1\n%2 incidents\n%3%")
+                .arg(slice->label())
+                .arg(slice->value())
+                .arg(QString::number(p, 'f', 1))
+            );
     }
 
-    if (!statsChart) {
-        qDebug() << "Initialisation du chart...";
-        initializeStatsChart();
-    }
+    series->setLabelsVisible(true);
 
     qDebug() << "=== UPDATE STATS TERMINÉ ===";
 }
+
+
 void IncidentsPage::refreshStats() {
     qDebug() << "=== REFRESH STATS AVANT ===";
 
@@ -1062,15 +1059,151 @@ QString IncidentsPage::genererDecisionFinale(const QString& statut, const QStrin
 
 
 
-
 void IncidentsPage::onArduinoMessage(QString msg)
 {
-    qDebug() << "[RFID] Message reçu:" << msg;
+    qDebug() << "[RFID] Message reçu :" << msg;
+    
+    // 🔥 0) Gestion spéciale - Demande de résident par UID
+    if (msg.startsWith("GET_RESIDENT:"))
+    {
+        QString uid = msg.split(":").last().trimmed();
+        qDebug() << "[RFID] Recherche résident pour UID =" << uid;
+        
+        QVariantMap resident = DatabaseManager::instance().getResidentByRFID(uid);
+        
+        if (!resident.isEmpty()) {
+            QString nom = resident.value("NOM", "INCONNU").toString();
+            QString prenom = resident.value("PRENOM", "").toString();
+            
+            qDebug() << QString("[RFID] Résident trouvé: %1 %2").arg(nom, prenom);
+            
+            // Envoyer l'information à l'Arduino/OLED
+            arduino->sendResidentInfo(nom, prenom);
+        } else {
+            qDebug() << "[RFID] Aucun résident trouvé pour UID =" << uid;
+            // Envoyer message DENIED à l'Arduino
+            arduino->sendToArduino("DENIED:" + uid + "\n");
+        }
+        return;
+    }
+    
+    // 🔥 1) Sauvegarder le dernier UID scanné
+    if (msg.startsWith("UID:"))
+    {
+        lastUID = msg.split(":").last().trimmed();
+        qDebug() << "[RFID] UID reçu =" << lastUID;
+        
+        // 🚀 NOUVELLE LOGIQUE: Demander les infos du résident immédiatement
+        QVariantMap resident = DatabaseManager::instance().getResidentByRFID(lastUID);
+        
+        if (!resident.isEmpty()) {
+            QString nom = resident.value("NOM", "INCONNU").toString();
+            QString prenom = resident.value("PRENOM", "").toString();
+            
+            qDebug() << QString("[OLED] Affichage résident: %1 %2").arg(nom, prenom);
+            
+            // Envoyer l'information à l'Arduino/OLED avec animation
+            arduino->sendResidentInfo(nom, prenom);
+        } else {
+            // Carte non reconnue - afficher accès refusé
+            arduino->sendToArduino("DENIED:" + lastUID + "\n");
+        }
+        
+        return;  // On s'arrête ici
+    }
+    
+    // 🔥 2) Gestion des accès APPROUVÉS
+    if (msg.startsWith("APPROVED"))
+    {
+        QString uid = "";
+        if (msg.contains(":"))
+            uid = msg.split(":").last().trimmed();
+        else if (!lastUID.isEmpty())
+            uid = lastUID;
+            
+        qDebug() << "[RFID] Accès APPROUVÉ pour UID =" << uid;
+        
+        // Reset des tentatives échouées pour cet UID
+        if (failedAttempts.contains(uid)) {
+            failedAttempts.remove(uid);
+            lastAttempt.remove(uid);
+            qDebug() << "[SÉCURITÉ] Reset tentatives échouées pour UID :" << uid;
+        }
+        return;
+    }
+    
+    // 🔥 3) Gestion des accès REFUSÉS
+    if (msg.startsWith("DENIED"))
+    {
+        QString uid = "";
+        if (msg.contains(":"))
+            uid = msg.split(":").last().trimmed();
+        else if (!lastUID.isEmpty())
+            uid = lastUID;
+            
+        qDebug() << "[RFID] Accès REFUSÉ pour UID =" << uid;
+        
+        if (!uid.isEmpty()) {
+            // Vérifier et reset si nécessaire (après 5 minutes)
+            checkAndResetFailedAttempts(uid);
+            
+            // Incrémenter les tentatives échouées
+            failedAttempts[uid] = failedAttempts.value(uid, 0) + 1;
+            lastAttempt[uid] = QDateTime::currentDateTime();
+            
+            int attempts = failedAttempts[uid];
+            qDebug() << QString("[SÉCURITÉ] UID %1 - Tentative échouée #%2").arg(uid).arg(attempts);
+            
+            // Créer un incident après 3 tentatives
+            if (attempts >= MAX_FAILED_ATTEMPTS) {
+                qWarning() << QString("[SÉCURITÉ ALERTE] UID %1 - %2 tentatives échouées consécutives!").arg(uid).arg(attempts);
+                createSecurityIncident(uid);
+                // Reset après création d'incident
+                failedAttempts.remove(uid);
+                lastAttempt.remove(uid);
+            }
+        }
+        return;
+    }
+    
+    // 🔥 4) Gestion des INCIDENTS automatiques de l'Arduino
+    if (msg.startsWith("INCIDENT:"))
+    {
+        QString incidentMsg = msg.mid(9);  // Extract message after "INCIDENT:"
+        qDebug() << "[ARDUINO] Incident automatique reçu :" << incidentMsg;
+        
+        // Créer l'incident avec CIN résident = "inconnue" et type = "Panne ascenseur"
+        QVariantMap data;
+        data["type_incident"] = "Panne ascenseur";  // ← Type correct: "Panne ascenseur"
+        data["localisation"]  = "Batiment 1";
+        data["date_heure"]    = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+        data["niveau"]        = 3;
+        data["statut"]        = "Signalé";
+        data["cin_resident"]  = "inconnue";  // ← CIN inconnue car UID non reconnu
+        
+        bool ok = DatabaseManager::instance().addIncident(data);
+        
+        if (ok) {
+            qDebug() << "[INCIDENT] Incident créé avec succès en base de données";
+            refreshList();
+            refreshStats();
+            // NOTE: L'alerte s'affiche déjà sur l'OLED via Arduino
+        } else {
+            qCritical() << "[INCIDENT] Erreur lors de la création de l'incident";
+        }
+        return;
+    }
 
-    // ============================
-    // 1 — PANNE ASCENSEUR
-    // ============================
-    if (msg.contains("PANNE")) {
+    // Format attendu : PANNE:UID
+    if (msg.startsWith("PANNE"))
+    {
+        QString uid = "";
+        if (msg.contains(":"))
+            uid = msg.split(":").last().trimmed();
+
+        qDebug() << "[RFID] UID =" << uid;
+
+        QString idResident = DatabaseManager::instance().getResidentIdFromRFID(uid);
 
         QVariantMap data;
         data["type_incident"] = "Panne ascenseur";
@@ -1078,28 +1211,69 @@ void IncidentsPage::onArduinoMessage(QString msg)
         data["date_heure"]    = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
         data["niveau"]        = 4;
         data["statut"]        = "Signalé";
-        data["cin_resident"] = QVariant();   // NULL VALUE
-          // NULL pour champ NUMBER
-        // pas lié à un résident précis
 
-        DatabaseManager::instance().addIncident(data);
+        // Pas besoin de CIN → lier l’incident sans résident
+        data["cin_resident"] = "";
 
-        refreshList();     // Mettre à jour la liste dans l'UI
-        refreshStats();
+        bool ok = DatabaseManager::instance().addIncident(data);
 
-        QMessageBox::critical(this,
-                              "Alerte Ascenseur",
-                              "⚠️ PANNE détectée automatiquement par RFID !");
+        if (ok) {
+            refreshList();
+            refreshStats();
+            QMessageBox::critical(this, "Alerte Ascenseur",
+                                  "⚠️ PANNE détectée automatiquement !");
+        } else {
+            QMessageBox::critical(this, "Erreur Oracle",
+                                  "Impossible d'ajouter l'incident (voir console).");
+        }
     }
 
-    // ============================
-    // 2 — ACCÈS APPROUVÉ OU REFUSÉ
-    // ============================
-    if (msg == "ACCES_OK") {
-        QMessageBox::information(this, "RFID", "Accès approuvé pour resident 1 !");
-    }
-    else if (msg.contains("REFUSE")) {
-        QMessageBox::warning(this, "RFID", "Accès refusé par RFID.");
+}
+
+//
+// ────────────────────────────────────────────────
+//   GESTION SÉCURITÉ - INCIDENTS AUTOMATIQUES
+// ────────────────────────────────────────────────
+//
+
+void IncidentsPage::checkAndResetFailedAttempts(const QString &uid)
+{
+    if (lastAttempt.contains(uid)) {
+        QDateTime lastTime = lastAttempt[uid];
+        QDateTime now = QDateTime::currentDateTime();
+        
+        // Reset si plus de 5 minutes depuis la dernière tentative
+        if (lastTime.secsTo(now) > (RESET_INTERVAL_MINUTES * 60)) {
+            failedAttempts.remove(uid);
+            lastAttempt.remove(uid);
+            qDebug() << QString("[SÉCURITÉ] Reset automatique pour UID %1 (timeout)").arg(uid);
+        }
     }
 }
 
+void IncidentsPage::createSecurityIncident(const QString &uid)
+{
+    qWarning() << QString("[SÉCURITÉ] Création incident de sécurité pour UID: %1").arg(uid);
+    
+    // NOTE: L'Arduino a déjà envoyé le message INCIDENT et affiche sur l'OLED
+    // Qt se contente de créer l'incident en base de données
+
+    // Créer l'incident en base de données
+    QVariantMap data;
+    data["type_incident"] = "Panne ascenseur";  // ← Type correct
+    data["localisation"] = "Ascenseur - Bâtiment principal";
+    data["date_heure"] = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+    data["niveau"] = 3;  // Niveau critique
+    data["statut"] = "Signalé";
+    data["cin_resident"] = "inconnue";  // ← CIN inconnue car carte non reconnue
+
+    bool ok = DatabaseManager::instance().addIncident(data);
+    
+    if (ok) {
+        qDebug() << "[SÉCURITÉ] Incident créé en base de données avec succès";
+        refreshList();
+        refreshStats();
+    } else {
+        qCritical() << "[SÉCURITÉ] Erreur lors de la création de l'incident en base de données";
+    }
+}

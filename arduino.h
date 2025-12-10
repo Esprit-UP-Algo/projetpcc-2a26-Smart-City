@@ -18,6 +18,7 @@ public:
 
     void sendToArduino(const QString &data);      // Envoyer une commande
     void simulateReceived(const QString &data);   // Pour tests sans Arduino
+    void sendResidentInfo(const QString &nom, const QString &prenom);  // Send resident info to OLED
 
 signals:
     void dataReceived(QString data);              // UID reçu

@@ -4,6 +4,7 @@ CONFIG += c++17
 
 SOURCES += \
     arduino.cpp \
+    arduinotransport.cpp \
     main.cpp \
     mainwindow.cpp \
     welcomedialog.cpp \
@@ -29,6 +30,7 @@ SOURCES += \
 
 HEADERS += \
     arduino.h \
+    arduinotransport.h \
     mainwindow.h \
     transportpage.h \
     welcomedialog.h \

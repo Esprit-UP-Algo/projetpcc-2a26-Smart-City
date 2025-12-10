@@ -94,3 +94,17 @@ void Arduino::onDataAvailable()
     }
 }
 
+void Arduino::sendResidentInfo(const QString &nom, const QString &prenom)
+{
+    if (!serial->isOpen()) {
+        qDebug() << "Arduino non connecté — impossible d'envoyer les informations du résident.";
+        return;
+    }
+
+    // Format: APPROVED:NOM:PRENOM
+    QString message = QString("APPROVED:%1:%2\n").arg(nom, prenom);
+    serial->write(message.toUtf8());
+    
+    qDebug() << "[Arduino] Informations du résident envoyées:" << nom << prenom;
+}
+

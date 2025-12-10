@@ -2,7 +2,6 @@
 #include "ui_financespage.h"
 #include "databasemanager.h"
 #include "financialassistant.h"
-#include "arduinotransport.h"  // ← Nouvelle inclusion
 #include "config.h"
 #include <QMessageBox>
 #include <QDebug>
@@ -114,20 +113,20 @@ class QRCodeGenerator {
 public:
     static QPixmap generateQRCode(const QString &data, int size = 200) {
         QNetworkAccessManager manager;
-        
+
         // API QR Server gratuite - qr-server.com
         QString apiUrl = QString("https://api.qrserver.com/v1/create-qr-code/?size=%1x%1&data=%2")
                         .arg(size)
                         .arg(QString(QUrl::toPercentEncoding(data)));
-        
+
         QNetworkRequest request(apiUrl);
         request.setRawHeader("User-Agent", "NEXORA Smart City v1.0");
-        
+
         QEventLoop loop;
         QNetworkReply* reply = manager.get(request);
         QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
-        
+
         QPixmap qrPixmap;
         if (reply->error() == QNetworkReply::NoError) {
             QByteArray data = reply->readAll();
@@ -138,7 +137,7 @@ public:
             // Fallback: créer un QR code basique local
             qrPixmap = generateFallbackQR(data, size);
         }
-        
+
         reply->deleteLater();
         return qrPixmap;
     }
@@ -148,13 +147,13 @@ public:
         QDateTime now = QDateTime::currentDateTime();
         QString timestamp = now.toString("yyyy-MM-dd hh:mm:ss");
         QString verification = QString::number(qHash(transactionData + timestamp), 16).toUpper();
-        
+
         QString qrData = QString("NEXORA-SMART-CITY|TYPE:%1|%2|TIMESTAMP:%3|VERIFY:%4")
                         .arg(type)
                         .arg(transactionData)
                         .arg(timestamp)
                         .arg(verification);
-        
+
         return generateQRCode(qrData, 300);
     }
 
@@ -162,28 +161,28 @@ public:
         // Option 1: PayPal.Me (le plus simple pour tester)
         QString paypalUrl = QString("https://paypal.me/nexorapay/%1")
                            .arg(montant);
-        
+
         // Option 2: Stripe Payment Link (exemple)
         QString stripeUrl = QString("https://buy.stripe.com/test_payment?amount=%1&description=%2")
                            .arg(QString::number(montant.toDouble() * 100)) // Stripe utilise les centimes
                            .arg(QString(QUrl::toPercentEncoding(description)));
-        
+
         // Option 3: Page de paiement de test simple
         QString testUrl = QString("https://payment-test.com/pay?ref=%1&amount=%2&currency=TND&desc=%3")
                          .arg(transactionCode)
                          .arg(montant)
                          .arg(QString(QUrl::toPercentEncoding(description)));
-        
+
         // Option 4: Lien vers Google Pay (exemple)
         QString googlePayUrl = QString("https://pay.google.com/send/home?amount=%1&note=%2")
                               .arg(montant)
                               .arg(QString(QUrl::toPercentEncoding("NEXORA Transaction: " + transactionCode)));
-        
+
         // Option 5: Page de démonstration avec formulaire de paiement
         QString demoUrl = QString("https://demo.paymentgateway.com/checkout?merchant=NEXORA&ref=%1&amount=%2&currency=TND")
                          .arg(transactionCode)
                          .arg(montant);
-        
+
         // Option 6: Liens de test alternatifs fonctionnels
         QString alternativeUrls[] = {
             QString("https://www.paypal.com/paypalme/nexoratest/%1").arg(montant),
@@ -192,11 +191,11 @@ public:
             QString("https://cash.app/$nexora/%1").arg(montant),
             QString("https://buy.stripe.com/test_payment_link?amount=%1").arg(QString::number(montant.toDouble() * 100))
         };
-        
+
         // Choisir aléatoirement un service pour démonstration
         int serviceIndex = qHash(transactionCode) % 5;
         QString selectedUrl = (serviceIndex == 0) ? paypalUrl : alternativeUrls[serviceIndex - 1];
-        
+
         // Si vous voulez forcer un service spécifique, décommentez l'une de ces lignes :
         // selectedUrl = paypalUrl;  // PayPal (le plus accessible)
         // selectedUrl = testUrl;    // Page de test personnalisée
@@ -215,16 +214,16 @@ private:
     static QPixmap generateFallbackQR(const QString &text, int size) {
         QPixmap pixmap(size, size);
         pixmap.fill(Qt::white);
-        
+
         QPainter painter(&pixmap);
         painter.setPen(Qt::black);
-        
+
         // Créer un pattern basique avec le texte
         QByteArray data = text.toUtf8();
         quint32 hash = qHash(data);
-        
+
         int moduleSize = size / 25;
-        
+
         // Pattern de base
         for (int y = 0; y < 25; y++) {
             for (int x = 0; x < 25; x++) {
@@ -234,23 +233,23 @@ private:
                 }
             }
         }
-        
+
         // Ajouter des patterns de coins caractéristiques
         int cornerSize = 7 * moduleSize;
         painter.fillRect(0, 0, cornerSize, cornerSize, Qt::black);
         painter.fillRect(moduleSize, moduleSize, cornerSize-2*moduleSize, cornerSize-2*moduleSize, Qt::white);
         painter.fillRect(2*moduleSize, 2*moduleSize, cornerSize-4*moduleSize, cornerSize-4*moduleSize, Qt::black);
-        
+
         // Coin droit haut
         painter.fillRect(size-cornerSize, 0, cornerSize, cornerSize, Qt::black);
         painter.fillRect(size-cornerSize+moduleSize, moduleSize, cornerSize-2*moduleSize, cornerSize-2*moduleSize, Qt::white);
         painter.fillRect(size-cornerSize+2*moduleSize, 2*moduleSize, cornerSize-4*moduleSize, cornerSize-4*moduleSize, Qt::black);
-        
+
         // Coin gauche bas
         painter.fillRect(0, size-cornerSize, cornerSize, cornerSize, Qt::black);
         painter.fillRect(moduleSize, size-cornerSize+moduleSize, cornerSize-2*moduleSize, cornerSize-2*moduleSize, Qt::white);
         painter.fillRect(2*moduleSize, size-cornerSize+2*moduleSize, cornerSize-4*moduleSize, cornerSize-4*moduleSize, Qt::black);
-        
+
         qDebug() << "QR Code fallback généré localement";
         return pixmap;
     }
@@ -265,7 +264,18 @@ FinancesPage::FinancesPage(QWidget *parent)
     // Après ui->setupUi(this);
     financialAssistant = new FinancialAssistant(OPENAI_API_KEY, this);
 
-    // Connecter les signaux
+    // ===== INITIALISATION BORNE ARDUINO =====
+    arduinoBorne = new Arduino(this);
+    connect(arduinoBorne, &Arduino::dataReceived, this, &FinancesPage::onArduinoDataReceived);
+
+    // Tentative de connexion automatique à Arduino
+    if (arduinoBorne->connect_arduino() == 1) {
+        qDebug() << "🚦 [BORNE] Arduino de la borne transport connecté";
+    } else {
+        qDebug() << "⚠️ [BORNE] Arduino de la borne transport non détecté";
+    }
+
+    // Connecter les signaux du chatbot
     connect(financialAssistant, &FinancialAssistant::responseReceived,
             this, &FinancesPage::onAIResponse);
     connect(financialAssistant, &FinancialAssistant::errorOccurred,
@@ -278,22 +288,12 @@ FinancesPage::FinancesPage(QWidget *parent)
     // Permettre d'envoyer avec la touche Entrée
     connect(ui->questionLineEdit, &QLineEdit::returnPressed,
             this, &FinancesPage::onSendMessage);
-    
-    // =====================
-    // INITIALISATION ARDUINO TRANSPORT (BORNE)
-    // =====================
-    arduinoTransport = new ArduinoTransport(this);
-    
-    // Connexion au signal de réception des codes véhicule
-    connect(arduinoTransport, &ArduinoTransport::vehicleCodeReceived,
-            this, &FinancesPage::onVehicleCodeReceived);
-    
-    // Connexion au port COM5 (borne transport)
-    if (arduinoTransport->connectArduino("COM5")) {
-        qDebug() << "✅ Arduino Transport (borne) connecté sur COM5";
-    } else {
-        qWarning() << "⚠️ Échec connexion Arduino Transport sur COM5";
-    }
+
+    // FORCER LE RECHARGEMENT QUAND UNE TRANSACTION EST CRÉÉE
+    connect(&DatabaseManager::instance(), &DatabaseManager::dataChanged,
+            this, &FinancesPage::reloadTransactions);
+
+    qDebug() << "💰 FinancesPage: Auto-refresh des transactions configuré";
 
     ui->tabAddButton->setChecked(false);
     ui->tabListButton->setChecked(true);
@@ -310,7 +310,7 @@ FinancesPage::FinancesPage(QWidget *parent)
     loadResidentCINs();
 
     reloadTransactions();
-    
+
     // S'assurer que les graphiques s'affichent correctement au démarrage
     QTimer::singleShot(200, this, [this]() {
         calculateAndDisplayScore();
@@ -421,16 +421,55 @@ void FinancesPage::setupValidation()
 
 void FinancesPage::reloadTransactions()
 {
+    qDebug() << "🔄 FinancesPage::reloadTransactions() - Rechargement des transactions...";
+
     QSqlDatabase db = DatabaseManager::instance().database();
     if (!db.isOpen()) {
+        qDebug() << "❌ Base de données non ouverte dans FinancesPage";
         ui->financeTable->setRowCount(0);
         return;
     }
-    setTransactions(DatabaseManager::instance().getAllTransactions());
+
+    QList<QVariantMap> allTransactions = DatabaseManager::instance().getAllTransactions();
+    qDebug() << "📊 Nombre de transactions récupérées:" << allTransactions.size();
+
+    if (!allTransactions.isEmpty()) {
+        qDebug() << "🆕 Dernière transaction:" << allTransactions.first()["description"].toString();
+    }
+
+    setTransactions(allTransactions);
+    qDebug() << "✅ FinancesPage - Table mise à jour avec" << allTransactions.size() << "transactions";
+}
+
+void FinancesPage::forceRefreshFromExternalTransaction(const QString &vehicleCode, double amount)
+{
+    qDebug() << "🔥 FinancesPage::forceRefreshFromExternalTransaction() - Code:" << vehicleCode << "Montant:" << amount;
+    qDebug() << "📱 Demande de refresh immédiat depuis TransportPage (clavier matriciel)";
+
+    // Recharger immédiatement les transactions
+    reloadTransactions();
+
+    // Triple vérification pour s'assurer que c'est visible
+    QTimer::singleShot(100, this, [this]() {
+        reloadTransactions();
+        qDebug() << "🔄 Refresh 1/3 terminé";
+    });
+
+    QTimer::singleShot(300, this, [this]() {
+        reloadTransactions();
+        qDebug() << "🔄 Refresh 2/3 terminé";
+    });
+
+    QTimer::singleShot(500, this, [this, vehicleCode]() {
+        reloadTransactions();
+        qDebug() << "🔄 Refresh 3/3 terminé - Transaction" << vehicleCode << "doit être visible !";
+    });
 }
 
 void FinancesPage::setTransactions(const QList<QVariantMap> &list)
 {
+    qDebug() << "📋 FinancesPage::setTransactions() - Affichage de" << list.size() << "transactions";
+
     QTableWidget *t = ui->financeTable;
     bool wasSorting = t->isSortingEnabled();
     t->setSortingEnabled(false);
@@ -547,29 +586,29 @@ void FinancesPage::calculateAndDisplayScore()
 
     // Toujours calculer à partir des transactions réelles
     QList<QVariantMap> allTransactions = DatabaseManager::instance().getAllTransactions();
-    
+
     double revenues = 0.0;
     double expenses = 0.0;
-    
+
     qDebug() << "Calcul des statistiques à partir de" << allTransactions.size() << "transactions";
-    
+
     for (const QVariantMap &trans : allTransactions) {
         QString type = trans.value("type").toString();
         double montant = trans.value("montant").toDouble();
-        
+
         qDebug() << "Transaction:" << type << "Montant:" << montant;
-        
-        if (type.toLower().contains("entrée") || type.toLower().contains("entree") || 
+
+        if (type.toLower().contains("entrée") || type.toLower().contains("entree") ||
             type.toLower().contains("revenu") || type == "Entrée") {
             revenues += montant;
-        } else if (type.toLower().contains("sortie") || type.toLower().contains("dépense") || 
+        } else if (type.toLower().contains("sortie") || type.toLower().contains("dépense") ||
                    type.toLower().contains("depense") || type == "Sortie") {
             expenses += montant;
         }
     }
-    
+
     qDebug() << "Statistiques calculées - Entrées:" << revenues << "Sorties:" << expenses;
-    
+
     // Toujours afficher les données réelles, même si elles sont à zéro
     updateChart(ui->chart, revenues, expenses);
 }
@@ -577,15 +616,15 @@ void FinancesPage::calculateAndDisplayScore()
 void FinancesPage::updateChart(QChartView *chartView, double revenues, double expenses)
 {
     qDebug() << "=== updateChart appelé avec Entrées:" << revenues << "Sorties:" << expenses << "===";
-    
+
     QChart *chartObj = new QChart();
     chartObj->setAnimationOptions(QChart::SeriesAnimations);
-    
+
     if (usePieChart) {
         qDebug() << "Création d'un Pie Chart avec données réelles";
         // Créer un Pie Chart
         QPieSeries *series = new QPieSeries();
-        
+
         // Afficher les vraies données, même si elles sont nulles
         if (revenues <= 0 && expenses <= 0) {
             qDebug() << "Aucune transaction trouvée - Affichage d'un graphique vide";
@@ -597,14 +636,14 @@ void FinancesPage::updateChart(QChartView *chartView, double revenues, double ex
             emptySlice->setLabelFont(QFont("Arial", 12, QFont::Bold));
         } else {
             qDebug() << "Données réelles pour le graphique - Entrées:" << revenues << "Sorties:" << expenses;
-            
+
             // Calculer le total et les pourcentages
             double total = revenues + expenses;
             double revenuePercentage = (total > 0) ? (revenues / total) * 100.0 : 0.0;
             double expensePercentage = (total > 0) ? (expenses / total) * 100.0 : 0.0;
-            
+
             qDebug() << "Total:" << total << "% Entrées:" << revenuePercentage << "% Sorties:" << expensePercentage;
-            
+
             // Créer les slices avec les vraies données et pourcentages
             if (revenues > 0) {
                 QPieSlice *revenueSlice = series->append(QString("💰 Entrées\n%1 DT (%2%)")
@@ -617,7 +656,7 @@ void FinancesPage::updateChart(QChartView *chartView, double revenues, double ex
                 revenueSlice->setExploded(true);
                 revenueSlice->setExplodeDistanceFactor(0.05);
             }
-            
+
             if (expenses > 0) {
                 QPieSlice *expenseSlice = series->append(QString("💸 Sorties\n%1 DT (%2%)")
                                                         .arg(QString::number(expenses, 'f', 2))
@@ -628,11 +667,11 @@ void FinancesPage::updateChart(QChartView *chartView, double revenues, double ex
                 expenseSlice->setLabelFont(QFont("Arial", 9, QFont::Bold));
             }
         }
-        
+
         qDebug() << "Nombre de slices créées:" << series->slices().count();
-        
+
         chartObj->addSeries(series);
-        
+
         // Titre avec statistiques complètes
         double total = revenues + expenses;
         QString titleText;
@@ -643,53 +682,53 @@ void FinancesPage::updateChart(QChartView *chartView, double revenues, double ex
             titleText = "💰 Statistiques Financières - Aucune donnée";
         }
         chartObj->setTitle(titleText);
-        
+
     } else {
         // Créer un Bar Chart
         QBarSeries *series = new QBarSeries();
-        
+
         // Si pas de données, utiliser des données de démonstration
         if (revenues <= 0 && expenses <= 0) {
             revenues = 2500.0;
             expenses = 1800.0;
         }
-        
+
         // Calculer les pourcentages pour les barres
         double barTotal = revenues + expenses;
         double barRevenuePercentage = (barTotal > 0) ? (revenues / barTotal) * 100.0 : 50.0;
         double barExpensePercentage = (barTotal > 0) ? (expenses / barTotal) * 100.0 : 50.0;
-        
+
         // Créer des barsets séparés avec informations détaillées
         QBarSet *entriesSet = new QBarSet(QString("💰 Entrées (%1%)")
                                          .arg(QString::number(barRevenuePercentage, 'f', 1)));
         QBarSet *sortiesSet = new QBarSet(QString("💸 Sorties (%1%)")
                                          .arg(QString::number(barExpensePercentage, 'f', 1)));
-        
+
         *entriesSet << revenues << 0; // Entrées uniquement dans la première colonne
         *sortiesSet << 0 << expenses; // Sorties uniquement dans la deuxième colonne
-        
+
         // Couleurs spécifiques
         entriesSet->setBrush(QBrush(QColor("#10B981"))); // Vert pour entrées
         entriesSet->setBorderColor(QColor("#065F46"));
-        
+
         sortiesSet->setBrush(QBrush(QColor("#EF4444"))); // Rouge pour sorties
         sortiesSet->setBorderColor(QColor("#7F1D1D"));
-        
+
         series->append(entriesSet);
         series->append(sortiesSet);
-        
+
         // Activer les étiquettes de valeurs sur les barres
         series->setLabelsVisible(true);
         series->setLabelsPosition(QAbstractBarSeries::LabelsInsideEnd);
-        
+
         // Axes
         QStringList categories;
         categories << "Entrées" << "Sorties";
-        
+
         QBarCategoryAxis *axisX = new QBarCategoryAxis();
         axisX->append(categories);
         axisX->setTitleText("Type de Transaction");
-        
+
         QValueAxis *axisY = new QValueAxis();
         double maxValue = qMax(revenues, expenses);
         if (maxValue > 0) {
@@ -698,9 +737,9 @@ void FinancesPage::updateChart(QChartView *chartView, double revenues, double ex
             axisY->setRange(0, 3000); // Valeur par défaut
         }
         axisY->setTitleText("Montant (DT)");
-        
+
         chartObj->addSeries(series);
-        
+
         // Titre avec statistiques pour le graphique en barres
         double total = revenues + expenses;
         QString barTitleText;
@@ -715,14 +754,14 @@ void FinancesPage::updateChart(QChartView *chartView, double revenues, double ex
             barTitleText = "📊 Comparaison Financière - Entrées vs Sorties";
         }
         chartObj->setTitle(barTitleText);
-        
+
         // Utiliser addAxis au lieu des méthodes dépréciées
         chartObj->addAxis(axisX, Qt::AlignBottom);
         chartObj->addAxis(axisY, Qt::AlignLeft);
         series->attachAxis(axisX);
         series->attachAxis(axisY);
     }
-    
+
     // Configuration commune
     chartObj->legend()->setVisible(true);
     chartObj->legend()->setAlignment(Qt::AlignBottom);
@@ -730,18 +769,18 @@ void FinancesPage::updateChart(QChartView *chartView, double revenues, double ex
     chartObj->setBackgroundBrush(QBrush(QColor("#FFFFFF"))); // Fond blanc
     chartObj->setPlotAreaBackgroundBrush(QBrush(QColor("#F8F9FA"))); // Fond de zone de tracé
     chartObj->setPlotAreaBackgroundVisible(true);
-    
+
     // Style du titre
     QFont titleFont = chartObj->titleFont();
     titleFont.setPointSize(16); // Taille plus grande
     titleFont.setBold(true);
     chartObj->setTitleFont(titleFont);
     chartObj->setTitleBrush(QBrush(QColor("#000000"))); // Couleur du titre en noir
-    
+
     // Style de la légende
     chartObj->legend()->setFont(QFont("Arial", 11, QFont::Normal));
     chartObj->legend()->setBrush(QBrush(QColor("#000000"))); // Légende en noir
-    
+
     // Appliquer le graphique
     if (chartView->chart()) {
         delete chartView->chart(); // Nettoyer l'ancien graphique
@@ -756,7 +795,7 @@ void FinancesPage::onSubTabStat()
     ui->subTabStatButton->setChecked(true);
     ui->subTabChatButton->setChecked(false);
     ui->statsStackedWidget->setCurrentWidget(ui->statSubPage);
-    
+
     // Forcer le rafraîchissement du graphique avec un petit délai pour s'assurer que l'UI est prête
     QTimer::singleShot(100, this, [this]() {
         calculateAndDisplayScore();
@@ -768,7 +807,7 @@ void FinancesPage::onSubTabChat()
     ui->subTabStatButton->setChecked(false);
     ui->subTabChatButton->setChecked(true);
     ui->statsStackedWidget->setCurrentWidget(ui->chatSubPage);
-    
+
     // Ajouter un message de bienvenue si le chat est vide
     if (ui->chatTextEdit->toPlainText().isEmpty()) {
         addMessage("assistant", "🤖 Bonjour ! Je suis votre assistant financier NEXORA.\n\n"
@@ -1189,88 +1228,107 @@ void FinancesPage::onExportPdfClicked()
             break;
     }
 
-    // QR CODE DE PAIEMENT AVEC LIEN SÉLECTIONNÉ
+    // QR CODE DE PAIEMENT AVEC LIEN SÉLECTIONNÉ - NOUVELLE MISE EN PAGE
     QString paymentDescription = QString("Transaction %1 - %2 - %3").arg(code, type, categorie);
 
     // Générer QR code avec l'URL spécifique choisie
     QPixmap qrPixmap = QRCodeGenerator::generateQRFromUrl(paymentUrl);
 
-    int qrDisplaySize = 400;
-    int qrX = pdf.width() - margin - qrDisplaySize - 60;
-    int qrY = top;
+    // 🔥 NOUVELLE DISPOSITION - QR CODE À DROITE, BIEN POSITIONNÉ
+    int qrSize = 250;  // Taille réduite pour mieux s'adapter
+    int qrX = pdf.width() - margin - qrSize - 20;
+    int qrY = top + 100;  // Plus bas pour laisser de la place
 
-    // Cadre pour le QR code
-    p.setPen(QPen(Qt::black, 2));
-    p.setBrush(Qt::white);
-    p.drawRect(qrX - 20, qrY - 20, qrDisplaySize + 40, qrDisplaySize + 40);
-
-    // Dessiner le QR code généré par l'API
-    if (!qrPixmap.isNull()) {
-        QPixmap scaledQR = qrPixmap.scaled(qrDisplaySize, qrDisplaySize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        p.drawPixmap(qrX, qrY, scaledQR);
-        qDebug() << "QR Code API intégré au PDF avec succès!";
-    } else {
-        // Fallback en cas d'échec
-        p.setPen(Qt::black);
-        p.setFont(QFont("Arial", 12));
-        p.drawText(qrX + 50, qrY + qrDisplaySize/2, "QR Code\nIndisponible");
-        qDebug() << "Impossible de générer le QR Code";
-    }
-    // ===== TEXTE SOUS LE QR CODE (ALIGNEMENT PARFAIT) =====
-    p.setFont(QFont("Arial", 14, QFont::Bold));
-    p.setPen(Qt::black);
-
-    // Grande zone sous le QR → jamais coupé
-    QRect qrLabelRect(
-        qrX - 60,                          // on centre mieux la zone
-        qrY + qrDisplaySize + 40,          // on descend +40px pour SÉPARER du QR
-        qrDisplaySize + 120,               // large zone pour texte long
-        120                                 // grande hauteur → jamais coupé
-        );
-
-    // Texte clair, centré, bien placé
-    p.drawText(
-        qrLabelRect,
-        Qt::AlignCenter | Qt::TextWordWrap,
-        QString("Payer via %1").arg(serviceName)
-        );
-
-
-    // NOUVELLE VALEUR POUR POSITIONNER LE FOOTER
-    int afterQR = qrY + qrDisplaySize + 20 + 60;
-    //            QR top + QR size + espace + hauteur texte
-
-
-    // ====== SIGNATURE À GAUCHE ======
-    int signatureY = top;
+    // 🔥 ZONE DE SIGNATURE À GAUCHE - REPOSITIONNÉE
     int signatureX = margin;
-    int signatureWidth = qrX - margin - 150;
-    int signatureHeight = 350;
+    int signatureY = top;
+    int signatureWidth = qrX - margin - 50;  // Plus large
+    int signatureHeight = 200;  // Plus petit
 
+    // Dessiner la zone de signature d'abord
     p.setPen(QPen(Qt::black, 2, Qt::DashLine));
     p.setBrush(Qt::NoBrush);
     p.drawRect(signatureX, signatureY, signatureWidth, signatureHeight);
 
     p.setPen(Qt::black);
-    p.setFont(QFont("Arial", 16, QFont::Bold));
-    p.drawText(signatureX + 20, signatureY + 40, "Signature autorisée :");
+    p.setFont(QFont("Arial", 14, QFont::Bold));
+    p.drawText(signatureX + 10, signatureY + 25, "Signature autorisée :");
 
-    p.setFont(QFont("Arial", 12));
-    p.drawText(signatureX + 20, signatureY + signatureHeight - 20, "Date : _______________");
+    p.setFont(QFont("Arial", 10));
+    p.drawText(signatureX + 10, signatureY + signatureHeight - 30, "Date : ________________");
+    p.drawText(signatureX + 10, signatureY + signatureHeight - 10, "Signature : ________________");
 
+    // 🔥 QR CODE AVEC CADRE PROPRE
+    p.setPen(QPen(Qt::black, 3));
+    p.setBrush(Qt::white);
+    p.drawRect(qrX - 15, qrY - 15, qrSize + 30, qrSize + 30);
 
-    // ====== FOOTER AUTO (Positionné CORRECTEMENT sous le QR et le texte) ======
-    int footerY = afterQR + 80;  // 80px d’espace propre sous QR + texte
+    // Dessiner le QR code
+    if (!qrPixmap.isNull()) {
+        QPixmap scaledQR = qrPixmap.scaled(qrSize, qrSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        p.drawPixmap(qrX, qrY, scaledQR);
+        qDebug() << "QR Code API intégré au PDF avec succès!";
+    } else {
+        p.setPen(Qt::black);
+        p.setFont(QFont("Arial", 12));
+        p.drawText(qrX + qrSize/2 - 50, qrY + qrSize/2, "QR Code\nIndisponible");
+    }
 
-    p.setFont(QFont("Arial", 12, QFont::StyleItalic));
+    // 🔥 TEXTE SOUS LE QR CODE - JUSTE CORRIGÉ L'ESPACEMENT
+    int textStartY = qrY + qrSize + 15;  // Plus proche du QR code
+    
+    p.setPen(Qt::black);
+    
+    // Ligne 1 : Service de paiement
+    p.setFont(QFont("Arial", 11, QFont::Bold));
+    p.drawText(qrX, textStartY, QString("Payer via %1").arg(serviceName));
+    
+    // Ligne 2 : Instructions 
+    p.setFont(QFont("Arial", 9));
+    p.drawText(qrX, textStartY + 20, "Scannez le QR code");
+    
+    // Ligne 3 : Code
+    p.setFont(QFont("Arial", 9));
+    p.drawText(qrX, textStartY + 35, QString("Code: %1").arg(code));
+    
+    // Ligne 4 : Montant
+    p.setFont(QFont("Arial", 9));
+    p.drawText(qrX, textStartY + 50, QString("Montant: %1 DT").arg(montant));
+
+    // 🔥 SECTION INFORMATIONS COMPLÉMENTAIRES SOUS LA SIGNATURE
+    int additionalInfoY = signatureY + signatureHeight + 30;
+    
+    // Section instructions détaillées
+    p.setPen(Qt::black);
+    p.setFont(QFont("Arial", 11, QFont::Bold));
+    p.drawText(signatureX, additionalInfoY, "📋 INSTRUCTIONS DE PAIEMENT :");
+    
+    p.setFont(QFont("Arial", 10));
+    p.drawText(signatureX + 20, additionalInfoY + 25, "1. Scannez le QR code avec votre smartphone");
+    p.drawText(signatureX + 20, additionalInfoY + 45, QString("2. Vérifiez le code transaction : %1").arg(code));
+    p.drawText(signatureX + 20, additionalInfoY + 65, QString("3. Confirmez le montant : %1 DT").arg(montant));
+    p.drawText(signatureX + 20, additionalInfoY + 85, "4. Finalisez le paiement sécurisé");
+
+    // URL en bas si besoin
+    if (!paymentUrl.isEmpty()) {
+        p.setFont(QFont("Arial", 8));
+        p.setPen(Qt::darkGray);
+        QRect urlRect(signatureX, additionalInfoY + 110, signatureWidth, 40);
+        p.drawText(urlRect, Qt::TextWordWrap, QString("🌐 Lien direct : %1").arg(paymentUrl));
+    }
+
+    // FOOTER PROPRE
+    int footerY = pdf.height() - 60;
+    p.setFont(QFont("Arial", 11, QFont::StyleItalic));
     p.setPen(QColor("#1F4E8C"));
     p.drawText(
-        QRect(margin, footerY, pdf.width() - 2*margin, 200),
-        Qt::AlignCenter,
-        "Généré automatiquement via NEXORA Smart City — " +
-            QDateTime::currentDateTime().toString("dd/MM/yyyy hh:mm")
+        margin,
+        footerY,
+        "Généré automatiquement via NEXORA Smart City — "
+            + QDateTime::currentDateTime().toString("dd/MM/yyyy à hh:mm")
         );
 
+    p.end();
 
     QMessageBox::information(this, "🎉 PDF Exporté avec Succès !",
                              QString("✅ **Facture PDF générée avec lien de paiement :**\n\n"
@@ -1386,7 +1444,7 @@ void FinancesPage::onPreviewQRCode()
 
     // Générer le QR code
     QPixmap qrPixmap = QRCodeGenerator::generateAdvancedQR(transactionData, "PREVIEW");
-    
+
     if (qrPixmap.isNull()) {
         QMessageBox::critical(this, "Erreur", "Impossible de générer le QR Code.\nVérifiez votre connexion internet.");
         return;
@@ -1399,7 +1457,7 @@ void FinancesPage::onPreviewQRCode()
     qrDialog->setAttribute(Qt::WA_DeleteOnClose);
 
     QVBoxLayout *layout = new QVBoxLayout(qrDialog);
-    
+
     // Titre
     QLabel *titleLabel = new QLabel(QString("🔗 QR Code de la Transaction %1").arg(code));
     titleLabel->setStyleSheet("font-size: 18px; font-weight: bold; color: #1F4E8C; padding: 10px;");
@@ -1424,7 +1482,7 @@ void FinancesPage::onPreviewQRCode()
         "• CIN : %5<br><br>"
         "📱 <b>Scannez avec votre smartphone pour vérifier</b>"
     ).arg(code, montant, type, date, cin));
-    
+
     infoLabel->setStyleSheet("font-size: 14px; padding: 15px; background: #F8FAFC; border-radius: 8px; border: 1px solid #E2E8F0;");
     infoLabel->setWordWrap(true);
     layout->addWidget(infoLabel);
@@ -1457,55 +1515,55 @@ void FinancesPage::onGeneratePaymentQR()
     serviceDialog.setWindowTitle("💳 Sélectionner le service de paiement");
     serviceDialog.setFixedSize(480, 400);
     serviceDialog.setStyleSheet("QDialog { background-color: #f8f9fa; }");
-    
+
     QVBoxLayout* serviceLayout = new QVBoxLayout(&serviceDialog);
-    
+
     // Titre du dialog
     QLabel* serviceTitle = new QLabel("🔗 Choisissez votre méthode de paiement préférée");
     serviceTitle->setStyleSheet("font-size: 16px; font-weight: bold; color: #2c3e50; margin-bottom: 15px; padding: 10px;");
     serviceTitle->setAlignment(Qt::AlignCenter);
     serviceLayout->addWidget(serviceTitle);
-    
+
     // Group de boutons radio
     QButtonGroup* serviceGroup = new QButtonGroup();
-    
+
     // PayPal - Option recommandée
     QRadioButton* paypalBtn = new QRadioButton("💙 PayPal.Me (Recommandé)");
     paypalBtn->setStyleSheet("QRadioButton { font-size: 14px; padding: 8px; } QRadioButton::indicator { width: 18px; height: 18px; }");
     paypalBtn->setChecked(true);
     serviceGroup->addButton(paypalBtn, 0);
     serviceLayout->addWidget(paypalBtn);
-    
+
     // Stripe
     QRadioButton* stripeBtn = new QRadioButton("💜 Stripe Payment Link");
     stripeBtn->setStyleSheet("QRadioButton { font-size: 14px; padding: 8px; } QRadioButton::indicator { width: 18px; height: 18px; }");
     serviceGroup->addButton(stripeBtn, 1);
     serviceLayout->addWidget(stripeBtn);
-    
+
     // Square
     QRadioButton* squareBtn = new QRadioButton("🟦 Square Payment");
     squareBtn->setStyleSheet("QRadioButton { font-size: 14px; padding: 8px; } QRadioButton::indicator { width: 18px; height: 18px; }");
     serviceGroup->addButton(squareBtn, 2);
     serviceLayout->addWidget(squareBtn);
-    
+
     // Venmo
     QRadioButton* venmoBtn = new QRadioButton("💰 Venmo");
     venmoBtn->setStyleSheet("QRadioButton { font-size: 14px; padding: 8px; } QRadioButton::indicator { width: 18px; height: 18px; }");
     serviceGroup->addButton(venmoBtn, 3);
     serviceLayout->addWidget(venmoBtn);
-    
+
     // Cash App
     QRadioButton* cashBtn = new QRadioButton("💸 Cash App");
     cashBtn->setStyleSheet("QRadioButton { font-size: 14px; padding: 8px; } QRadioButton::indicator { width: 18px; height: 18px; }");
     serviceGroup->addButton(cashBtn, 4);
     serviceLayout->addWidget(cashBtn);
-    
+
     // Test générique
     QRadioButton* testBtn = new QRadioButton("🧪 Page de test (httpbin.org)");
     testBtn->setStyleSheet("QRadioButton { font-size: 14px; padding: 8px; } QRadioButton::indicator { width: 18px; height: 18px; }");
     serviceGroup->addButton(testBtn, 5);
     serviceLayout->addWidget(testBtn);
-    
+
     // Informations sur le paiement
     QLabel* paymentInfo = new QLabel(QString(
         "<div style='background: #e8f4fd; padding: 10px; border-radius: 6px; border: 1px solid #0066cc;'>"
@@ -1516,35 +1574,35 @@ void FinancesPage::onGeneratePaymentQR()
     ).arg(code, montant, type, categorie));
     paymentInfo->setWordWrap(true);
     serviceLayout->addWidget(paymentInfo);
-    
+
     // Boutons OK/Annuler
     QHBoxLayout* serviceButtonLayout = new QHBoxLayout();
     QPushButton* okBtn = new QPushButton("✅ Générer le QR Code");
     QPushButton* cancelBtn = new QPushButton("❌ Annuler");
-    
+
     okBtn->setStyleSheet("QPushButton { background: #28a745; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold; }");
     cancelBtn->setStyleSheet("QPushButton { background: #6c757d; color: white; padding: 10px 20px; border-radius: 5px; }");
-    
+
     serviceButtonLayout->addWidget(okBtn);
     serviceButtonLayout->addWidget(cancelBtn);
     serviceLayout->addLayout(serviceButtonLayout);
-    
+
     connect(okBtn, &QPushButton::clicked, &serviceDialog, &QDialog::accept);
     connect(cancelBtn, &QPushButton::clicked, &serviceDialog, &QDialog::reject);
-    
+
     if (serviceDialog.exec() != QDialog::Accepted) {
         return;
     }
-    
+
     // Récupérer le service choisi
     int selectedService = serviceGroup->checkedId();
-    
+
     // ===== ÉTAPE 2: Générer l'URL selon le service =====
     QString paymentUrl;
     QString serviceName;
     QString serviceColor;
     QString serviceIcon;
-    
+
     switch (selectedService) {
         case 0: // PayPal
             paymentUrl = QString("https://www.paypal.com/paypalme/nexorapay/%1").arg(montant);
@@ -1592,7 +1650,7 @@ void FinancesPage::onGeneratePaymentQR()
 
     // ===== ÉTAPE 3: Générer le QR code =====
     QPixmap paymentQR = QRCodeGenerator::generateQRFromUrl(paymentUrl);
-    
+
     if (paymentQR.isNull()) {
         QMessageBox::critical(this, "Erreur", "Impossible de générer le QR Code de paiement.\nVérifiez votre connexion internet.");
         return;
@@ -1604,9 +1662,9 @@ void FinancesPage::onGeneratePaymentQR()
     paymentDialog->setFixedSize(580, 780);
     paymentDialog->setAttribute(Qt::WA_DeleteOnClose);
     paymentDialog->setStyleSheet("QDialog { background-color: #ffffff; }");
-    
+
     QVBoxLayout *layout = new QVBoxLayout(paymentDialog);
-    
+
     // En-tête du service
     QLabel *serviceHeaderLabel = new QLabel(QString("%1 PAIEMENT VIA %2").arg(serviceIcon, serviceName.toUpper()));
     serviceHeaderLabel->setStyleSheet(QString("font-size: 20px; font-weight: bold; color: %1; padding: 15px; background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #ffffff, stop:1 %2); border-radius: 8px; border: 2px solid %1; margin-bottom: 10px;").arg(serviceColor, serviceColor + "20"));
@@ -1654,16 +1712,16 @@ void FinancesPage::onGeneratePaymentQR()
 
     // Boutons d'action
     QHBoxLayout *buttonLayout = new QHBoxLayout();
-    
+
     QPushButton *copyLinkBtn = new QPushButton("📋 Copier le lien");
     copyLinkBtn->setStyleSheet("QPushButton { background: #6B7280; color: white; border-radius: 8px; padding: 10px 16px; font-weight: 600; } QPushButton:hover { background: #4B5563; }");
-    
+
     QPushButton *shareBtn = new QPushButton("📤 Partager");
     shareBtn->setStyleSheet(QString("QPushButton { background: %1; color: white; border-radius: 8px; padding: 10px 16px; font-weight: 600; } QPushButton:hover { background: %2; }").arg(serviceColor, serviceColor + "dd"));
-    
+
     QPushButton *testLinkBtn = new QPushButton("🌐 Tester le lien");
     testLinkBtn->setStyleSheet("QPushButton { background: #10B981; color: white; border-radius: 8px; padding: 10px 16px; font-weight: 600; } QPushButton:hover { background: #059669; }");
-    
+
     QPushButton *closeBtn = new QPushButton("Fermer");
     closeBtn->setStyleSheet("QPushButton { background: #6C757D; color: white; border-radius: 8px; padding: 10px 16px; font-weight: 600; } QPushButton:hover { background: #5a6268; }");
 
@@ -1688,13 +1746,13 @@ void FinancesPage::onGeneratePaymentQR()
             "🔗 Lien de paiement:\n%6\n\n"
             "📱 Scannez le QR code ou cliquez sur le lien pour payer rapidement !"
         ).arg(serviceIcon, serviceName, code, montant, type, paymentUrl);
-        
+
         QApplication::clipboard()->setText(shareMessage);
         QMessageBox::information(paymentDialog, "📤 Message copié", QString("Message de partage %1 copié dans le presse-papiers !").arg(serviceName));
     });
 
     connect(testLinkBtn, &QPushButton::clicked, [=]() {
-        QMessageBox::information(paymentDialog, "🌐 Test du lien", 
+        QMessageBox::information(paymentDialog, "🌐 Test du lien",
             QString("Lien de test %1 :\n\n%2\n\n"
                    "Ce lien a été copié dans le presse-papiers.\n"
                    "Vous pouvez le coller dans votre navigateur pour tester.")
@@ -1707,90 +1765,223 @@ void FinancesPage::onGeneratePaymentQR()
     paymentDialog->exec();
 }
 
-// =====================================================================
-// GESTION ARDUINO TRANSPORT (BORNE)
-// =====================================================================
+// ===== MÉTHODES GESTION BORNE ARDUINO TRANSPORT =====
 
-void FinancesPage::onVehicleCodeReceived(QString code, QString montant)
+void FinancesPage::onArduinoDataReceived(const QByteArray &data)
 {
-    qDebug() << "========================================";
-    qDebug() << "[FinancesPage] 🚗 Code véhicule reçu de la borne:" << code << "Montant:" << montant;
-    qDebug() << "[FinancesPage] Recherche dans table TRANSPORT_VEHICULES avec ID_VEHICULE =" << code;
-    
-    // Rechercher le véhicule dans la table TRANSPORT par ID_VEHICULE
-    QVariantMap vehicule = DatabaseManager::instance().getVehiculeByCode(code);
-    
-    qDebug() << "[FinancesPage] Résultat recherche - vehicule.isEmpty() =" << vehicule.isEmpty();
-    
-    if (!vehicule.isEmpty()) {
-        // Véhicule trouvé → Ajouter transaction automatiquement
-        QString vehiculeID = vehicule.value("ID_VEHICULE").toString();
-        QString type = vehicule.value("TYPE").toString();
-        
-        qDebug() << "[FinancesPage] ✅ Véhicule trouvé !";
-        qDebug() << "[FinancesPage]    - ID_VEHICULE:" << vehiculeID;
-        qDebug() << "[FinancesPage]    - TYPE:" << type;
-        
-        // Vérifier si une transaction existe déjà pour ce véhicule
-        QVariantMap existingTransaction = DatabaseManager::instance().getTransactionByVehicule(vehiculeID);
-        
-        bool ok = false;
-        double montantActuel = montant.toDouble();
-        
-        if (!existingTransaction.isEmpty()) {
-            // Transaction existante → METTRE À JOUR le montant
-            QString codeTransaction = existingTransaction.value("CODE_UNIQUE").toString();
-            double ancienMontant = existingTransaction.value("MONTANT").toDouble();
-            double nouveauMontant = ancienMontant + montantActuel;
-            
-            qDebug() << "[FinancesPage] 🔄 Transaction existante trouvée:" << codeTransaction;
-            qDebug() << "[FinancesPage]    - Ancien montant:" << ancienMontant << "DT";
-            qDebug() << "[FinancesPage]    - Ajout de:" << montantActuel << "DT";
-            qDebug() << "[FinancesPage]    - Nouveau montant:" << nouveauMontant << "DT";
-            
-            ok = DatabaseManager::instance().updateTransactionMontant(codeTransaction, nouveauMontant);
-            
+    QString receivedData = QString::fromUtf8(data).trimmed();
+    qDebug() << "🚦 [BORNE] Données reçues:" << receivedData;
+
+    // Formats attendus:
+    // "VEHICLE_CODE:A123:25.50" (automatique avec montant)
+    // "VALIDATE_AUTO" (validation automatique)
+    // "STATUS:Borne transport prete"
+
+    QStringList parts = receivedData.split(":");
+
+    if (parts.size() >= 3 && parts[0] == "VEHICLE_CODE") {
+        // Format: VEHICLE_CODE:A123:25.50 (automatique)
+        QString vehicleCode = parts[1].toUpper();
+        double amount = parts[2].toDouble();
+
+        qDebug() << "🚗 [BORNE] Code automatique reçu:" << vehicleCode << "Montant:" << amount;
+
+        // Validation du format (A/B/C/D + chiffres)
+        QRegularExpression regex("^[ABCD]\\d+$");
+        if (regex.match(vehicleCode).hasMatch() && amount > 0) {
+            // Format valide - traiter automatiquement la transaction
+            processVehicleTransaction(vehicleCode, amount);
         } else {
-            // Aucune transaction → EN CRÉER UNE NOUVELLE
-            qDebug() << "[FinancesPage] ➕ Création d'une nouvelle transaction pour" << vehiculeID;
-            
-            QVariantMap newTransaction;
-            newTransaction["code_unique"] = QString("TRP_%1").arg(vehiculeID);
-            newTransaction["montant"] = montantActuel;
-            newTransaction["type"] = "entree";
-            newTransaction["categorie"] = "Transport";
-            newTransaction["date_transaction"] = QDateTime::currentDateTime().toString("yyyy-MM-dd");
-            newTransaction["description"] = QString("Paiement transport - Véhicule: %1").arg(vehiculeID);
-            
-            ok = DatabaseManager::instance().addTransaction(newTransaction);
+            // Format invalide
+            QString errorMessage = "ERROR:Format invalide A/B/C/D+nb";
+            arduinoBorne->writeData(errorMessage.toUtf8());
         }
-        
-        if (ok) {
-            qDebug() << "[FinancesPage] ✅ Transaction mise à jour avec succès";
-            
-            // Calculer le montant total payé pour ce véhicule
-            double montantTotal = DatabaseManager::instance().getMontantTotalVehicule(vehiculeID);
-            
-            qDebug() << "[FinancesPage] 💰 Montant total cumulé:" << montantTotal << "DT";
-            
-            // Envoyer succès à la borne avec montant total
-            arduinoTransport->sendSuccess(vehiculeID, QString::number(montantTotal, 'f', 2) + "DT");
-            
-            // Rafraîchir la liste des transactions
-            reloadTransactions();
-            calculateAndDisplayScore();
-            
-        } else {
-            qCritical() << "[FinancesPage] ❌ Erreur lors de la création de la transaction";
-            arduinoTransport->sendError("Erreur systeme - Transaction echouee");
+
+    } else if (receivedData == "VALIDATE_AUTO") {
+        // Validation automatique reçue - ne rien faire, déjà traité
+        qDebug() << "✅ [BORNE] Validation automatique confirmée";
+
+    } else if (parts.size() >= 2 && parts[0] == "STATUS") {
+        // Message de statut de l'Arduino
+        QString status = parts[1];
+        qDebug() << "📡 [BORNE] Status:" << status;
+
+    } else if (parts.size() >= 2) {
+        QString command = parts[0].toUpper();
+
+        if (command == "VEHICLE") {
+            // Ancien format - Code véhicule saisi (pour compatibilité)
+            QString vehicleCode = parts[1].toUpper();
+            qDebug() << "🚗 [BORNE] Code véhicule reçu (ancien format):" << vehicleCode;
+
+            // Validation du format (A/B/C/D + chiffres)
+            QRegularExpression regex("^[ABCD]\\d+$");
+            if (regex.match(vehicleCode).hasMatch()) {
+                // Stocker temporairement le code
+                pendingVehicleCode = vehicleCode;
+
+                // Envoyer confirmation à Arduino pour afficheur
+                QString confirmMessage = QString("DISPLAY:Code %1 - Validation...").arg(vehicleCode);
+                arduinoBorne->writeData(confirmMessage.toUtf8());
+            } else {
+                // Format invalide
+                QString errorMessage = "ERROR:Format invalide A/B/C/D+nb";
+                arduinoBorne->writeData(errorMessage.toUtf8());
+            }
+
+        } else if (command == "PAYMENT" && parts.size() >= 3) {
+            // Transaction de paiement validée (ancien format)
+            QString vehicleCode = parts[1].toUpper();
+            double amount = parts[2].toDouble();
+
+            qDebug() << "💰 [BORNE] Transaction validée - Véhicule:" << vehicleCode << "Montant:" << amount;
+
+            // Traiter la transaction
+            processVehicleTransaction(vehicleCode, amount);
+
+        } else if (command == "VALIDATE") {
+            // Bouton de validation appuyé, utiliser le code en attente
+            if (!pendingVehicleCode.isEmpty()) {
+                qDebug() << "✅ [BORNE] Validation pour véhicule:" << pendingVehicleCode;
+                processVehicleTransaction(pendingVehicleCode, vehicleTransactionAmount);
+                pendingVehicleCode.clear();
+            }
         }
-        
-    } else {
-        // Véhicule non trouvé → Envoyer erreur
-        qWarning() << "[FinancesPage] ❌ Code véhicule inexistant:" << code;
-        qWarning() << "[FinancesPage] ⚠️  VÉRIFIEZ : L'ID_VEHICULE dans table TRANSPORT_VEHICULES doit être exactement:" << code;
-        arduinoTransport->sendError("CODE INEXISTANT - Verifiez le code");
     }
-    qDebug() << "========================================";
 }
 
+void FinancesPage::processVehicleTransaction(const QString &vehicleCode, double amount)
+{
+    qDebug() << "💳 [BORNE] DÉBUT Traitement transaction - Code:" << vehicleCode << "Montant:" << amount;
+
+    try {
+        // Vérifier la connexion DB d'abord
+        QSqlDatabase db = DatabaseManager::instance().database();
+        if (!db.isOpen()) {
+            qDebug() << "❌ [BORNE] ERREUR: Base de données non ouverte!";
+            QString errorMessage = "ERROR:DB non connectée!";
+            emit arduinoResponseNeeded(errorMessage);
+            return;
+        }
+        qDebug() << "✅ [BORNE] Base de données ouverte OK";
+        
+        // 🔥 INSERTION DIRECTE DANS TABLE TRANSACTIONS SEULEMENT
+        QSqlQuery query(db);
+
+        // Générer un code de transaction unique
+        QString transactionCode = QString("TRP-%1-%2").arg(vehicleCode).arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
+
+        qDebug() << "🔄 [BORNE] Préparation requête INSERT pour:" << transactionCode;
+
+        // Préparer la requête d'insertion - SIMPLE, PAS DE VÉHICULES
+        query.prepare(
+            "INSERT INTO transactions (code, montant, type, categorie, description, date_transaction, cin_resident) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?)"
+        );
+
+        query.addBindValue(transactionCode);
+        query.addBindValue(amount);
+        query.addBindValue("Entrée");
+        query.addBindValue("Transport");
+        query.addBindValue(QString("Paiement véhicule (%1)").arg(vehicleCode));
+        query.addBindValue(QDateTime::currentDateTime());
+        query.addBindValue(QVariant()); // CIN optionnel
+
+        qDebug() << "🚀 [BORNE] Exécution INSERT...";
+        bool transactionSuccess = query.exec();
+
+        if (transactionSuccess) {
+            qDebug() << "✅ [BORNE] Transaction financière enregistrée AVEC SUCCÈS:" << transactionCode;
+
+            // 🔥 PAS DE MISE À JOUR VÉHICULE - JUSTE FINANCE
+            
+            // Afficher le résultat
+            displayTransactionResult(vehicleCode, amount, true);
+
+            // FORCER le rechargement immédiat de la table des transactions
+            qDebug() << "🔄 FORCER la mise à jour de la table FinancesPage";
+            reloadTransactions();
+
+            // Émettre le signal dataChanged pour mettre à jour toutes les interfaces
+            emit DatabaseManager::instance().dataChanged();
+
+            // Double vérification avec délai
+            QTimer::singleShot(200, this, [this, transactionCode]() {
+                reloadTransactions();
+                qDebug() << "✅ Vérification finale - transaction" << transactionCode << "doit être visible";
+            });
+
+            // 🔥 SUCCÈS - Envoyer confirmation à Arduino via MainWindow
+            QString successMessage = QString("SUCCESS:PAIEMENT REUSSI! Code:%1 - %2 TND")
+                                    .arg(vehicleCode).arg(amount, 0, 'f', 2);
+            
+            emit arduinoResponseNeeded(successMessage);
+            qDebug() << "📤 [FINANCE] Signal de succès envoyé:" << successMessage;
+
+        } else {
+            qDebug() << "❌ [BORNE] Erreur transaction financière:" << query.lastError().text();
+            displayTransactionResult(vehicleCode, amount, false);
+
+            QString errorMessage = QString("ERROR:Erreur SQL: %1").arg(query.lastError().text());
+            emit arduinoResponseNeeded(errorMessage);
+            qDebug() << "📤 [FINANCE] Signal d'erreur SQL envoyé:" << errorMessage;
+        }
+
+    } catch (const std::exception& e) {
+        qDebug() << "💥 [BORNE] Exception:" << e.what();
+        displayTransactionResult(vehicleCode, amount, false);
+        
+        QString errorMessage = QString("ERROR:Exception: %1").arg(e.what());
+        emit arduinoResponseNeeded(errorMessage);
+    }
+}
+
+void FinancesPage::displayTransactionResult(const QString &vehicleCode, double amount, bool success)
+{
+    QString title = success ? "🎉 Transaction Réussie" : "❌ Erreur Transaction";
+    QString message;
+
+    if (success) {
+        message = QString(
+            "✅ **BORNE TRANSPORT - SUCCÈS**\n\n"
+            "🚗 **Véhicule :** %1\n"
+            "💰 **Montant :** %2 TND\n"
+            "📝 **Type :** Recharge de service\n"
+            "⏰ **Heure :** %3\n\n"
+            "🎯 **Actions effectuées :**\n"
+            "• Transaction financière enregistrée\n"
+            "• Véhicule activé et opérationnel\n"
+            "• Zone de service mise à jour\n\n"
+            "✨ Le véhicule %1 est maintenant prêt à circuler !"
+        ).arg(vehicleCode)
+         .arg(QString::number(amount, 'f', 3))
+         .arg(QDateTime::currentDateTime().toString("dd/MM/yyyy hh:mm:ss"));
+
+        QMessageBox::information(this, title, message);
+
+    } else {
+        message = QString(
+            "❌ **BORNE TRANSPORT - ÉCHEC**\n\n"
+            "🚗 **Véhicule :** %1\n"
+            "💰 **Montant :** %2 TND\n"
+            "⏰ **Heure :** %3\n\n"
+            "🔧 **Actions recommandées :**\n"
+            "• Vérifiez le code véhicule\n"
+            "• Contactez le support technique\n"
+            "• Réessayez la transaction"
+        ).arg(vehicleCode)
+         .arg(QString::number(amount, 'f', 3))
+         .arg(QDateTime::currentDateTime().toString("dd/MM/yyyy hh:mm:ss"));
+
+        QMessageBox::warning(this, title, message);
+    }
+
+    // Ajouter aussi un message dans le chat assistant
+    QString chatMessage = success
+        ? QString("🚦 Véhicule %1 rechargé avec succès ! Transaction de %2 TND enregistrée.")
+          .arg(vehicleCode).arg(amount)
+        : QString("⚠️ Échec de recharge pour le véhicule %1. Vérifiez les données.")
+          .arg(vehicleCode);
+
+    addMessage("system", chatMessage);
+}

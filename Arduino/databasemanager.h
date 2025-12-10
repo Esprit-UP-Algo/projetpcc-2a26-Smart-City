@@ -26,11 +26,6 @@ public:
     QVariantMap getResident(const QString &cin);
     QList<QVariantMap> searchResidents(const QString &term);
     QVariantMap getStatistics();
-    QString getResidentIdFromCin(const QString &cin);
-    QList<int> getMonthlySatisfactionScores();
-    QString getResidentIdFromRFID(const QString &uid);
-    QVariantMap getResidentByRFID(const QString &uid);  // New: Get full resident info from RFID
-
 
     // ====== Transactions ======
     bool addTransaction(const QVariantMap &data);
@@ -43,6 +38,8 @@ public:
     QVariantMap getMonthlyEvolution(int year);
     double getTotalRevenue(int year, int month);
     double getTotalExpenses(int year, int month);
+    QVariantMap getResidentByCIN(const QString &cin);
+    QList<QVariantMap> getTransactionsForResidentMonth(const QString &cin, int year, int month);
 
     // ====== Incidents ======
     bool addIncident(const QVariantMap &data);
@@ -52,12 +49,8 @@ public:
     QVariantMap getIncident(int id);
     QList<QVariantMap> searchIncidents(const QString &term);
     QVariantMap getIncidentsStatistics();
-    int getIncidentsCount(int residentId, int months);
-    QVariantMap getIncidentStatusCounts();
 
-
-
-    // ====== Véhicules (Parking simple) ======
+    // ====== Véhicules (Parking) ======
     bool addVehicule(const QVariantMap &data);
 
     // ====== Locaux ======
@@ -68,7 +61,7 @@ public:
     QVariantMap getLocal(const QString &id);
     QList<QVariantMap> searchLocaux(const QString &term);
 
-    // ====== Transport (Flotte Smart City) ======
+    // ====== Transport ======
     bool addTransportVehicule(const QVariantMap &data);
     bool updateTransportVehicule(const QString &id, const QVariantMap &data);
     bool deleteTransportVehicule(const QString &id);
@@ -76,26 +69,23 @@ public:
     QVariantMap getTransportVehicule(const QString &id);
     QList<QVariantMap> searchTransportVehicules(const QString &term);
     QVariantMap getTransportStatistics();
-
     // Alias pour compatibilité avec TransportPage
     inline QList<QVariantMap> getAllVehicules() { return getAllTransportVehicules(); }
     inline QVariantMap getVehicule(const QString &id) { return getTransportVehicule(id); }
     inline bool updateVehicule(const QString &id, const QVariantMap &data) { return updateTransportVehicule(id, data); }
     inline bool deleteVehicule(const QString &id) { return deleteTransportVehicule(id); }
+    inline bool ajouterVehiculeTransport(const QString &id, const QString &type, const QString &zone, const QString &statut) {
+        QVariantMap data;
+        data["id_vehicule"] = id;
+        data["type"] = type;
+        data["zone"] = zone;
+        data["statut"] = statut;
+        return addTransportVehicule(data);
+    }
     
-    // ====== Arduino Transport (Borne) ======
-    QVariantMap getVehiculeByCode(const QString &code);  // Get vehicule by ID_VEHICULE
-    double getMontantTotalVehicule(const QString &code); // Calculate total amount paid for vehicle
-    QVariantMap getTransactionByVehicule(const QString &vehiculeID); // Get existing transaction for vehicle
-    bool updateTransactionMontant(const QString &code, double nouveauMontant); // Update transaction amount
-
-    // ====== Bulk Operations ======
-    bool clearAllResidents();
-    bool clearAllTransactions();
-    bool clearAllIncidents();
-    bool clearAllLocaux();
-    bool clearAllTransportVehicules();
-    bool clearAllData();
+    // Méthodes additionnelles pour compatibilité
+    bool vehiculeExists(const QString &id);
+    QVariantMap getVehiculeByID(const QString &id);
 
 signals:
     void vehiculeAdded();

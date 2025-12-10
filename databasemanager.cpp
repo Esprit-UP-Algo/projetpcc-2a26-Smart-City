@@ -428,6 +428,13 @@ bool DatabaseManager::addTransaction(const QVariantMap &data)
     QString date        = normalizeDateVariant(data.value("date_transaction"));
     QString cin         = data.value("cin_resident").toString().trimmed();
 
+    qDebug() << "[addTransaction] code_unique:" << code;
+    qDebug() << "[addTransaction] montant (double):" << montant << "Type:" << data.value("montant").typeName();
+    qDebug() << "[addTransaction] type:" << type;
+    qDebug() << "[addTransaction] categorie:" << categorie;
+    qDebug() << "[addTransaction] date:" << date;
+    qDebug() << "[addTransaction] cin:" << cin;
+
     if (code.isEmpty() || type.isEmpty() || date.isEmpty()) {
         QMessageBox::warning(nullptr, "Validation",
                              "Code, type et date de transaction sont obligatoires.");
@@ -444,6 +451,8 @@ bool DatabaseManager::addTransaction(const QVariantMap &data)
             return false;
         }
         idResident = id;
+    } else {
+        idResident = QVariant(QVariant::String);  // Explicit NULL for Oracle
     }
 
     QSqlQuery q(db);
@@ -755,30 +764,29 @@ bool DatabaseManager::addIncident(const QVariantMap &data)
     if (!db.isOpen())
         return false;
 
-    QVariant idResident; // sera NUMBER ou NULL proprement
+    // ============================
+    // Conversion du CIN en ID_RESIDENT
+    // ============================
+    QString rawCin;
+    int idResident = -1;  // -1 = NULL
 
-    // ============================
-    // 1️⃣ GESTION DU CIN
-    // ============================
-    QString cin = data.value("cin_resident").toString().trimmed();
-    if (cin.isEmpty())
-    {
-        // Important : NULL de type NUMBER
-        idResident = QVariant(QVariant::Int);
+    QVariant rawValue = data.value("cin_resident");
+
+    if (rawValue.type() == QVariant::ByteArray) {
+        rawCin = QString::fromUtf8(rawValue.toByteArray()).trimmed();
+    } else {
+        rawCin = rawValue.toString().trimmed();
     }
-    else
-    {
-        QString rid = getResidentIdFromCin(cin);
-        if (rid.isEmpty()) {
-            QMessageBox::warning(nullptr, "Erreur",
-                                 QString("Le CIN %1 n'existe pas dans RESIDENTS.").arg(cin));
-            return false;
+
+    if (!rawCin.isEmpty()) {
+        QString rid = getResidentIdFromCin(rawCin);
+        if (!rid.isEmpty()) {
+            idResident = rid.toInt();
         }
-        idResident = rid.toInt(); // Oracle accepte
     }
 
     // ============================
-    // 2️⃣ INSERT SANS ID_INCIDENT
+    // INSERT
     // ============================
     QSqlQuery q(db);
     q.prepare(R"(
@@ -786,38 +794,32 @@ bool DatabaseManager::addIncident(const QVariantMap &data)
             (TYPE_INCIDENT, LOCALISATION, DATE_HEURE,
              NIVEAU, STATUT, ID_RESIDENT)
         VALUES (
-            :type,
-            :localisation,
+            :type, :localisation,
             TO_TIMESTAMP(:date_heure, 'YYYY-MM-DD HH24:MI:SS'),
-            :niveau,
-            :statut,
-            :idResident
+            :niveau, :statut, :idResident
         )
     )");
 
-    q.bindValue(":type",         data.value("type_incident").toString().trimmed());
-    q.bindValue(":localisation", data.value("localisation").toString().trimmed());
-    q.bindValue(":date_heure",   data.value("date_heure").toString().trimmed());
+    q.bindValue(":type",         data.value("type_incident").toString());
+    q.bindValue(":localisation", data.value("localisation").toString());
+    q.bindValue(":date_heure",   data.value("date_heure").toString());
     q.bindValue(":niveau",       data.value("niveau").toInt());
-    q.bindValue(":statut",       data.value("statut").toString().trimmed());
+    q.bindValue(":statut",       data.value("statut").toString());
+    
+    // Passer NULL si idResident est -1, sinon passer l'ID
+    if (idResident == -1) {
+        q.bindValue(":idResident", QVariant(QVariant::Int));  // NULL explicite
+    } else {
+        q.bindValue(":idResident", idResident);
+    }
 
-    // 🔥 FIX CRITIQUE : Oracle veut NUMBER ou NULL (NUMBER)
-    q.bindValue(":idResident", idResident);
-
-    // ============================
-    // 3️⃣ EXECUTION
-    // ============================
     if (!q.exec()) {
         qWarning() << "❌ addIncident:" << q.lastError().text();
-
-        QMessageBox::critical(nullptr, "Erreur Oracle",
-                              "Impossible d'ajouter l'incident.\n\n" + q.lastError().text());
         return false;
     }
 
     return true;
 }
-
 
 bool DatabaseManager::updateIncident(int id, const QVariantMap &data)
 {
@@ -1678,3 +1680,203 @@ bool DatabaseManager::clearAllData()
     emit dataChanged();
     return true;
 }
+
+
+
+
+
+
+
+QVariantMap DatabaseManager::getIncidentStatusCounts()
+{
+    QVariantMap stats;
+
+    if (!db.isOpen())
+        return stats;
+
+    QSqlQuery q(db);
+    q.prepare(R"(
+        SELECT LOWER(STATUT), COUNT(*)
+        FROM INCIDENTS
+        GROUP BY LOWER(STATUT)
+    )");
+
+    if (!q.exec()) {
+        qWarning() << "❌ getIncidentStatusCounts:" << q.lastError().text();
+        return stats;
+    }
+
+    while (q.next()) {
+        QString statut = q.value(0).toString().trimmed();
+        int count = q.value(1).toInt();
+        stats[statut] = count;
+    }
+
+    return stats;
+}
+
+
+QString DatabaseManager::getResidentIdFromRFID(const QString &uid)
+{
+    QSqlQuery q(db);
+    q.prepare("SELECT ID FROM RESIDENTS WHERE RFID_UID = :uid");
+    q.bindValue(":uid", uid);
+
+    if (q.exec() && q.next())
+        return q.value(0).toString();
+
+    return "";
+}
+
+QVariantMap DatabaseManager::getResidentByRFID(const QString &uid)
+{
+    QVariantMap resident;
+    QSqlQuery q(db);
+    
+    q.prepare("SELECT ID, NOM, PRENOM, CIN, EMAIL, TELEPHONE, STATUT, DATE_ENTREE FROM RESIDENTS WHERE RFID_UID = :uid");
+    q.bindValue(":uid", uid);
+    
+    if (q.exec() && q.next()) {
+        QSqlRecord record = q.record();
+        for (int i = 0; i < record.count(); ++i) {
+            resident[record.fieldName(i)] = q.value(i);
+        }
+    }
+    
+    return resident;
+}
+
+/*==================================================
+ *  ARDUINO TRANSPORT (BORNE) - NOUVELLES MÉTHODES
+ *=================================================*/
+
+QVariantMap DatabaseManager::getVehiculeByCode(const QString &code)
+{
+    QVariantMap vehicule;
+    
+    qDebug() << "[DatabaseManager] 🔍 Recherche véhicule avec ID_VEHICULE:" << code;
+    
+    if (!db.isOpen()) {
+        qWarning() << "❌ Database not open for getVehiculeByCode";
+        return vehicule;
+    }
+    
+    QSqlQuery q(db);
+    q.prepare("SELECT ID_VEHICULE, CODE_UNIQUE, TYPE, CAPACITE, ZONE, HORAIRE, STATUT, "
+              "DATE_AJOUT, TEMPS_UTILISE "
+              "FROM TRANSPORT_VEHICULES WHERE ID_VEHICULE = :code");
+    q.bindValue(":code", code);
+    
+    qDebug() << "[DatabaseManager] 📊 Requête SQL:" << q.executedQuery();
+    qDebug() << "[DatabaseManager] 🔑 ID_VEHICULE recherché:" << code;
+    
+    if (q.exec()) {
+        if (q.next()) {
+            QSqlRecord record = q.record();
+            for (int i = 0; i < record.count(); ++i) {
+                vehicule[record.fieldName(i)] = q.value(i);
+            }
+            qDebug() << "[DatabaseManager] ✅ Véhicule trouvé:" << code;
+            qDebug() << "[DatabaseManager] 📦 Données:" << vehicule;
+        } else {
+            qWarning() << "[DatabaseManager] ⚠️ Aucun résultat pour ID_VEHICULE:" << code;
+            
+            // Afficher tous les ID existants pour debug
+            QSqlQuery debugQuery(db);
+            debugQuery.exec("SELECT ID_VEHICULE FROM TRANSPORT_VEHICULES");
+            QStringList existingCodes;
+            while (debugQuery.next()) {
+                existingCodes << debugQuery.value(0).toString();
+            }
+            qDebug() << "[DatabaseManager] 📋 ID_VEHICULE existants dans TRANSPORT_VEHICULES:" << existingCodes;
+        }
+    } else {
+        qWarning() << "[DatabaseManager] ❌ Erreur SQL:" << q.lastError().text();
+    }
+    
+    return vehicule;
+}
+
+double DatabaseManager::getMontantTotalVehicule(const QString &code)
+{
+    double total = 0.0;
+    
+    if (!db.isOpen()) {
+        qWarning() << "❌ Database not open for getMontantTotalVehicule";
+        return total;
+    }
+    
+    // Récupérer le montant de LA transaction du véhicule (il n'y en a qu'une seule maintenant)
+    QSqlQuery q(db);
+    q.prepare("SELECT MONTANT FROM TRANSACTIONS "
+              "WHERE CATEGORIE = 'Transport' AND DESCRIPTION LIKE :pattern");
+    q.bindValue(":pattern", QString("%Véhicule: %1%").arg(code));
+    
+    if (q.exec() && q.next()) {
+        total = q.value("MONTANT").toDouble();
+        qDebug() << "[DatabaseManager] 💰 Montant total pour véhicule" << code << ":" << total << "DT";
+    } else {
+        qDebug() << "[DatabaseManager] ℹ️ Aucune transaction pour véhicule" << code << "(montant = 0)";
+    }
+    
+    return total;
+}
+
+QVariantMap DatabaseManager::getTransactionByVehicule(const QString &vehiculeID)
+{
+    QVariantMap transaction;
+    
+    if (!db.isOpen()) {
+        qWarning() << "❌ Database not open for getTransactionByVehicule";
+        return transaction;
+    }
+    
+    // Chercher la transaction de ce véhicule (CATEGORIE='Transport' et DESCRIPTION contient le vehiculeID)
+    QSqlQuery q(db);
+    q.prepare("SELECT CODE_UNIQUE, MONTANT, TYPE, CATEGORIE, DESCRIPTION, DATE_TRANSACTION, ID_RESIDENT "
+              "FROM TRANSACTIONS "
+              "WHERE CATEGORIE = 'Transport' AND DESCRIPTION LIKE :pattern");
+    q.bindValue(":pattern", QString("%Véhicule: %1%").arg(vehiculeID));
+    
+    if (q.exec() && q.next()) {
+        transaction["CODE_UNIQUE"] = q.value("CODE_UNIQUE").toString();
+        transaction["MONTANT"] = q.value("MONTANT").toDouble();
+        transaction["TYPE"] = q.value("TYPE").toString();
+        transaction["CATEGORIE"] = q.value("CATEGORIE").toString();
+        transaction["DESCRIPTION"] = q.value("DESCRIPTION").toString();
+        transaction["DATE_TRANSACTION"] = q.value("DATE_TRANSACTION").toString();
+        transaction["ID_RESIDENT"] = q.value("ID_RESIDENT").toString();
+        
+        qDebug() << "[DatabaseManager] 🔍 Transaction existante trouvée pour véhicule" << vehiculeID 
+                 << "- Code:" << transaction["CODE_UNIQUE"].toString() 
+                 << "- Montant:" << transaction["MONTANT"].toDouble();
+    } else {
+        qDebug() << "[DatabaseManager] ℹ️ Aucune transaction existante pour véhicule" << vehiculeID;
+    }
+    
+    return transaction;
+}
+
+bool DatabaseManager::updateTransactionMontant(const QString &code, double nouveauMontant)
+{
+    if (!db.isOpen()) {
+        qWarning() << "❌ Database not open for updateTransactionMontant";
+        return false;
+    }
+    
+    QSqlQuery q(db);
+    q.prepare("UPDATE TRANSACTIONS SET MONTANT = :montant, DATE_TRANSACTION = SYSDATE "
+              "WHERE CODE_UNIQUE = :code");
+    q.bindValue(":montant", nouveauMontant);
+    q.bindValue(":code", code);
+    
+    if (q.exec()) {
+        qDebug() << "[DatabaseManager] ✅ Montant mis à jour:" << code << "→" << nouveauMontant << "DT";
+        emit dataChanged();
+        return true;
+    } else {
+        qWarning() << "[DatabaseManager] ❌ Erreur mise à jour montant:" << q.lastError().text();
+        return false;
+    }
+}
+
